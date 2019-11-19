@@ -1,0 +1,19 @@
+{
+  "name": "blackninjas-backend",
+  "version": "1.0.0",
+  "description": "A platform to make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela/blackninjas-backend.git"
+  },
+  "author": "blackninjas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela/blackninjas-backend/issues"
+  },
+  "homepage": "https://github.com/andela/blackninjas-backend#readme"
+}
