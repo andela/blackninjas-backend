@@ -1,0 +1,27 @@
+version: "3"
+services:
+  app:
+    container_name: blackninjas-barefoot-nomad
+    restart: always
+    env_file: .env
+    environment:
+      - NODE_ENV=process.env.DATABASE_URL_DEV
+    build: .
+    ports:
+      - "2000:3000"
+    networks:
+      - blackninjas
+  postgres:
+    container_name: postgres
+    image: "postgres:9.4"
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+    ports:
+      - "5000:5432"
+    networks:
+      - blackninjas
+volumes:
+  my_dbdata:
+networks:
+  blackninjas:
+    driver: bridge
