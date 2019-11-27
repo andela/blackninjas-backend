@@ -1,4 +1,4 @@
-
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed%20by-Hound-blueviolet)](https://houndci.com)
 # Barefoot Nomad
 Barefoot Nomad is an application that will enable its "Company Nomads" book their international travel and accommodation globally, easily and conveniently across all the locations/centers where the company has its operation.
 
