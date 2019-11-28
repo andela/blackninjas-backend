@@ -1,5 +1,6 @@
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed%20by-Hound-blueviolet)](https://houndci.com)
 [![Build Status](https://travis-ci.org/andela/blackninjas-backend.svg?branch=develop)](https://travis-ci.org/andela/blackninjas-backend/)
+[![Coverage Status](https://coveralls.io/repos/github/andela/blackninjas-backend/badge.svg?branch=ch-integrate-covellars-%23169817858)](https://coveralls.io/github/andela/blackninjas-backend?branch=ch-integrate-covellars-%23169817858)
 # Barefoot Nomad
 Barefoot Nomad is an application that will enable its "Company Nomads" book their international travel and accommodation globally, easily and conveniently across all the locations/centers where the company has its operation.
 
