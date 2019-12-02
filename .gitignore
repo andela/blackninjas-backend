@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules/
 # dotenv environment variables file
 .env
@@ -5,3 +6,7 @@ node_modules/
 .nyc_output/
 
 .DS_Store
+=======
+# Dependency directories
+node_modules/
+>>>>>>> chore(swagger): adding swagger documentation [#169817859]
