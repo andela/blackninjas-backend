@@ -4,9 +4,10 @@
   "description": "A platform to make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "start": "babel-node ./app.js",
+    "test": "nyc --export=text mocha --require @babel/register src/tests/*.js --exit"
   },
   "repository": {
     "type": "git",
@@ -18,12 +19,23 @@
     "url": "https://github.com/andela/blackninjas-backend/issues"
   },
   "homepage": "https://github.com/andela/blackninjas-backend#readme",
+  "dependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/node": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "dotenv": "^8.2.0"
+  },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "dotenv": "^8.2.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
     "eslint": "^6.7.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2"
-  },
-  "dependencies": {
-    "dotenv": "^8.2.0"
   }
 }
