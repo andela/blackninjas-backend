@@ -1,6 +1,7 @@
-# Dependency directories
 node_modules/
 # dotenv environment variables file
 .env
 # nyc tests generated files
 .nyc_output/
+
+.DS_Store

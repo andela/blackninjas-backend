@@ -7,7 +7,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "babel-node ./app.js",
-    "test": "nyc --export=text mocha --require @babel/register src/tests/*.js --exit"
+    "test": "nyc --export=text mocha --require @babel/register src/tests/*.js --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -33,9 +34,11 @@
     "chai-http": "^4.3.0",
     "dotenv": "^8.2.0",
     "mocha": "^6.2.2",
-    "nyc": "^14.1.1",
+    "coveralls": "^3.0.9",
     "eslint": "^6.7.1",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^14.1.1"
   }
 }
