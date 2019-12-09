@@ -12,6 +12,7 @@ addons:
   postgresql: "9.4"
 before_script:
   - psql -c "CREATE DATABASE barefootnomad_test;" -U postgres
+  - npm run pretest-travis
 script:
   - npm test
 after_success:
