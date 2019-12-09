@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "A platform to make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.",
   "main": "index.js",
+  "nyc": {
+    "exclude": [
+      "src/database/*",
+      "src/tests"
+    ]
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "babel-node ./src/index.js",
-    "test": "nyc --export=text mocha --require @babel/register src/tests/*.js --exit",
+    "pretest-travis": "NODE_ENV=testing npm run db-undo-migration && NODE_ENV=testing  npm run db-migrate",
+    "test": "NODE_ENV=testing npm run db-undo-migration && NODE_ENV=testing npm run db-migrate && NODE_ENV=testing nyc --reporter=html --reporter=text mocha --require @babel/register --require @babel/polyfill src/tests/*.js --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "dev": "nodemon node ./src/index.js",
     "db-migrate": "npx sequelize db:migrate",
@@ -29,20 +36,28 @@
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
     "@babel/node": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.4",
+    "@babel/register": "^7.7.4",
+    "babel-eslint": "^10.0.3",
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "path": "^0.12.7",
     "pg": "^7.14.0",
     "pg-hstore": "^2.3.3",
-    "swagger-jsdoc": "^3.4.0",
-    "swagger-ui-express": "^4.1.2",
     "sequelize": "^5.21.2",
-    "sequelize-cli": "^5.5.1"
-  },
-  "devDependencies": {
+    "sequelize-cli": "^5.5.1",
+    "swagger-jsdoc": "^3.4.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "swagger-ui-express": "^4.1.2"
+  },
+  "devDependencies": {
     "mocha": "^6.2.2",
     "coveralls": "^3.0.9",
     "eslint": "^6.7.1",

@@ -1,8 +1,7 @@
 import { config } from 'dotenv';
 import app from './app';
 
-config();   // This enables dotenv configulations
-
+config(); // This enables dotenv configulations
 
 
 const port = process.env.PORT || 3000;
