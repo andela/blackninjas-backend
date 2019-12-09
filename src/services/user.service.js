@@ -34,6 +34,22 @@ class UserServices {
   }
 
   /**
+   * This a function that creates a user if he is not found in the database
+   * @param {string} user this is a user email to be updated
+   * @returns {object} return  a response object
+   */
+  static async findOrCreate(user) {
+    try {
+      await db.user.findOrCreate({
+        where: { email: user.email },
+        defaults: user
+      });
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
    * This a function that activete a user account
    * @param {string} email this is a user email to be updated
    * @param {object} updateUser this is a value need to update  a user account
