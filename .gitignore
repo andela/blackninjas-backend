@@ -1,4 +1,6 @@
 node_modules/
+
+coverage/
 # dotenv environment variables file
 .env
 # nyc tests generated files
@@ -9,3 +11,4 @@ dist/
 coverage/
 
 .DS_Store
+
