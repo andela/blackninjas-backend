@@ -4,4 +4,6 @@ node_modules/
 # nyc tests generated files
 .nyc_output/
 
+dist/
+
 .DS_Store
