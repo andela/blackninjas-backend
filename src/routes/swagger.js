@@ -6,9 +6,9 @@ import options from '../swagger/index';
 const router = express.Router();
 
 const specs = swaggerJsdoc(options);
-router.use("/docs", swaggerUi.serve);
+router.use('/docs', swaggerUi.serve);
 router.get(
-  "/docs",
+  '/docs',
   swaggerUi.setup(specs, {
     explorer: true
   })
