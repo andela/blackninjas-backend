@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "A platform to make company global travel and accommodation easy and convenient for the strong workforce of savvy members of staff, by leveraging the modern web.",
   "main": "index.js",
+  "nyc": {
+    "exclude": [
+      "src/helpers/logger.helper.js"
+    ]
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "babel-node ./src/index.js",
-    "test": "nyc --export=text mocha --require @babel/register src/tests/*.js --exit",
+    "start": "NODE_ENV=production babel-node ./src/index.js",
+    "test": "nyc --reporter=html --reporter=text mocha --require @babel/register src/tests/*.js  --require @babel/polyfill --require @babel/register --timeout 10000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "nodemon node ./src/index.js",
+    "dev": "NODE_ENV=development nodemon --exec babel-node ./src/index.js",
     "db-migrate": "npx sequelize db:migrate",
     "db-undo-migration": "npx sequelize db:migrate:undo:all",
     "db-seed-test": "NODE_ENV=testing npx sequelize-cli db:seed:undo:all && NODE_ENV=testing sequelize db:seed:all",
@@ -29,20 +34,24 @@
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
     "@babel/node": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.4",
     "body-parser": "^1.19.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "pg": "^7.14.0",
-    "pg-hstore": "^2.3.3",
-    "swagger-jsdoc": "^3.4.0",
-    "swagger-ui-express": "^4.1.2",
-    "sequelize": "^5.21.2",
-    "sequelize-cli": "^5.5.1"
-  },
-  "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.3.0",
+    "log4js": "^6.1.0",
+    "pg": "^7.14.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.2"
+  },
+  "devDependencies": {
     "mocha": "^6.2.2",
     "coveralls": "^3.0.9",
     "eslint": "^6.7.1",
