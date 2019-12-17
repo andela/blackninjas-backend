@@ -3,6 +3,7 @@ import chaiHttp from 'chai-http';
 import app from '../index';
 import db from '../database/models';
 import GenToken from '../helpers/token';
+import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
 chai.should();
@@ -13,20 +14,28 @@ const invalidToken = GenToken('invalid@gmail.com', 'shemaeric', 'false');
 
 describe('user velify email', () => {
   before(async () => {
-    await db.users.destroy({ where: {}, force: true });
-    await db.users.create({
-      firstname: 'shema',
-      lastname: 'eric',
+    await db.user.destroy({ where: {}, force: true });
+    await db.user.create({
+      firstName: 'shema',
+      lastName: 'eric',
       email: 'shema@gmail.com',
-      password: 'shemq',
-      active: false
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      phoneNumber: '0785571790',
+      password: EncryptPassword('shemaeric'),
+      isVerified: false
     });
-    await db.users.create({
-      firstname: 'shema',
-      lastname: 'eric',
+    await db.user.create({
+      firstName: 'shema',
+      lastName: 'eric',
       email: 'shemaeric@gmail.com',
-      password: 'shemaeric',
-      active: true
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      phoneNumber: '0785571790',
+      password: EncryptPassword('shemaeric'),
+      isVerified: true
     });
   });
 

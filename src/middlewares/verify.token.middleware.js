@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import GeneToken from '../helpers/token';
+import GenerateToken from '../helpers/token';
 import logger from '../helpers/logger.helper';
 
 dotenv.config();
-const newtoken = GeneToken('shema@gmail.com', 'shemaeric', 'false');
+const newtoken = GenerateToken('shema@gmail.com', 'shemaeric', 'false');
 
 logger('info', newtoken);
 

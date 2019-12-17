@@ -1,0 +1,6 @@
+# /node_modules/* and /bower_components/* in the project root are ignored by default
+
+# Ignoring the following folders/files
+dist/
+.nyc_output/
+src/database/models/index.js
