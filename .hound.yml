@@ -4,4 +4,3 @@ eslint:
   ignore_file: .eslintignore
 
 fail_on_violations: false
-  
