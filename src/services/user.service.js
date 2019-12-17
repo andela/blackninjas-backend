@@ -1,10 +1,23 @@
 import db from '../database/models';
+import Queries from './Queries';
+import logger from '../helpers/logger.helper';
 
+
+// import looger from '../helpers/logger.helper';
 /**
  * This class contains functions for all user services.
  */
 class UserServices {
-/**
+  /**
+ * creating user query
+ * @param {string} NewUser users table in database.
+ * @returns {array} data the data to be returned.
+ */
+  static async CreateUser(NewUser) {
+    return Queries.create(db.user, NewUser);
+  }
+
+  /**
  * Find user by email
  * @param {Object} email User email.
  * @returns {Object} Returns a user object and if user doesn't exist it returns null.
@@ -15,8 +28,8 @@ class UserServices {
       if (!user) return null;
       return user;
     } catch (error) {
-      // TODO: looger('error', error);
-      return null;
+      logger('error', error);
+      return undefined;
     }
   }
 
@@ -44,7 +57,7 @@ class UserServices {
       }
       if (userToUpdate) {
         await db.user.update(
-          { active: updateUser },
+          { isVerified: updateUser },
           { where: { email }, returning: true, plain: true }
         );
 

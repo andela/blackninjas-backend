@@ -8,9 +8,10 @@ import EncryptPassword from '../helpers/Encryptor';
 chai.use(chaiHttp);
 chai.should();
 
-const token = GenToken('shema@gmail.com', 'shemaeric', 'false');
-const token2 = GenToken('shemaeric@gmail.com', 'shemaeric', 'false');
-const invalidToken = GenToken('invalid@gmail.com', 'shemaeric', 'false');
+const token = GenToken.GenerateToken('shema@gmail.com', 'shemaeric', 'false');
+const token2 = GenToken.GenerateToken('shemaeric@gmail.com', 'shemaeric', 'false');
+const invalidToken = GenToken.GenerateToken('invalid@gmail.com', 'shemaeric', 'false');
+
 
 describe('user velify email', () => {
   before(async () => {
@@ -42,7 +43,7 @@ describe('user velify email', () => {
   it('user should activate account', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/activate/${token}`)
+      .get(`/api/v1/auth/activate/${token}`)
       .end((err, res) => {
         res.should.have.status(200);
         done();
@@ -51,7 +52,7 @@ describe('user velify email', () => {
   it('it should  check if user exist', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/activate/${invalidToken}`)
+      .get(`/api/v1/auth/activate/${invalidToken}`)
       .end((err, res) => {
         res.should.have.status(404);
         done();
@@ -61,7 +62,7 @@ describe('user velify email', () => {
   it('it should check if user accoutn is activated', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/activate/${token2}`)
+      .get(`/api/v1/auth/activate/${token2}`)
       .end((err, res) => {
         res.should.have.status(409);
         done();
@@ -71,7 +72,7 @@ describe('user velify email', () => {
   it('it should check if token is not a number', (done) => {
     chai
       .request(app)
-      .get('/api/v1/activate/123456787654345')
+      .get('/api/v1/auth/activate/123456787654345')
       .end((err, res) => {
         res.should.have.status(401);
         done();
@@ -81,7 +82,7 @@ describe('user velify email', () => {
   it('it should check if there is other kinf of error', (done) => {
     chai
       .request(app)
-      .get('/api/v1/activate/fhgjgkhlhgf657896')
+      .get('/api/v1/auth/activate/fhgjgkhlhgf657896')
       .end((err, res) => {
         res.should.have.status(401);
         done();

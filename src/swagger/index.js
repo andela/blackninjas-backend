@@ -1,3 +1,4 @@
+// Swagger set up
 import path from 'path';
 
 const options = {
@@ -21,13 +22,14 @@ const options = {
     basePath: '/api/v1',
     servers: [
       {
-        url: 'http://localhost:3000/api/v1'
-      },
-      {
-        url: 'https://blackninjas-backend-staging.herokuapp.com'
+        url: 'http://localhost:3000/api/v1',
       }
     ]
   },
-  apis: [path.resolve(__dirname, '../routes/*.js')]
+  apis: [
+    // all swagger api files will included here like below example
+    //   this is an example of how to include file : path.resolve(__dirname,'./Users.js'),
+    path.resolve(__dirname, '../routes/userRoute.js'),
+  ]
 };
 export default options;

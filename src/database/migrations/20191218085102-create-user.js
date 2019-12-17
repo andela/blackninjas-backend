@@ -31,7 +31,22 @@ module.exports = {
     password: {
       type: Sequelize.STRING
     },
-    phoneNumber: {
+    preferredlanguage: {
+      type: Sequelize.STRING
+    },
+    preferredcurrency: {
+      type: Sequelize.STRING
+    },
+    place: {
+      type: Sequelize.STRING
+    },
+    role: {
+      type: Sequelize.STRING
+    },
+    department: {
+      type: Sequelize.STRING
+    },
+    linemanager: {
       type: Sequelize.STRING
     },
     createdAt: {

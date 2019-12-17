@@ -4,10 +4,12 @@ coverage/
 # dotenv environment variables file
 .env
 # nyc tests generated files
-.nyc_output/
+.nyc_output/ 
 
 dist/
 
 coverage/
 
 .DS_Store
+# coverage folders
+
