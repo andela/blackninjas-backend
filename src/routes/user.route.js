@@ -155,7 +155,7 @@ router.get('/activate/:autorizations', verifyToken.paramToken, userController.up
  * @swagger
  *
  * /auth/resetpassword:
- *    post:
+ *    patch:
  *      summary: User can reset password
  *      tags: [Users]
  *      parameters:
@@ -189,7 +189,7 @@ router.get('/activate/:autorizations', verifyToken.paramToken, userController.up
  *
  */
 
-router.post('/resetpassword', Validate.resetPassword(), isValid, verifyToken.headerToken, userController.resetPassword);
+router.patch('/resetpassword', Validate.resetPassword(), isValid, verifyToken.headerToken, userController.resetPassword);
 
 /**
  * @swagger

@@ -66,7 +66,7 @@ describe('user should be able to reset password', () => {
   it('it should check if password and confirm password match', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', `Bearer ${token2}`)
       .send({ password: 'truepassword', confirmPassword: 'falsepassword' })
       .end((err, res) => {
@@ -78,7 +78,7 @@ describe('user should be able to reset password', () => {
   it('it should check if account is verified', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', `Bearer ${token}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
@@ -90,7 +90,7 @@ describe('user should be able to reset password', () => {
   it('it should check if a user has an account', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', `Bearer ${unaveilableAccountToken}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
@@ -102,7 +102,7 @@ describe('user should be able to reset password', () => {
   it('user should successfuly reset his or her account', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', `Bearer ${token2}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
@@ -114,7 +114,7 @@ describe('user should be able to reset password', () => {
   it('it should check if a header is set', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
         res.should.have.status(401);
@@ -125,7 +125,7 @@ describe('user should be able to reset password', () => {
   it('it should check if there is Bearer in header', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', `xxxxx ${token2}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
@@ -137,7 +137,7 @@ describe('user should be able to reset password', () => {
   it('it should check if token has provided', (done) => {
     chai
       .request(app)
-      .post('/api/v1/auth/resetpassword')
+      .patch('/api/v1/auth/resetpassword')
       .set('token', 'Bearer')
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {

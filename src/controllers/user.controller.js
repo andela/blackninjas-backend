@@ -127,6 +127,7 @@ class userController {
     }
   }
 
+
   /**
   *login function to return data from social accounts to the user
   *

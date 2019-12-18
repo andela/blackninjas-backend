@@ -45,6 +45,7 @@ class UserServices {
       await db.user.findOrCreate({
         where: { email: user.email },
         defaults: user
+
       });
     } catch (error) {
       return null;
@@ -74,8 +75,10 @@ class UserServices {
         };
       }
       if (userToUpdate) {
-        await db.user.update(updateUser,
-          { where: { email }, returning: true, plain: true });
+        await db.user.update(
+          updateUser,
+          { where: { email }, returning: true, plain: true }
+        );
 
         return {
           status: 200,
