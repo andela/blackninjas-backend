@@ -4,6 +4,8 @@ import EncryptPassword from '../helpers/Encryptor';
 import response from '../helpers/response.helper';
 import mailer from '../helpers/send.email.helper';
 import helper from '../helpers/token.helper';
+import profileHelper from '../helpers/profile.helper';
+
 
 /**
  * Class for users related operations such Sign UP, Sign In and others
@@ -181,10 +183,35 @@ class userController {
    * @param {object} res This is a response will be send to the user
    * @returns {object} return object which include status and message
    */
-  static async profilePage(req, res) {
-    const user = await UserServices.findUserByEmail(req.user.email);
-    const status = 200;
-    response.successMessage(res, user, status);
+  static async viewProfile(req, res) {
+    const { email } = req.user;
+    return profileHelper.getProfileData(email, req, res);
+  }
+
+  /**
+   * It activate a user account by updating isVerified attribute to true
+   * @param {int} req This is the parameter(user id) that will be passed in url
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async editProfile(req, res) {
+    // can not update to an existing email
+    // check if user provided email
+    const { email } = req.user;
+    const profile = profileHelper.chooseProfileData(email, req.body);
+    // Check if user is verified
+    if (!req.user.isVerified === true) {
+      const status = 401;
+      return response.errorMessage(res, 'User Is Not Verified, Please verify the User First', status);
+    }
+    const userId = req.user.email;
+    UserServices.updateUser(userId, profile);
+    return response.successMessage(
+      res,
+      'User Profile are Updated',
+      200,
+      profile
+    );
   }
 }
 

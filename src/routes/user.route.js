@@ -221,4 +221,90 @@ router.patch('/resetpassword', Validate.resetPassword(), isValid, verifyToken.he
  *
  */
 router.post('/forgetpassword', Validate.sendResetPasswordLink(), isValid, userController.sendResetPasswordLink);
+router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
+/**
+ * @swagger
+ *
+ * /profile:
+ *  get:
+ *    tags:
+ *      - Users
+ *    summary: Users profile settings
+ *    description: Barefoot Nomad User is able to access their Barefoot Nomad profile
+ *    operationId: GetUserProfile
+ *    produces:
+ *      - application/json
+ *    parameters:
+ *      - name: userEmail
+ *        in: token
+ *        description: ID of user to return a profile
+ *        required: true
+ *        type: string
+ *        format: int64
+ *    responses:
+ *      '200':
+ *        description: successful operation
+ *      '404':
+ *        description: Unsuccessful User not found
+ *      '500':
+ *        description: Internal Server error
+ * */
+router.get('/profile', verifyToken.headerToken, userController.viewProfile);
+
+/**
+ * @swagger
+ *
+ * /profile:
+ *  patch:
+ *    tags:
+ *      - Users
+ *    summary: Users profile settings
+ *    description: User gets a user profile upon successful registration to Barefoot Nomad
+ *      and is able to update/edit
+ *    operationId: CreateUserProfile
+ *    produces:
+ *      - application/json
+ *    parameters:
+ *      - in: body
+ *        name: user
+ *        schema:
+ *          type: object
+ *          properties:
+ *            firstName:
+ *              type: string
+ *              example: john
+ *            lastName:
+ *              type: string
+ *              example: doe
+ *            password:
+ *              type: string
+ *              example: password
+ *            gender:
+ *              type: string
+ *              example: male
+ *            preferredCurrency:
+ *              type: string
+ *              example: "$"
+ *            preferredLanguage:
+ *              type: string
+ *              example: English
+ *            department:
+ *              type: string
+ *              example: IT
+ *            birthDate:
+ *              type: string
+ *              example: 14/10/1990
+ *            address:
+ *              type: string
+ *              example: 14, Jeremiah Ugwu, Lekki, Lagos
+ *    responses:
+ *      '200':
+ *        description: successful operation
+ *      '404':
+ *        description: Unsuccessful User not found
+ *      '500':
+ *        description: Internal Server error
+ * */
+
+router.patch('/profile', verifyToken.headerToken, userController.editProfile);
 export default router;
