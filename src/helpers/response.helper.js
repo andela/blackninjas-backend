@@ -24,7 +24,7 @@ class response {
    * @param {Object} data The response object
    * @returns {Object} the response
    */
-  static successMessage(res, msg, status, data) {
+  static successMessage(res, msg, status, data = undefined) {
     res.status(status).json({
       status,
       message: msg,

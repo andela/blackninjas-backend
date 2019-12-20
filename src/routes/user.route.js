@@ -1,5 +1,6 @@
 import express from 'express';
-import userController from '../controllers/user.controller';
+import passport from 'passport';
+import UserController from '../controllers/user.controller';
 import Validate from '../helpers/validate.helper';
 import isEmailUsed from '../middlewares/auth.middleware';
 import isValid from '../middlewares/validate.middleware';
@@ -7,6 +8,9 @@ import verifyToken from '../middlewares/verify.token.middleware';
 
 
 const router = express.Router();
+router.use(passport.initialize());
+router.use(passport.session());
+
 /**
  * @swagger
  *
@@ -51,7 +55,7 @@ const router = express.Router();
  *       200:
  *         description: success
  */
-router.post('/signin', Validate.signin(), isValid, userController.signIn);
+router.post('/signin', Validate.signin(), isValid, UserController.signIn);
 /**
  * @swagger
  *
@@ -102,7 +106,7 @@ router.post('/signin', Validate.signin(), isValid, userController.signIn);
  *            type: string
  *
  */
-router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.signup);
+router.post('/signup', Validate.signup(), isValid, isEmailUsed, UserController.signup);
 /**
  * @swagger
  * tags:
@@ -139,5 +143,12 @@ router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.s
  *         description: "Conflict"
  *
  */
-router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
+router.get('/activate/:autorizations', verifyToken, UserController.updatedUser);
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/google' }), UserController.authGoogleAndFacebook);
+router.get('/facebook', passport.authenticate('facebook'));
+router.get('/facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/facebook' }), UserController.authGoogleAndFacebook);
+router.get('/logout', UserController.logout);
+
 export default router;
