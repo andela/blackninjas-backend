@@ -41,5 +41,6 @@ const router = express.Router();
  *
  */
 router.get('/activate/:autorizations', verifyToken, UserController.updatedUser);
+router.get('/logout', UserController.logout);
 
 export default router;

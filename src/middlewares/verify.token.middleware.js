@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import GeneToken from '../helpers/token';
-import logger from '../helpers/logger.helper';
+// import GeneToken from '../helpers/token';
+// import logger from '../helpers/logger.helper';
 
 dotenv.config();
-const newtoken = GeneToken.GenerateToken('Andreane_Schmitt@gmail.com', 'shemaeric', 'false', 'shema');
+// const newtoken = GeneToken.GenerateToken('Andreane_Schmitt@gmail.com',
+// 'shemaeric', 'false', 'shema');
 
-logger('info', newtoken);
+// logger('info', newtoken);
 
 const hasSiggned = (req, res, next) => {
   const token = req.params.autorizations;

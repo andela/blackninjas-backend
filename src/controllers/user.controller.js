@@ -99,6 +99,16 @@ class userController {
       response.errorMessage(req, res, updaUser.message, updaUser.status);
     }
   }
+
+  /**
+   * It activate a user account by updating isVerified attribute to true
+   * @param {object} req This is a request coming from a user
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async logout(req, res) {
+    return response.successMessage(res, 'User is successfully logged out.', 200);
+  }
 }
 
 export default userController;

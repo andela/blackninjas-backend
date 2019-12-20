@@ -16,7 +16,7 @@ module.exports = {
       lastName: 'John',
       country: 'rwanda',
       gender: 'male',
-      birthday: '1996-12-04',
+      birthdate: '1996-12-04',
       isVerified: 'false',
       verificationCode: null,
       phoneNumber: '0785571790',

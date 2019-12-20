@@ -22,14 +22,13 @@ class response {
 
   /**
    * getting response
-   * @param {Object} req the object
    * @param {Object} res The response object
    * @param {Object} msg message to be displayed
    * @param {Object} status the status of the message
    * @param {Object} data the data to be displayed
    * @returns {Object} A user object with selected fields
    */
-  static successMessage(req, res, msg, status, data) {
+  static successMessage(res, msg, status, data = undefined) {
     res.status(status).json({
       status,
       message: msg,
