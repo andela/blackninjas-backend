@@ -34,5 +34,26 @@ class Validate {
       check('password', 'Invalid password, your password should be alphanumeric with atleast 8 charactors.').isLength({ min: 8 }).isAlphanumeric()
     ];
   }
+
+  /**
+ * this function validate reset password form
+ * @returns {Object} user response
+ */
+  static resetPassword() {
+    return [
+      check('password', 'Password should be provided and must be alphanumeric with atleast 8 charactors.').isLength({ min: 8 }).isAlphanumeric(),
+      check('confirmPassword', 'conform Password should be provided and must be alphanumeric with atleast 8 charactors.').isLength({ min: 8 }).isAlphanumeric()
+    ];
+  }
+
+  /**
+   * this function send reset password link via email
+   * @returns {Object} user response
+   */
+  static sendResetPasswordLink() {
+    return [
+      check('email', 'Invalid email address, example: example@gmail.com.').isEmail()
+    ];
+  }
 }
 export default Validate;

@@ -1,31 +1,44 @@
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import GeneToken from '../helpers/token';
-import logger from '../helpers/logger.helper';
+import response from '../helpers/response.helper';
+import verifyAllTokens from '../helpers/verify.token.helper';
 
 dotenv.config();
-const newtoken = GeneToken.GenerateToken('Andreane_Schmitt@gmail.com', 'shemaeric', 'false', 'shema');
-
-logger('info', newtoken);
-
-const hasSiggned = (req, res, next) => {
-  const token = req.params.autorizations;
-  if (Number(token)) {
-    return res.status(401).send({
-      status: '401',
-      error: 'Token must not be a number',
-    });
+/**
+ * verify token class
+ */
+class verifyToken {
+  /**
+     * check request params
+     * @param {Object} req user request
+     * @param {Object} res user response
+     * @param {Object} next continue with request
+     * @returns {Object} user response
+     */
+  static paramToken(req, res, next) {
+    const token = req.params.autorizations;
+    if (Number(token)) {
+      response.errorMessage(res, 'Token must not be a number', 401);
+    } else {
+      verifyAllTokens(req, res, next, token);
+    }
   }
 
-  try {
-    const decodedToken = jwt.verify(token, process.env.JWTKEY);
-    req.user = decodedToken;
-    return next();
-  } catch (error) {
-    return res.status(401).send({
-      status: '401',
-      error: 'You provided the invalid token!',
-    });
+  /**
+   * check request headers
+   * @param {Object} req user request
+   * @param {Object} res user response
+   * @param {Object} next continue
+   * @returns {Object} return user message
+   */
+  static headerToken(req, res, next) {
+    if (req.headers.token === undefined) {
+      return response.errorMessage(res, 'Please Set The Authorization Header!', 401);
+    } if (!/(?=^[Bb]earer)/.test(req.headers.token)) {
+      return response.errorMessage(res, '"Bearer" not found Invalid token!', 401);
+    }
+    const token = req.headers.token.split(' ')[1];
+    verifyAllTokens(req, res, next, token);
   }
-};
-export default hasSiggned;
+}
+
+export default verifyToken;

@@ -1,10 +1,9 @@
 import checkEmailpassword from '../middlewares/user.middleware';
 import UserServices from '../services/user.service';
 import EncryptPassword from '../helpers/Encryptor';
-import Token from '../helpers/token';
-import response from '../helpers/response.handler';
+import response from '../helpers/response.helper';
 import mailer from '../helpers/send.email.helper';
-
+import helper from '../helpers/token.helper';
 
 /**
  * Class for users related operations such Sign UP, Sign In and others
@@ -27,9 +26,9 @@ class userController {
         birthday,
         phoneNumber
       } = req.body;
-      const password = await EncryptPassword(req.body.password);
+      const password = EncryptPassword(req.body.password);
       const isVerified = false;
-      const token = Token.GenerateToken(email, password, isVerified, firstName);
+      const token = helper.GenerateToken(email, password, isVerified, firstName);
       const NewUser = {
         firstName,
         lastName,
@@ -52,7 +51,6 @@ class userController {
 
 
       response.successMessage(
-        req,
         res,
         'user created successfully visit email to verify account',
         201,
@@ -60,12 +58,9 @@ class userController {
       );
     } catch (e) {
       return response.errorMessage(
-        req,
         res,
         e.message,
         500,
-
-
       );
     }
   }
@@ -89,15 +84,94 @@ class userController {
    * @returns {object} return object which include status and message
    */
   static async updatedUser(req, res) {
-    const activate = true;
-    // const id = parseInt(req.params.id, 10);
+    const activate = {
+      active: true
+    };
     const updaUser = await UserServices.activeUser(req.user.email, activate);
 
     if (updaUser.status === 200) {
-      response.successMessage(req, res, updaUser.message, updaUser.status, 'isVerified:True');
-    } else {
-      response.errorMessage(req, res, updaUser.message, updaUser.status);
+      return response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
     }
+    return response.errorMessage(res, updaUser.message, updaUser.status);
+  }
+
+  /**
+  *login function to get profile from google and facebook and manipulate it
+  *
+  *
+  *@param {object} accessToken response
+  *@param {object} refreshToken response
+  *@param {object} profile object
+  *@param {object} done callback
+  *@returns {object} object
+*/
+  static async googleAndFacebookPlusAuth(accessToken, refreshToken, profile, done) {
+    try {
+      const userData = {
+        id: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+        email: profile.emails[0].value,
+        authtype: profile.provider,
+        isVerified: true
+      };
+      const {
+        email, firstName, lastName, isVerified, authtype
+      } = userData;
+      await UserServices.findOrCreate({
+        email, firstName, lastName, isVerified, authtype
+      });
+      done(null, userData);
+    } catch (error) {
+      done(error, false);
+    }
+  }
+
+  /**
+  *login function to return data from social accounts to the user
+  *
+  *
+  *@param {object} req request
+  *@param {object} res response
+  *@returns {object} object
+  */
+  static authGoogleAndFacebook(req, res) {
+    const token = helper.GenerateToken(req.user);
+    return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
+  }
+
+  /**
+ * It used to reset a user password
+ * @param {object} req user request
+ * @param {object} res user response
+ * @returns {object} result
+ */
+  static resetPassword(req, res) {
+    if (req.body.password !== req.body.confirmPassword) {
+      return response.errorMessage(res, 'Password does not match!', 400);
+    }
+
+    const data = {
+      password: EncryptPassword(req.body.password)
+    };
+    UserServices.resetPassword(req, res, req.user.email, data);
+  }
+
+  /**
+   * send a reset password link to the user
+   * @param {Object} req user request
+   * @param {Object} res user response
+   * @returns {Object} return user response
+   */
+  static async sendResetPasswordLink(req, res) {
+    const result = await UserServices.findUserByEmail(req.body.email);
+    if (result !== null) {
+      const token = helper.GenerateToken(req.body.email, '', '');
+      const emailView = mailer.resetPasswordView(token, result.firstName);
+      mailer.sendEmail(req.body.email, 'Reset Password', emailView);
+      return response.successMessage(res, 'Email sent please check you email to reset your password', 200, token);
+    }
+    return response.errorMessage(res, 'user not found!', 404);
   }
 }
 

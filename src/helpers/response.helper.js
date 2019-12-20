@@ -25,7 +25,7 @@ class response {
    * @returns {Object} the response
    */
   static successMessage(res, msg, status, data) {
-    res.status(status).json({
+    return res.status(status).json({
       status,
       message: msg,
       data,

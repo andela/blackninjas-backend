@@ -49,6 +49,9 @@ module.exports = {
     linemanager: {
       type: Sequelize.STRING
     },
+    authtype: {
+      type: Sequelize.STRING
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE
