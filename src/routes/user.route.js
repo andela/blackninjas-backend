@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 import userController from '../controllers/user.controller';
 import Validate from '../helpers/validate.helper';
 import isEmailUsed from '../middlewares/auth.middleware';
@@ -7,6 +8,9 @@ import verifyToken from '../middlewares/verify.token.middleware';
 
 
 const router = express.Router();
+router.use(passport.initialize());
+router.use(passport.session());
+
 /**
  * @swagger
  *
@@ -140,4 +144,10 @@ router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.s
  *
  */
 router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/google' }), userController.authGoogleAndFacebook);
+router.get('/facebook', passport.authenticate('facebook'));
+router.get('/facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/facebook' }), userController.authGoogleAndFacebook);
+
 export default router;
