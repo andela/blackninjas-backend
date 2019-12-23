@@ -59,7 +59,7 @@ router.post('/signin', Validate.signin(), isValid, userController.signIn);
 /**
  * @swagger
  *
- * /signup:
+ * /auth/signup:
  *    post:
  *      summary: User can signup
  *      tags: [Users]
@@ -111,13 +111,13 @@ router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.s
  * @swagger
  * tags:
  *   name: Users
- *   description: User activate
+ *   description: User activities
  */
 
 /**
  * @swagger
  *
- * /activate/{authorizations}:
+ * /auth/activate/{authorizations}:
  *   get:
  *     tags:
  *       - Users
@@ -143,11 +143,82 @@ router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.s
  *         description: "Conflict"
  *
  */
-router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/google' }), userController.authGoogleAndFacebook);
 router.get('/facebook', passport.authenticate('facebook'));
 router.get('/facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/facebook' }), userController.authGoogleAndFacebook);
 
+router.get('/activate/:autorizations', verifyToken.paramToken, userController.updatedUser);
+
+/**
+ * @swagger
+ *
+ * /auth/resetpassword:
+ *    patch:
+ *      summary: User can reset password
+ *      tags: [Users]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/reset password'
+ *      responses:
+ *        "201":
+ *          description: Reset password schema
+ *
+ * components:
+ *    schemas:
+ *      reset password:
+ *        type: object
+ *        required:
+ *          - password
+ *          - confirmPassword
+ *        properties:
+ *          password:
+ *            type: string
+ *          confirmPassword:
+ *            type: string
+ *
+ */
+
+router.patch('/resetpassword', Validate.resetPassword(), isValid, verifyToken.headerToken, userController.resetPassword);
+
+/**
+ * @swagger
+ *
+ * /auth/forgetpassword:
+ *    post:
+ *      summary: User can receive an email
+ *      tags: [Users]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/forget password'
+ *      responses:
+ *        "201":
+ *          description: A user schema
+ *
+ * components:
+ *    schemas:
+ *      forget password:
+ *        type: object
+ *        required:
+ *          - email
+ *        properties:
+ *          email:
+ *            type: string
+ *            format: email
+ *
+ */
+router.post('/forgetpassword', Validate.sendResetPasswordLink(), isValid, userController.sendResetPasswordLink);
 export default router;

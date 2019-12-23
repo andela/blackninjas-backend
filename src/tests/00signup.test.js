@@ -20,7 +20,7 @@ describe('Signup tests', () => {
         done();
       });
   });
- 
+
 
   it('Users should receive descriptive signup/Registration validation errors', (done) => {
     chai.request(app).post('/api/v1/auth/signup')

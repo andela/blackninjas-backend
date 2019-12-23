@@ -1,9 +1,8 @@
 import checkEmailpassword from '../middlewares/user.middleware';
 import UserServices from '../services/user.service';
 import EncryptPassword from '../helpers/Encryptor';
-import Token from '../helpers/token';
-import mailer from '../helpers/send.email.helper';
 import response from '../helpers/response.helper';
+import mailer from '../helpers/send.email.helper';
 import helper from '../helpers/token.helper';
 
 /**
@@ -29,7 +28,7 @@ class userController {
       } = req.body;
       const password = EncryptPassword(req.body.password);
       const isVerified = false;
-      const token = Token.GenerateToken(email, password, isVerified, firstName);
+      const token = helper.GenerateToken(email, password, isVerified, firstName);
       const NewUser = {
         firstName,
         lastName,
@@ -85,16 +84,15 @@ class userController {
    * @returns {object} return object which include status and message
    */
   static async updatedUser(req, res) {
-    const activate = true;
-    // const id = parseInt(req.params.id, 10);
+    const activate = {
+      active: true
+    };
     const updaUser = await UserServices.activeUser(req.user.email, activate);
 
     if (updaUser.status === 200) {
-      response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
-    } else {
-      response.errorMessage(res, updaUser.message, updaUser.status);
+      return response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
     }
-    response.errorMessage(res, updaUser.message, updaUser.status);
+    return response.errorMessage(res, updaUser.message, updaUser.status);
   }
 
   /**
@@ -129,6 +127,7 @@ class userController {
     }
   }
 
+
   /**
   *login function to return data from social accounts to the user
   *
@@ -140,6 +139,40 @@ class userController {
   static authGoogleAndFacebook(req, res) {
     const token = helper.GenerateToken(req.user);
     return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
+  }
+
+  /**
+ * It used to reset a user password
+ * @param {object} req user request
+ * @param {object} res user response
+ * @returns {object} result
+ */
+  static resetPassword(req, res) {
+    if (req.body.password !== req.body.confirmPassword) {
+      return response.errorMessage(res, 'Password does not match!', 400);
+    }
+
+    const data = {
+      password: EncryptPassword(req.body.password)
+    };
+    UserServices.resetPassword(req, res, req.user.email, data);
+  }
+
+  /**
+   * send a reset password link to the user
+   * @param {Object} req user request
+   * @param {Object} res user response
+   * @returns {Object} return user response
+   */
+  static async sendResetPasswordLink(req, res) {
+    const result = await UserServices.findUserByEmail(req.body.email);
+    if (result !== null) {
+      const token = helper.GenerateToken(req.body.email, '', '');
+      const emailView = mailer.resetPasswordView(token, result.firstName);
+      mailer.sendEmail(req.body.email, 'Reset Password', emailView);
+      return response.successMessage(res, 'Email sent please check you email to reset your password', 200, token);
+    }
+    return response.errorMessage(res, 'user not found!', 404);
   }
 }
 

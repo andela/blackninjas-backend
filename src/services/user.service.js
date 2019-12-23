@@ -1,6 +1,7 @@
 import db from '../database/models';
 import Queries from './Queries';
 import logger from '../helpers/logger.helper';
+import response from '../helpers/response.helper';
 
 
 // import looger from '../helpers/logger.helper';
@@ -25,6 +26,7 @@ class UserServices {
   static async findUserByEmail(email) {
     try {
       const user = await db.user.findOne({ where: { email } });
+
       if (!user) return null;
       return user;
     } catch (error) {
@@ -43,6 +45,7 @@ class UserServices {
       await db.user.findOrCreate({
         where: { email: user.email },
         defaults: user
+
       });
     } catch (error) {
       return null;
@@ -73,7 +76,7 @@ class UserServices {
       }
       if (userToUpdate) {
         await db.user.update(
-          { isVerified: updateUser },
+          updateUser,
           { where: { email }, returning: true, plain: true }
         );
 
@@ -91,6 +94,30 @@ class UserServices {
         status: 400,
         message: error
       };
+    }
+  }
+
+  /**
+ * service to reset a password
+ // eslint-disable-next-line valid-jsdoc
+ * @param {Object} req user request
+ * @param {Object} res user response
+ * @param {Object} email user email
+ * @param {Object} data user data
+ * @returns {Object} return user message
+ */
+  static async resetPassword(req, res, email, data) {
+    const userToUpdate = await this.findUserByEmail(email);
+
+    if (userToUpdate !== null && !userToUpdate.isVerified) {
+      response.errorMessage(res, 'Account is not verified', 401);
+    } else if (userToUpdate !== null) {
+      await db.user.update(data,
+        { where: { email }, returning: true, plain: true });
+
+      response.successMessage(res, 'Password has successfuly changed', 200, req.user.token);
+    } else {
+      response.errorMessage(res, 'User not found! please check your email and try again', 404);
     }
   }
 }
