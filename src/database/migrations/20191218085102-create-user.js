@@ -40,6 +40,9 @@ module.exports = {
     place: {
       type: Sequelize.STRING
     },
+    token: {
+      type: Sequelize.STRING(500)
+    },
     role: {
       type: Sequelize.STRING
     },

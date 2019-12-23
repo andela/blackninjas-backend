@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     preferredlanguage: { type: DataTypes.STRING, allowNull: true },
     preferredcurrency: { type: DataTypes.STRING, allowNull: true },
     place: { type: DataTypes.STRING, allowNull: true },
+    token: { type: DataTypes.STRING(500), allowNull: true },
     department: { type: DataTypes.STRING, allowNull: true },
     linemanager: { type: DataTypes.STRING, allowNull: true },
     authtype: { type: DataTypes.STRING, allowNull: true }

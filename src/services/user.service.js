@@ -34,6 +34,22 @@ class UserServices {
   }
 
   /**
+ * Find user by email
+ * @param {Object} target User email.
+ * @returns {Object} Returns a user object and if user doesn't exist it returns null.
+ */
+  static async findUser(target) {
+    try {
+      const user = await db.user.findOne({ where: target });
+      if (!user) return null;
+      return user;
+    } catch (error) {
+      logger('error', error);
+      return undefined;
+    }
+  }
+
+  /**
    * This a function that creates a user if he is not found in the database
    * @param {string} user this is a user email to be updated
    * @returns {object} return  a response object
@@ -92,6 +108,19 @@ class UserServices {
         message: error
       };
     }
+  }
+
+  /**
+   * This a function that update a user account fields
+   * @param {string} email this is a user email
+   * @param {object} fields this is user's fields you want to update
+   * @returns {object} return  a response object
+   */
+  static updateUser(email, fields) {
+    return db.user.update(
+      fields,
+      { where: { email } }
+    );
   }
 }
 export default UserServices;

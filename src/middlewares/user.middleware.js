@@ -20,6 +20,7 @@ const checkEmailpassword = async (req, res) => {
   }
 
   const token = Token.GenerateToken(req.body.email, req.body.password, user.isVerified);
+  await UserServices.updateUser(req.body.email, { token });
   return response.successMessage(
     res,
     'user succefully loggedin',

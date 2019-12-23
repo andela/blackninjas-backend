@@ -149,6 +149,6 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/google' }), UserController.authGoogleAndFacebook);
 router.get('/facebook', passport.authenticate('facebook'));
 router.get('/facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/facebook' }), UserController.authGoogleAndFacebook);
-router.get('/logout', UserController.logout);
+router.get('/logout', verifyToken, UserController.logout);
 
 export default router;

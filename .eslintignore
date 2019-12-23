@@ -4,5 +4,4 @@
 dist/
 .nyc_output/
 src/database/models/index.js
-src/app.js
 src/database/seeders/20191209093509-user.js

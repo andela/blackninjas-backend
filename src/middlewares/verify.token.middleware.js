@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import UserServices from '../services/user.service';
 // import GeneToken from '../helpers/token';
 // import logger from '../helpers/logger.helper';
 
@@ -9,8 +10,8 @@ dotenv.config();
 
 // logger('info', newtoken);
 
-const hasSiggned = (req, res, next) => {
-  const token = req.params.autorizations;
+const hasSiggned = async (req, res, next) => {
+  const token = req.params.autorizations || req.query.autorizations;
   if (Number(token)) {
     return res.status(401).send({
       status: '401',
@@ -20,6 +21,13 @@ const hasSiggned = (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWTKEY);
+    const user = await UserServices.findUser({ email: decodedToken.email });
+    if (user.token !== token && user.token === null) {
+      return res.status(401).send({
+        status: '401',
+        error: 'You need to signin first!',
+      });
+    }
     req.user = decodedToken;
     return next();
   } catch (error) {

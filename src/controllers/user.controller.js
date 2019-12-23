@@ -90,11 +90,9 @@ class UserController {
     const updaUser = await UserServices.activeUser(req.user.email, activate);
 
     if (updaUser.status === 200) {
-      response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
-    } else {
-      response.errorMessage(res, updaUser.message, updaUser.status);
+      return response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
     }
-    response.errorMessage(res, updaUser.message, updaUser.status);
+    return response.errorMessage(res, updaUser.message, updaUser.status);
   }
 
   /**
@@ -139,6 +137,7 @@ class UserController {
   */
   static authGoogleAndFacebook(req, res) {
     const token = helper.GenerateToken(req.user);
+    // await UserServices.updateUser(req.user.email, { token });
     return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
   }
 
@@ -149,6 +148,7 @@ class UserController {
    * @returns {object} return object which include status and message
    */
   static async logout(req, res) {
+    await UserServices.updateUser(req.user.email, { token: null });
     return response.successMessage(res, 'User is successfully logged out.', 200);
   }
 }
