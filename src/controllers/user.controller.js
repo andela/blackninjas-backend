@@ -174,6 +174,18 @@ class userController {
     }
     return response.errorMessage(res, 'user not found!', 404);
   }
+
+  /**
+   * It activate a user account by updating isVerified attribute to true
+   * @param {int} req This is the parameter(user id) that will be passed in url
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async profilePage(req, res) {
+    const user = await UserServices.findUserByEmail(req.user.email);
+    const status = 200;
+    response.successMessage(res, user, status);
+  }
 }
 
 export default userController;
