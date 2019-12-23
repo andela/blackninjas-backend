@@ -135,9 +135,9 @@ class UserController {
   *@param {object} res response
   *@returns {object} object
   */
-  static authGoogleAndFacebook(req, res) {
+  static async authGoogleAndFacebook(req, res) {
     const token = helper.GenerateToken(req.user);
-    // await UserServices.updateUser(req.user.email, { token });
+    await UserServices.updateUser(req.user.email, { token });
     return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
   }
 

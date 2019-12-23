@@ -23,9 +23,10 @@ describe('user velify email', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: false
+      phoneNumber: '0785571790',
+      isVerified: false,
+      token
     });
     await db.user.create({
       firstName: 'shema',
@@ -34,9 +35,10 @@ describe('user velify email', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: true
+      phoneNumber: '0785571790',
+      isVerified: true,
+      token: token2
     });
   });
 
@@ -54,7 +56,7 @@ describe('user velify email', () => {
       .request(app)
       .get(`/api/v1/auth/activate/${invalidToken}`)
       .end((err, res) => {
-        res.should.have.status(404);
+        res.should.have.status(401);
         done();
       });
   });
@@ -89,14 +91,23 @@ describe('user velify email', () => {
       });
   });
 
-  // it('it should check if there is a token', (done) => {
-  //   chai
-  //     .request(app)
-  //     .get('/api/v1/activate')
-  //     .set('Authorizations', 'Bearer ')
-  //     .end((err, res) => {
-  //       res.should.have.status(401);
-  //       done();
-  //     });
-  // });
+  it('it should logout a user', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/auth/logout?autorizations=${token}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        done();
+      });
+  });
+
+  it('it should not logout a user who is alread loged out', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/auth/logout?autorizations=${token}`)
+      .end((err, res) => {
+        res.should.have.status(401);
+        done();
+      });
+  });
 });

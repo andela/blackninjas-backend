@@ -1,6 +1,6 @@
 import db from '../database/models';
 import Queries from './Queries';
-import logger from '../helpers/logger.helper';
+// import logger from '../helpers/logger.helper';
 
 
 // import looger from '../helpers/logger.helper';
@@ -28,7 +28,7 @@ class UserServices {
       if (!user) return null;
       return user;
     } catch (error) {
-      logger('error', error);
+      // logger('error', error);
       return undefined;
     }
   }
@@ -44,7 +44,7 @@ class UserServices {
       if (!user) return null;
       return user;
     } catch (error) {
-      logger('error', error);
+      // logger('error', error);
       return undefined;
     }
   }
