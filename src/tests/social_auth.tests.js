@@ -25,6 +25,7 @@ describe('Social authentication tests', () => {
     await UserController.googleAndFacebookPlusAuth(accessToken, refreshToken, profile, callBack);
     expect(callBack.withArgs(null, profile));
   });
+
   it('should return catch error when there is an error', async () => {
     const accessToken = 't';
     const refreshToken = 't';
@@ -33,6 +34,7 @@ describe('Social authentication tests', () => {
     await UserController.googleAndFacebookPlusAuth(accessToken, refreshToken, profile, callBack);
     expect(callBack.withArgs(false));
   });
+
   it('should return the user in the request', async () => {
     const userCtroller = await UserController.authGoogleAndFacebook(
       { user: socialUser[1] }, response
