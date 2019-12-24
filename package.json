@@ -9,9 +9,7 @@
       "src/tests",
       "src/app.js",
       "src/helpers/logger.helper.js",
-      "src/helpers/validate.helper.js",
       "src/middlewares/user.middleware.js",
-      "src/helpers/response.handler.js",
       "src/helpers/send.email.helper",
       "src/middlewares/auth.middleware.js "
     ]

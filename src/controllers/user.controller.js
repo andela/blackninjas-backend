@@ -1,9 +1,8 @@
 import checkEmailpassword from '../middlewares/user.middleware';
 import UserServices from '../services/user.service';
 import EncryptPassword from '../helpers/Encryptor';
-import Token from '../helpers/token';
-import mailer from '../helpers/send.email.helper';
 import response from '../helpers/response.helper';
+import mailer from '../helpers/send.email.helper';
 import helper from '../helpers/token.helper';
 
 /**
@@ -29,7 +28,7 @@ class UserController {
       } = req.body;
       const password = EncryptPassword(req.body.password);
       const isVerified = false;
-      const token = Token.GenerateToken(email, password, isVerified, firstName);
+      const token = helper.GenerateToken(email, password, isVerified, firstName);
       const NewUser = {
         firstName,
         lastName,
@@ -85,8 +84,9 @@ class UserController {
    * @returns {object} return object which include status and message
    */
   static async updatedUser(req, res) {
-    const activate = true;
-    // const id = parseInt(req.params.id, 10);
+    const activate = {
+      active: true
+    };
     const updaUser = await UserServices.activeUser(req.user.email, activate);
 
     if (updaUser.status === 200) {
@@ -127,6 +127,7 @@ class UserController {
     }
   }
 
+
   /**
   *login function to return data from social accounts to the user
   *
@@ -150,6 +151,52 @@ class UserController {
   static async logout(req, res) {
     await UserServices.updateUser(req.user.email, { token: null });
     return response.successMessage(res, 'User is successfully logged out.', 200);
+  }
+
+  /**
+ * It used to reset a user password
+ * @param {object} req user request
+ * @param {object} res user response
+ * @returns {object} result
+ */
+  static resetPassword(req, res) {
+    if (req.body.password !== req.body.confirmPassword) {
+      return response.errorMessage(res, 'Password does not match!', 400);
+    }
+
+    const data = {
+      password: EncryptPassword(req.body.password)
+    };
+    UserServices.resetPassword(req, res, req.user.email, data);
+  }
+
+  /**
+   * send a reset password link to the user
+   * @param {Object} req user request
+   * @param {Object} res user response
+   * @returns {Object} return user response
+   */
+  static async sendResetPasswordLink(req, res) {
+    const result = await UserServices.findUserByEmail(req.body.email);
+    if (result !== null) {
+      const token = helper.GenerateToken(req.body.email, '', '');
+      const emailView = mailer.resetPasswordView(token, result.firstName);
+      mailer.sendEmail(req.body.email, 'Reset Password', emailView);
+      return response.successMessage(res, 'Email sent please check you email to reset your password', 200, token);
+    }
+    return response.errorMessage(res, 'user not found!', 404);
+  }
+
+  /**
+   * It activate a user account by updating isVerified attribute to true
+   * @param {int} req This is the parameter(user id) that will be passed in url
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async profilePage(req, res) {
+    const user = await UserServices.findUserByEmail(req.user.email);
+    const status = 200;
+    response.successMessage(res, user, status);
   }
 }
 

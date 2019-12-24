@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
 import db from '../database/models';
-import GenToken from '../helpers/token';
+import GenToken from '../helpers/token.helper';
 import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
@@ -11,7 +11,6 @@ chai.should();
 const token = GenToken.GenerateToken('shema@gmail.com', 'shemaeric', 'false');
 const token2 = GenToken.GenerateToken('shemaeric@gmail.com', 'shemaeric', 'false');
 const invalidToken = GenToken.GenerateToken('invalid@gmail.com', 'shemaeric', 'false');
-
 
 describe('user velify email', () => {
   before(async () => {
@@ -94,7 +93,7 @@ describe('user velify email', () => {
   it('it should logout a user', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/auth/logout?autorizations=${token}`)
+      .get(`/api/v1/auth/logout/${token}`)
       .end((err, res) => {
         res.should.have.status(200);
         done();
@@ -104,7 +103,7 @@ describe('user velify email', () => {
   it('it should not logout a user who is alread loged out', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/auth/logout?autorizations=${token}`)
+      .get(`/api/v1/auth/logout/${token}`)
       .end((err, res) => {
         res.should.have.status(401);
         done();
