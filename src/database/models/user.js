@@ -13,9 +13,11 @@ module.exports = (sequelize, DataTypes) => {
     place: { type: DataTypes.STRING, allowNull: true },
     department: { type: DataTypes.STRING, allowNull: true },
     profileImage: { type: DataTypes.STRING, allowNull: true },
+    role: { type: DataTypes.STRING, allowNull: true },
     authtype: { type: DataTypes.STRING, allowNull: true }
   }, {});
   user.associate = () => {
+    // associations should be defined here
   };
   return user;
 };

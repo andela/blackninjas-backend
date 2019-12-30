@@ -25,7 +25,6 @@ class UserServices {
   static async findUserByEmail(email) {
     try {
       const user = await db.user.findOne({ where: { email } });
-
       if (!user) return null;
       return user;
     } catch (error) {
@@ -44,7 +43,6 @@ class UserServices {
       await db.user.findOrCreate({
         where: { email: user.email },
         defaults: user
-
       });
     } catch (error) {
       return null;

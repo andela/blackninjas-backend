@@ -30,7 +30,8 @@ class verifyToken {
    * @param {Object} next continue
    * @returns {Object} return user message
    */
-  static headerToken(req, res, next) {
+  static
+  headerToken(req, res, next) {
     if (req.headers.token === undefined) {
       return response.errorMessage(res, 'Please Set The Authorization Header!', 401);
     } if (!/(?=^[Bb]earer)/.test(req.headers.token)) {
@@ -40,5 +41,4 @@ class verifyToken {
     verifyAllTokens(req, res, next, token);
   }
 }
-
 export default verifyToken;
