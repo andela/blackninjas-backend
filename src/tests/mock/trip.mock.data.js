@@ -1,4 +1,8 @@
 import EncryptPassword from '../../helpers/Encryptor';
+import GenerateToken from '../../helpers/token.helper';
+
+const token = GenerateToken({ email: 'multicity@gmail.com', isVerified: 'true' });
+const token2 = GenerateToken({ email: 'linemanager@gmail.com', isVerified: 'true' });
 
 const multiCity = [
   [
@@ -228,6 +232,7 @@ const UserDatabaseData = [
     isVerified: 'true',
     email: 'multicity@gmail.com',
     password: EncryptPassword('userpassword'),
+    token
   },
   {
     id: 12,
@@ -236,6 +241,7 @@ const UserDatabaseData = [
     isVerified: 'true',
     email: 'linemanager@gmail.com',
     password: EncryptPassword('userpassword'),
+    token: token2
   }
 ];
 

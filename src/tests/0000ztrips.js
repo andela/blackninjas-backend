@@ -1,21 +1,49 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
-import GenToken from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 import db from '../database/models';
 import tripsData from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
 chai.should();
-const token = GenToken.GenerateToken('shema@gmail.com', 'shema', false, 1);
-const token2 = GenToken.GenerateToken('shema@gmail.com', 'shema', true, 6);
+let token;
+let token2;
 describe('trips tests', () => {
   const { trip, returnTrip } = tripsData;
   const { Sametrip } = tripsData;
   const { originFalse } = tripsData;
   const { destinationFalse } = tripsData;
   before(async () => {
+    const user = await db.user.create({
+      firstName: 'shema',
+      lastName: 'eric',
+      email: 'shemad@gmail.com',
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      phoneNumber: '0785571790',
+      password: EncryptPassword('shemaeric'),
+      isVerified: true
+    });
+    token2 = GenerateToken({ email: 'shemad@gmail.com', isVerified: true, id: user.id });
+    await user.update({ token: token2 });
+
+    const usera = await db.user.create({
+      firstName: 'shema',
+      lastName: 'eric',
+      email: 'shemadd@gmail.com',
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      phoneNumber: '0785571790',
+      password: EncryptPassword('shemaeric'),
+      isVerified: false
+    });
+    token = GenerateToken({ email: 'shemadd@gmail.com', isVerified: false, id: usera.id });
+    await usera.update({ token });
+
     await db.locations.create({
       city: 'Nairobi'
     });
@@ -24,18 +52,6 @@ describe('trips tests', () => {
     });
     await db.locations.create({
       city: 'Goma'
-    });
-    await db.user.create({
-      id: 6,
-      firstName: 'shema',
-      lastName: 'eric',
-      email: 'shema@gmail.com',
-      gender: 'male',
-      country: 'Rwanda',
-      birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
-      password: EncryptPassword('shemaeric'),
-      isVerified: true
     });
     await db.accomodation.create({
       id: 1,
@@ -51,13 +67,13 @@ describe('trips tests', () => {
       name: ''
     });
     await db.usermanagement.create({
-      userId: 6,
-      managerId: 6
+      userId: user.id,
+      managerId: user.id
     });
     await db.trips.create({
       originId: 1,
       destinationId: 2,
-      lineManagerId: 6
+      lineManagerId: user.id
     });
   });
 

@@ -2,19 +2,19 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
 import db from '../database/models';
-import GenToken from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
 chai.should();
 
-const token = GenToken.GenerateToken('resetpassword@gmail.com', 'shemaeric', 'false');
-const token2 = GenToken.GenerateToken('resetpassword2@gmail.com', 'shemaeric', 'true');
-const unaveilableAccountToken = GenToken.GenerateToken('invalid@gmail.com', 'shemaeric', 'false');
+const token = GenerateToken({ email: 'resetpassword@gmail.com', isVerified: 'true', id: '4' });
+const token2 = GenerateToken({ email: 'resetpassword2@gmail.com', isVerified: 'false', id: '4' });
+const unaveilableAccountToken = GenerateToken({ email: 'invalid@gmail.com', isVerified: 'false', id: '4' });
 
 describe('user should receive a link to reset password', () => {
   before(async () => {
-    await db.user.destroy({ where: {}, force: true });
+    // await db.user.destroy({ where: {}, force: true });
     await db.user.create({
       firstName: 'shema',
       lastName: 'eric',
@@ -22,9 +22,10 @@ describe('user should receive a link to reset password', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: false
+      phoneNumber: '0785571790',
+      isVerified: true,
+      token
     });
     await db.user.create({
       firstName: 'shema',
@@ -33,9 +34,10 @@ describe('user should receive a link to reset password', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: true
+      phoneNumber: '0785571790',
+      isVerified: false,
+      token: token2
     });
   });
 
@@ -79,7 +81,7 @@ describe('user should be able to reset password', () => {
     chai
       .request(app)
       .patch('/api/v1/auth/resetpassword')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${unaveilableAccountToken}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
         res.should.have.status(401);
@@ -87,14 +89,14 @@ describe('user should be able to reset password', () => {
       });
   });
 
-  it('it should check if a user has an account', (done) => {
+  it('user should successfuly reset his or her account', (done) => {
     chai
       .request(app)
       .patch('/api/v1/auth/resetpassword')
-      .set('token', `Bearer ${unaveilableAccountToken}`)
+      .set('token', `Bearer ${token}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
-        res.should.have.status(404);
+        res.should.have.status(200);
         done();
       });
   });
@@ -106,7 +108,7 @@ describe('user should be able to reset password', () => {
       .set('token', `Bearer ${token2}`)
       .send({ password: 'truepassword', confirmPassword: 'truepassword' })
       .end((err, res) => {
-        res.should.have.status(200);
+        res.should.have.status(401);
         done();
       });
   });

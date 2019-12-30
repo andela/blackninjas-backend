@@ -2,17 +2,17 @@ import chai, { use } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 import db from '../database/models';
-import GenToken from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 import EncryptPassword from '../helpers/Encryptor';
 
 use(chaiHttp);
-const token2 = GenToken.GenerateToken('benit300@gmail.com', 'true', '4');
-const unaveilableAccountToken = GenToken.GenerateToken('invalid@gmail.com', 'shemaeric', 'false');
+const token2 = GenerateToken({ email: 'benit300@gmail.com', isVerified: true, id: '4' });
 
 describe('/auth/profile', () => {
   before(async () => {
-    await db.user.destroy({ where: {}, force: true });
+    // await db.user.destroy({ where: {}, force: true });
     await db.user.create({
+      id: 1000,
       firstName: 'benit',
       lastName: 'havuga',
       email: 'benit300@gmail.com',
@@ -21,18 +21,8 @@ describe('/auth/profile', () => {
       birthdate: '12-04-1996',
       phoneNumber: '0785571790',
       password: EncryptPassword('0788787273'),
-      isVerified: true
-    });
-    await db.user.create({
-      firstName: 'benit',
-      lastName: 'havuga',
-      email: 'benit3000@gmail.com',
-      gender: 'male',
-      country: 'Rwanda',
-      birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
-      password: EncryptPassword('0788787273'),
-      isVerified: false
+      isVerified: true,
+      token: token2
     });
   });
 
@@ -40,9 +30,9 @@ describe('/auth/profile', () => {
     chai
       .request(app)
       .get('/api/v1/auth/profile')
-      .set('token', `Bearer ${unaveilableAccountToken}`)
+      .set('token', `Bearer ${token2}g`)
       .end((err, res) => {
-        res.should.have.status(404);
+        res.should.have.status(401);
         done();
       });
   });

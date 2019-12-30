@@ -3,7 +3,7 @@ import UserServices from '../services/user.service';
 import EncryptPassword from '../helpers/Encryptor';
 import response from '../helpers/response.helper';
 import mailer from '../helpers/send.email.helper';
-import helper from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 import profileHelper from '../helpers/profile.helper';
 
 
@@ -28,7 +28,7 @@ class userController {
         birthdate
       } = req.body;
       const password = EncryptPassword(req.body.password);
-      const isVerified = false;
+      const token = GenerateToken({ email, firstName, isVerified: false });
       const NewUser = {
         firstName,
         lastName,
@@ -41,7 +41,6 @@ class userController {
       };
       UserServices.CreateUser(NewUser);
 
-      const token = helper.GenerateToken(email, firstName, isVerified);
       const data = {
         token,
       };
@@ -105,26 +104,22 @@ class userController {
   *@returns {object} object
 */
   static async googleAndFacebookPlusAuth(accessToken, refreshToken, profile, done) {
-    try {
-      const userData = {
-        id: profile.id,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
-        email: profile.emails[0].value,
-        authtype: profile.provider,
-        isVerified: true
-      };
-      const {
-        email, firstName, lastName, isVerified, authtype
-      } = userData;
-      await UserServices.findOrCreate({
-        email, firstName, lastName, isVerified, authtype
-      });
-      const userEmail = await UserServices.findUserByEmail(email);
-      done(null, userEmail.dataValues);
-    } catch (error) {
-      done(error, false);
-    }
+    const userData = {
+      id: profile.id,
+      firstName: profile.name.givenName,
+      lastName: profile.name.familyName,
+      email: profile.emails[0].value,
+      authtype: profile.provider,
+      profileImage: profile.photos[0].value,
+      isVerified: true
+    };
+    const {
+      email, firstName, lastName, isVerified, authtype, profileImage
+    } = userData;
+    await UserServices.findOrCreateUser({
+      email, firstName, lastName, isVerified, authtype, profileImage
+    });
+    done(null, userData);
   }
 
 
@@ -136,12 +131,10 @@ class userController {
   *@param {object} res response
   *@returns {object} object
   */
-  static authGoogleAndFacebook(req, res) {
-    const {
-      id, firstName, email, isVerified, authtype
-    } = req.user;
-    const token = helper.GenerateToken(email, isVerified, firstName, id);
-    return response.successMessage(res, `user logged in successfully with ${authtype}`, 200, token);
+  static async authGoogleAndFacebook(req, res) {
+    const token = GenerateToken(req.user);
+    await UserServices.updateUser(req.user.email, { token });
+    return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
   }
 
   /**
@@ -170,7 +163,7 @@ class userController {
   static async sendResetPasswordLink(req, res) {
     const result = await UserServices.findUserByEmail(req.body.email);
     if (result !== null) {
-      const token = helper.GenerateToken(req.body.email, '', '');
+      const token = GenerateToken({ email: req.body.email, isVerified: result.isVerified, id: result.id });
       const emailView = mailer.resetPasswordView(token, result.firstName);
       mailer.sendEmail(req.body.email, 'Reset Password', emailView);
       return response.successMessage(res, 'Email sent please check you email to reset your password', 200, token);
@@ -213,6 +206,17 @@ class userController {
       200,
       profile
     );
+  }
+
+  /**
+   * This logs out a user by updating token attribute to null
+   * @param {object} req This is a request coming from a user
+   * @param {object} res This is a response will be sent to a user
+   * @returns {object} return promise object
+   */
+  static async logout(req, res) {
+    await UserServices.updateUser(req.user.email, { token: null });
+    return response.successMessage(res, 'User is successfully logged out.', 200);
   }
 }
 

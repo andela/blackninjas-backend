@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken';
 
-const Helper = {
-  GenerateToken(email, firstName, isVerified, id) {
-    const token = jwt.sign({
-      email,
-      isVerified,
-      firstName,
-      id
-    }, process.env.JWTKEY, { expiresIn: '1d' });
-    return token;
-  }
+/**
+* This generate a jwt token
+* @param {Object} payload which includes `email`, `isVerified`, `id`
+* @returns {Object} return jwt token
+*/
+const GenerateToken = (payload) => {
+  const token = jwt.sign({
+    payload
+  }, process.env.JWTKEY, { expiresIn: '1d' });
+  return token;
 };
-export default Helper;
+export default GenerateToken;

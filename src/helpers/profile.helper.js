@@ -46,9 +46,6 @@ class ProfileHelper {
    */
   static async getProfileData(email, req, res) {
     const user = await UserServices.findUserByEmail(email);
-    if (!user) {
-      return response.errorMessage(res, 'Profile not found', 404);
-    }
     const userProfile = this.chooseProfileData(email, user);
     return response.successMessage(res, 'User Profile', 200, userProfile);
   }

@@ -1,7 +1,7 @@
 import response from '../helpers/response.helper';
 import UserServices from '../services/user.service';
 import comparePassword from '../helpers/Decryptor';
-import Token from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 
 const checkEmailpassword = async (req, res) => {
   const user = await UserServices.findUserByEmail(req.body.email);
@@ -19,8 +19,8 @@ const checkEmailpassword = async (req, res) => {
     return response.errorMessage(res, 'User Is Not Verified, Please verify the User First', status);
   }
 
-  const token = Token.GenerateToken(req.body.email, user.fistname, user.isVerified, user.id);
-
+  const token = GenerateToken({ email: req.body.email, isVerified: user.isVerified, id: user.id });
+  await UserServices.updateUser(req.body.email, { token });
   return response.successMessage(
     res,
     'user succefully loggedin',

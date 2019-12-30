@@ -45,6 +45,7 @@ class tripHelper {
         const days = DifferenceInTime / (1000 * 3600 * 24);
         req.body[index].leavingDays = days;
       }
+      return 0;
     });
     return {
       firstTravelDate,
@@ -69,6 +70,7 @@ class tripHelper {
         req.errorMessage = `Departure date of trip number ${index} can not be greater than Departure date of trip number ${index + 1}`;
         req.errorStatus = 403;
       }
+      return 0;
     });
   }
 
@@ -82,14 +84,14 @@ class tripHelper {
     await Promise.all(req.body.map(async (trip, index) => {
       const bookedTrips = [];
       const trips = await tripService.findUserTrip(res, req.body[index].From, req.body[index].To);
-      if (trips) {
-        trips.map((trip2) => {
-          const tripDepartureDate = moment(trip2.dataValues.departureDate).format('YYYY-MM-DD');
-          if (tripDepartureDate === trip.departureDate) {
-            req.checker = true;
-          }
-        });
-      }
+
+      trips.filter((trip2) => {
+        const tripDepartureDate = moment(trip2.dataValues.departureDate).format('YYYY-MM-DD');
+        if (tripDepartureDate === trip.departureDate) {
+          req.checker = true;
+        }
+        return 0;
+      });
       if (req.checker)bookedTrips.push(index + 1);
       req.errorMessage = (bookedTrips.length > 0) ? `Trip number ${bookedTrips} alread exist ` : req.errorMessage;
       req.errorStatus = (bookedTrips.length > 0) ? 409 : req.errorStatus;

@@ -37,6 +37,7 @@ class tripController {
       const { type } = req.body;
 
       const createdTrip = await tripService.CreateTrip(req, req.body, tripid, type);
+
       const { tripId } = createdTrip;
 
       const userId = req.user.id;
@@ -49,7 +50,7 @@ class tripController {
       };
       const tripRequest = await tripService.CreateTripRequest(requestData);
 
-      return response.successMessage(res, 'Trip created successfully', 201, tripRequest.status);
+      return response.successMessage(res, 'Trip created successfully', 201, tripRequest);
     } catch (e) {
       return response.errorMessage(
         res,

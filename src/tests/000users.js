@@ -2,19 +2,19 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
 import db from '../database/models';
-import GenToken from '../helpers/token.helper';
+import GenerateToken from '../helpers/token.helper';
 import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
 chai.should();
 
-const token = GenToken.GenerateToken('shema@gmail.com', 'shemaeric', 'false');
-const token2 = GenToken.GenerateToken('shemaeric@gmail.com', 'shemaeric', 'false');
-const invalidToken = GenToken.GenerateToken('invalid@gmail.com', 'shemaeric', 'false');
+const token = GenerateToken({ email: 'shema@gmail.com', isVerified: 'false', id: '4' });
+const token2 = GenerateToken({ email: 'shemaeric@gmail.com', isVerified: 'false', id: '4' });
+const invalidToken = GenerateToken({ email: 'invalid@gmail.com', isVerified: 'false', id: '4' });
 
 describe('user velify email', () => {
   before(async () => {
-    await db.user.destroy({ where: {}, force: true });
+    // await db.user.destroy({ where: {}, force: true });
     await db.user.create({
       firstName: 'shema',
       lastName: 'eric',
@@ -22,9 +22,10 @@ describe('user velify email', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: false
+      phoneNumber: '0785571790',
+      isVerified: false,
+      token
     });
     await db.user.create({
       firstName: 'shema',
@@ -33,9 +34,10 @@ describe('user velify email', () => {
       gender: 'male',
       country: 'Rwanda',
       birthdate: '12-04-1996',
-      phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: true
+      phoneNumber: '0785571790',
+      isVerified: true,
+      token: token2
     });
   });
 
@@ -53,7 +55,7 @@ describe('user velify email', () => {
       .request(app)
       .get(`/api/v1/auth/activate/${invalidToken}`)
       .end((err, res) => {
-        res.should.have.status(404);
+        res.should.have.status(401);
         done();
       });
   });
@@ -82,6 +84,27 @@ describe('user velify email', () => {
     chai
       .request(app)
       .get('/api/v1/auth/activate/fhgjgkhlhgf657896')
+      .end((err, res) => {
+        res.should.have.status(401);
+        done();
+      });
+  });
+  it('it should logout a user', (done) => {
+    chai
+      .request(app)
+      .patch('/api/v1/auth/logout')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        done();
+      });
+  });
+
+  it('it should not logout a user who is alread loged out', (done) => {
+    chai
+      .request(app)
+      .patch('/api/v1/auth/logout')
+      .set('token', `Bearer ${token2}`)
       .end((err, res) => {
         res.should.have.status(401);
         done();

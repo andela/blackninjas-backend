@@ -152,6 +152,25 @@ router.get('/facebook/redirect', passport.authenticate('facebook', { session: fa
 /**
  * @swagger
  *
+ * /auth/logout:
+ *    get:
+ *      summary: User can reset password
+ *      tags: [Users]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "201":
+ *          description: Reset password schema
+ *
+ */
+router.patch('/logout', verifyToken.headerToken, userController.logout);
+/**
+ * @swagger
+ *
  * /auth/resetpassword:
  *    patch:
  *      summary: User can reset password
