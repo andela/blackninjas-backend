@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define('user', {
     firstName: { type: DataTypes.STRING, allowNull: false },
@@ -13,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     preferredcurrency: { type: DataTypes.STRING, allowNull: true },
     place: { type: DataTypes.STRING, allowNull: true },
     department: { type: DataTypes.STRING, allowNull: true },
-    linemanager: { type: DataTypes.STRING, allowNull: true },
+    profileImage: { type: DataTypes.STRING, allowNull: true },
     authtype: { type: DataTypes.STRING, allowNull: true }
   }, {});
   user.associate = () => {

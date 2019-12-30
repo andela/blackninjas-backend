@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 const Helper = {
-  GenerateToken(email, password, isVerified) {
+  GenerateToken(email, isVerified, id) {
     const token = jwt.sign({
       email,
-      password,
-      isVerified
+      isVerified,
+      id
 
     }, process.env.JWTKEY, { expiresIn: '1d' });
 

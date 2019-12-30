@@ -4,7 +4,6 @@ import logger from '../helpers/logger.helper';
 import response from '../helpers/response.helper';
 
 
-// import looger from '../helpers/logger.helper';
 /**
  * This class contains functions for all user services.
  */
@@ -119,6 +118,25 @@ class UserServices {
     } else {
       response.errorMessage(res, 'User not found! please check your email and try again', 404);
     }
+  }
+
+  /**
+ * service to reset a password
+ // eslint-disable-next-line valid-jsdoc
+ * @param {Object} email user request
+ * @param {Object} userInfo user response
+ * @returns {Object} return user message
+ */
+  static async updateUser(email, userInfo) {
+    const userToUpdate = await this.findUserByEmail(email);
+    if (!userToUpdate) {
+      return {
+        status: 404,
+        message: 'User not found'
+      };
+    }
+    const updatedUser = await userToUpdate.update(userInfo);
+    return updatedUser;
   }
 }
 export default UserServices;
