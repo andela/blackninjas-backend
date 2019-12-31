@@ -204,6 +204,22 @@ class tripService {
       return error;
     }
   }
+
+  /**
+   *
+   * @param {Integer} userId the id of the user
+   * @param {Integer} limit the integer for the entry per page
+   * @param {Integer} offset the integer for going to the next pages
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async getTripRequestsByUserId(userId, limit, offset) {
+    try {
+      const bookUser = await Queries.findRecordById(db.requesttrip, userId, limit, offset);
+      return bookUser;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
 export default tripService;

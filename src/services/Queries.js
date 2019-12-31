@@ -253,5 +253,24 @@ class Queries {
       return error;
     }
   }
+
+  /**
+   *
+    * @param {string} table users table in database.
+   * @param {Integer} userId the id of the user
+   * @param {Integer} limit the integer that indicate the entry per page
+   * @param {Integer} offset the intiger that Skip entry to go on next page
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findRecordById(table, userId, limit, offset) {
+    try {
+      const bookUser = await table.findAndCountAll({
+        where: { userId }, order: [['createdAt', 'DESC']], limit, offset
+      });
+      return bookUser;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;

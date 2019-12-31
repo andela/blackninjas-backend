@@ -72,6 +72,7 @@ router.post(
   TripMiddleware.multiCityDataValidation,
   tripController.combineTripsConctroller
 );
+
 /**
  * @swagger
  *
@@ -80,6 +81,36 @@ router.post(
  *      summary: Manager get request made by his
  *      tags: [Trips]
  *      parameters:
+ *      responses:
+ *       200:
+ *         description: "Successful operation"
+ *       400:
+ *         description: "Bad request"
+ *       401:
+ *         description: "Unauthorized"
+ *       409:
+ *         description: "Conflict"
+ *
+ * */
+router.get(
+  '/trip-requests',
+  verifyToken.headerToken,
+  verifyUser,
+  verifyIfIsManager.verifyManager,
+  tripController.getTripRequestsByManager
+);
+
+/**
+ * @swagger
+ *
+ * /trips/my-trip-requests:
+ *   get:
+ *     summary: User can see all requests he/she submitted to barefoot nomad
+ *     tags: [Trips]
+ *     description: All User Requests
+ *     produces:
+ *       - application/json
+ *     parameters:
  *       - name: token
  *         in: header
  *         description: Check token authentication
@@ -90,17 +121,11 @@ router.post(
  *         description: page number
  *         required: true
  *         type: string
- *      responses:
+ *     responses:
  *        "201":
  *          description: trips schema
  *
  */
-router.get(
-  '/trip-requests',
-  verifyToken.headerToken,
-  verifyUser,
-  verifyIfIsManager.verifyManager,
-  tripController.getTripRequestsByManager
-);
+router.get('/my-trip-requests', verifyToken.headerToken, verifyUser, tripController.getTripRequestsByUser);
 
 export default router;
