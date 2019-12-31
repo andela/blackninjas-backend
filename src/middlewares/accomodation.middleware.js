@@ -12,6 +12,8 @@ class AccomodationMiddleware {
    * @return {object} the data from the first middleware
    */
   static async findAccommodationByCity(req, res, next) {
+    const bodyData = Object.prototype.toString.call(req.body);
+    if (bodyData === '[object Array]') return next();
     const { To, accomodationCategory, accomodationId } = req.body;
     if (accomodationCategory) return next();
     const accomodations = await accommodationService.findAccomodationByCity(To);

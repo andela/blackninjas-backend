@@ -27,7 +27,7 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       tripId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       status: {
         type: Sequelize.STRING

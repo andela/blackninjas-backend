@@ -49,6 +49,31 @@ class tripService {
   }
 
   /**
+   * This method will provide a service of inserting
+   * a trip data in database
+   * @param {Object} req request from user
+   * @param {Object} body data posted by user
+   * @param { integer } tripId trip id as integer
+   * @param {Object} tripType type of trip
+   * @returns { Object } response data
+   */
+  static async CreateMultiCityTrip(req, body, tripId, tripType) {
+    const data = {
+      tripId,
+      originId: body.From,
+      reason: body.reason,
+      destinationId: body.To,
+      departureDate: body.departureDate,
+      accomodationId: body.accomodationId,
+      tripType,
+      leavingDays: body.leavingDays,
+      userId: req.user.id
+    };
+
+    return Queries.create(db.trips, data);
+  }
+
+  /**
     * searching a trip
     * @param {date} travelDate the travel date in database.
     * @param {integer} userId user id in database.
@@ -92,6 +117,62 @@ class tripService {
     }
   }
 
+  /**
+    * This method will provide a service of inserting
+    * a trip request in database
+    * @param {Object} data posted by user
+    * @returns { Object } response data
+    */
+  static async CreateMultiCityTripRequest(data) {
+    return Queries.create(db.requesttrip, data);
+  }
+
+  /**
+    * searching a trip
+    * @param {integer} userId user id in database.
+    * @returns {array} data the data to be returned.
+    */
+  static async findUserRequest(userId) {
+    try {
+      const request = await Queries.findUserRequest(db.requesttrips, userId);
+      if (request.dataValues) return request;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   *
+   * @param {Integer} userId the id of the user
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findUserManager(userId) {
+    try {
+      const trip = await Queries.findTrip(db.usermanagement, userId);
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+    * find trip services
+    * @param {Object} res user response
+    * @param {Object} from from origin
+    * @param {Object} to user response
+    * @returns { Object} user response
+    */
+  static async findUserTrip(res, from, to) {
+    try {
+      const trip = await Queries.findUserTrip(db.trips, from, to);
+      if (!trip) {
+        return false;
+      }
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
 
   /**
     * searching a trip

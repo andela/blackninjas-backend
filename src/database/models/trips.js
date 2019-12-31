@@ -1,8 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const trips = sequelize.define('trips', {
-    tripId: DataTypes.STRING,
+    tripId: DataTypes.INTEGER,
     originId: DataTypes.INTEGER,
     destinationId: DataTypes.INTEGER,
+    reason: DataTypes.STRING,
     departureDate: DataTypes.DATE,
     returnDate: DataTypes.DATE,
     accomodationId: DataTypes.INTEGER,
@@ -24,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       { onUpdate: 'cascade' }
     );
     trips.belongsTo(
-      models.accomodation,
+      models.rooms,
       { foreignKey: 'accomodationId' },
       { onDelete: 'cascade' },
       { onUpdate: 'cascade' }

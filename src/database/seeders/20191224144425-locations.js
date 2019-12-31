@@ -10,21 +10,18 @@ module.exports = {
     {
       city: 'kampala',
       country: 'Uganda',
-
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       city: 'goma',
       country: 'DRC',
-
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       city: 'nairobi',
       country: 'Kenya',
-
       createdAt: new Date(),
       updatedAt: new Date()
     },

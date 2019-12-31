@@ -108,6 +108,54 @@ class Queries {
     }
   }
 
+  /**
+    * searching a trip
+    * @param {string} table table users table in database.
+    * @param {integer} requestUserId requestUserId user id in database.
+    * @returns {array} data the data to be returned.
+    */
+  static async findUserRequest(table, requestUserId) {
+    const data = await table.findAll({
+      where: {
+        userId: requestUserId
+      }
+    });
+    return data;
+  }
+
+  /**
+   * find trip function
+   * @param {String} table table name
+   * @param {integer} from city id
+   * @param {integer} to destination city id
+   * @param { date } departuredate departure date
+   * @returns { Object } result
+   */
+  static async findUserTrip(table, from, to) {
+    const data = await table.findAll({
+      where: {
+        originId: from,
+        destinationId: to
+      }
+    });
+    return data;
+  }
+
+  // /**
+  //   * searching a trip
+  //   * @param {string} table users table in database.
+  //   * @param {string} supportedPlace the supported places in database.
+  //   * @returns {array} data the data to be returned.
+  //   */
+  // static async findPlace(table, supportedPlace) {
+  //   try {
+  //     const place = await table.findOne({ where: { supportedPlace } });
+  //     return place;
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
+
   /** Query to find all accomodations
    *
    * @param {*} table to search into
@@ -147,6 +195,34 @@ class Queries {
     } catch (error) {
       return error;
     }
+  }
+
+  /**
+   * find user manager
+   * @param {String} table database table
+   * @param {integer} user user id
+   * @returns {integer} manager id
+   */
+  static async findManagerByUserId(table, user) {
+    const data = await table.findOne({ where: { userId: user } });
+    if (data) {
+      return data.dataValues.managerId;
+    }
+    return false;
+  }
+
+  /**
+ * find location
+ * @param { String } table location database table
+ * @param { Object } value attribute and value
+ * @returns { boolean } data or false
+ */
+  static async findByOneAttribute(table, value) {
+    const data = await table.findOne({ where: value });
+    if (data) {
+      return data;
+    }
+    return false;
   }
 }
 export default Queries;
