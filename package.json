@@ -13,7 +13,9 @@
       "src/helpers/send.email.helper",
       "src/middlewares/auth.middleware.js ",
       "src/services/user.service.js ",
-      "src/services/trips.service.js "
+      "src/services/trips.service.js ",
+      "src/middlewares/admin.verify.middleware.js",
+      "src/middlewares/auth.middleware.js "
     ]
   },
   "scripts": {

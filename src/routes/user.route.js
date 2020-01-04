@@ -6,6 +6,7 @@ import isEmailUsed from '../middlewares/auth.middleware';
 import isValid from '../middlewares/validate.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import verifyUser from '../middlewares/verify.user.middleware';
+import '../config/passport.config';
 
 const router = express.Router();
 router.use(passport.initialize());
@@ -244,7 +245,7 @@ router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
 /**
  * @swagger
  *
- * /profile:
+ * /auth/profile:
  *  get:
  *    tags:
  *      - Users
@@ -273,7 +274,7 @@ router.get('/profile', verifyToken.headerToken, verifyUser, userController.viewP
 /**
  * @swagger
  *
- * /profile:
+ * /auth/profile:
  *  patch:
  *    tags:
  *      - Users
@@ -281,41 +282,48 @@ router.get('/profile', verifyToken.headerToken, verifyUser, userController.viewP
  *    description: User gets a user profile upon successful registration to Barefoot Nomad
  *      and is able to update/edit
  *    operationId: CreateUserProfile
+ *    requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: john
+ *               lastName:
+ *                 type: string
+ *                 example: doe
+ *               password:
+ *                 type: string
+ *                 example: password
+ *               gender:
+ *                 type: string
+ *                 example: male
+ *               preferredCurrency:
+ *                 type: string
+ *                 example: "$"
+ *               preferredLanguage:
+ *                 type: string
+ *                 example: English
+ *               department:
+ *                 type: string
+ *                 example: IT
+ *               birthDate:
+ *                 type: string
+ *                 example: 14/10/1990
+ *               address:
+ *                 type: string
+ *                 example: 14, Jeremiah Ugwu, Lekki, Lagos
  *    produces:
  *      - application/json
  *    parameters:
- *      - in: body
- *        name: user
- *        schema:
- *          type: object
- *          properties:
- *            firstName:
- *              type: string
- *              example: john
- *            lastName:
- *              type: string
- *              example: doe
- *            password:
- *              type: string
- *              example: password
- *            gender:
- *              type: string
- *              example: male
- *            preferredCurrency:
- *              type: string
- *              example: "$"
- *            preferredLanguage:
- *              type: string
- *              example: English
- *            department:
- *              type: string
- *              example: IT
- *            birthDate:
- *              type: string
- *              example: 14/10/1990
- *            address:
- *              type: string
- *              example: 14, Jeremiah Ugwu, Lekki, Lagos
+ *      - in: header
+ *        name: token
+ *        description: Returning User To Update users role
+ *        required: true
+ *        type: string
+ *        format: int64
  *    responses:
  *      '200':
  *        description: successful operation
