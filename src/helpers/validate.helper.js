@@ -55,5 +55,19 @@ class Validate {
       check('email', 'Invalid email address, example: example@gmail.com.').isEmail()
     ];
   }
+
+  /**
+ * this function validate trip requests
+ * @returns {Object} user response
+ */
+  static tripsValidation() {
+    return [
+      check('From', 'origin should be valid.').isInt(),
+      check('To', 'destination should be valid.').isInt(),
+      check('reason', 'reason should be valid.').isString(),
+      check('accommodation', 'accomodation should be valid.').isInt().optional(),
+
+    ];
+  }
 }
 export default Validate;

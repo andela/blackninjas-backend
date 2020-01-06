@@ -1,27 +1,48 @@
 
 const tripsData = {
   trip: {
-    From: 'kigali',
-    To: 'Nairobi',
-    reasons: 'staff meeting',
-    accomodation: 'marriot hotel',
-    travelDate: 2020 - 12 - 30
+    From: 1,
+    To: 3,
+    reason: 'staff meeting',
+    accomodationId: 1,
+    travelDate: '2020 - 12 - 30'
   },
   returnTrip: {
     From: 1,
     To: 3,
     departureDate: '2020-03-05',
     returnDate: '2020-03-08',
-    reasons: 'festive holidays',
+    reason: 'festive holidays',
     accomodationId: 1
   },
   tripWithWrongDate: {
     From: 1,
     To: 2,
-    reasons: 'staff meeting',
+    reason: 'staff meeting',
     accomodations: 'marriot hotel',
     travelDate: 2022 - 12 - 30,
     returnDate: 2021 - 10 - 15
   },
+  Sametrip: {
+    From: 1,
+    To: 1,
+    departureDate: '2020-03-05',
+    reason: 'festive holidays',
+    accomodationId: 1
+  },
+  originFalse: {
+    From: 15,
+    To: 1,
+    departureDate: '2020-03-05',
+    reason: 'festive holidays',
+    accomodationId: 1
+  },
+  destinationFalse: {
+    From: 1,
+    To: 19,
+    departureDate: '2020-03-05',
+    reason: 'festive holidays',
+    accomodationId: 1
+  }
 };
 export default tripsData;

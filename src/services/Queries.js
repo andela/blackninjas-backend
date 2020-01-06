@@ -117,11 +117,7 @@ class Queries {
   static async findAccommodation(table, accomodationId) {
     try {
       const requestedAccomodation = await table.findAll({
-        where: {
-          [Op.and]: [
-            { id: { [Op.eq]: accomodationId } }
-          ]
-        }
+        where: accomodationId
       });
       return requestedAccomodation;
     } catch (error) {

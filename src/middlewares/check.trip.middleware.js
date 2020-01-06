@@ -1,6 +1,7 @@
 import moment from 'moment';
 import response from '../helpers/response.helper';
 import tripsService from '../services/trips.services';
+import db from '../database/models';
 
 /**
 * Class for users to create trips
@@ -16,15 +17,20 @@ class checkTripExist {
     const { departureDate } = req.body;
     const userId = req.user.id;
     const trip = await tripsService.findTrip(userId);
-    const foundTrip = trip.filter(trips => departureDate === moment(trips.departureDate).format('YYYY-MM-DD'));
+    const foundTrip = trip.filter((trips) => departureDate === moment(trips.departureDate).format('YYYY-MM-DD'));
     if (trip.length === 0 || foundTrip.length === 0) return next();
-    const requestUser = await tripsService.findRequestByUser(foundTrip[0].tripId);
+
+
+    const data = {
+      tripId: foundTrip[0].tripId
+    };
+    const requestUser = await tripsService.findAccomodation(db.requesttrip, data);
+
     if (requestUser[0]) {
       return response.errorMessage(res, 'this trip has been booked already', 409);
     }
     return next();
   }
-
 
   /** checks if the date is valid if the travel date is not later in the future than the return date
    * @param {Object} req request
@@ -68,8 +74,11 @@ class checkTripExist {
   static async checkValidAccommodation(req, res, next) {
     const { To } = req.body;
     const { accomodationId } = req.room;
-    const findAccomodation = await tripsService.findAccomodation(accomodationId);
-    const isAccomodation = findAccomodation.map(accomodation => accomodation.locationId === To || accomodation.category === 'family');
+
+    const findAccomodation = await tripsService.findAccomodation(db.accomodation, accomodationId);
+
+
+    const isAccomodation = findAccomodation.map((accomodation) => accomodation.locationId === To || accomodation.category === 'family');
     if (!isAccomodation[0]) return response.errorMessage(res, 'we do not have available accommodations in that destination', 404);
     next();
   }
@@ -86,6 +95,25 @@ class checkTripExist {
     // console.log(foundRoom);
     if (!foundRoom[0]) return response.errorMessage(res, 'This room is booked', 403);
     [req.room] = foundRoom;
+    next();
+  }
+
+  /** Function to check available rooms
+   * @param {object} req request from the user
+   * @param {object} res response the user receive
+   * @param {Function} next calls the next middleware in the route
+   * @returns {array} room found and save it in the request
+   */
+  static async checkTripType(req, res, next) {
+    const { returnDate } = req.body;
+    let tripType;
+
+    if (returnDate !== undefined) {
+      tripType = 'round trip';
+    } else {
+      tripType = 'one way trip';
+    }
+    req.tripType = tripType;
     next();
   }
 }

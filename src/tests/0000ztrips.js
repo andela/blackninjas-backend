@@ -6,12 +6,16 @@ import db from '../database/models';
 import tripsData from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
 
+
 chai.use(chaiHttp);
 chai.should();
-const token = GenToken.GenerateToken('shema@gmail.com', false, 'Shema', 1);
-const token2 = GenToken.GenerateToken('shema@gmail.com', true, 'Eric', 6);
-const { trip, returnTrip } = tripsData;
+const token = GenToken.GenerateToken('shema@gmail.com', 'shema', false, 1);
+const token2 = GenToken.GenerateToken('shema@gmail.com', 'shema', true, 6);
 describe('trips tests', () => {
+  const { trip, returnTrip } = tripsData;
+  const { Sametrip } = tripsData;
+  const { originFalse } = tripsData;
+  const { destinationFalse } = tripsData;
   before(async () => {
     await db.locations.create({
       city: 'Nairobi'
@@ -49,11 +53,11 @@ describe('trips tests', () => {
     });
     await db.rooms.create({
       id: 1,
-      name: 'family',
+      name: 'muhabura',
       accomodationId: 1,
       typeId: 1,
       status: 'available',
-      price: 0
+      price: 300000
     });
     await db.usermanagement.create({
       userId: 6,
@@ -86,15 +90,23 @@ describe('trips tests', () => {
         done();
       });
   });
-});
 
-describe('Return trip tests', () => {
+
   it('should create return trip', (done) => {
     chai.request(app).post('/api/v1/trips/return_trip')
       .set('token', `Bearer ${token2}`)
       .send(returnTrip)
       .end((err, res) => {
         res.should.have.status(201);
+        done();
+      });
+  });
+  it('you can not book that trip', (done) => {
+    chai.request(app).post('/api/v1/trips/oneway')
+      .set('token', `Bearer ${token2}`)
+      .send(Sametrip)
+      .end((err, res) => {
+        res.should.have.status(403);
         res.body.should.be.an('object');
         done();
       });
@@ -105,7 +117,36 @@ describe('Return trip tests', () => {
       .send(returnTrip)
       .end((err, res) => {
         res.should.have.status(409);
+        done();
+      });
+  });
+  it('when origin dont exist', (done) => {
+    chai.request(app).post('/api/v1/trips/oneway')
+      .set('token', `Bearer ${token2}`)
+      .send(originFalse)
+      .end((err, res) => {
+        res.should.have.status(404);
         res.body.should.be.an('object');
+        done();
+      });
+  });
+  it('when destination dont exist', (done) => {
+    chai.request(app).post('/api/v1/trips/oneway')
+      .set('token', `Bearer ${token2}`)
+      .send(destinationFalse)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
+  it('when account is not verified', (done) => {
+    chai.request(app).post('/api/v1/trips/oneway')
+      .set('token', `Bearer ${token}`)
+      .send(trip)
+      .end((err, res) => {
+        res.should.have.status(401);
+        chai.expect(res.body.error).to.eq('Account not verified');
         done();
       });
   });

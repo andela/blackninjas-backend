@@ -1,6 +1,5 @@
 import db from '../database/models';
 import Queries from './Queries';
-
 /** */
 class tripsService {
 /**
@@ -35,7 +34,6 @@ class tripsService {
     return Queries.create(db.trips, data);
   }
 
-
   /**
     * searching a trip
     * @param {date} travelDate the travel date in database.
@@ -65,9 +63,25 @@ class tripsService {
     }
   }
 
+
   /**
-   * @param {integer} userId the origin
-   * @returns {array} trip that was found
+   *
+   * @param {Integer} userId the id of the user
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findBookingByUser(userId) {
+    try {
+      const bookUser = await Queries.findAccommodation(db.trips, userId);
+      return bookUser;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   *
+   * @param {Integer} userId the id of the user
+   * @returns {Object} the booking of the exact passed user id
    */
   static async findUserManager(userId) {
     try {
@@ -93,28 +107,15 @@ class tripsService {
     }
   }
 
-  /** Finds all bookings of a single user
-   *
-   * @param {integer} tripId
-   * @returns {array} the bookings that was found
-   */
-  static async findRequestByUser(tripId) {
-    try {
-      const requestedTrip = await Queries.findRequestByUser(db.requesttrip, tripId);
-      return requestedTrip;
-    } catch (error) {
-      return error;
-    }
-  }
-
   /** Finds all accommodations
    *
+   * @param{*} table the database table name to be used
    * @param {*} id id of the accommodation
    * @returns { array } the accommodations that were found
    */
-  static async findAccomodation(id) {
+  static async findAccomodation(table, id) {
     try {
-      const requestedAccomodation = await Queries.findAccommodation(db.accomodation, id);
+      const requestedAccomodation = await Queries.findAccommodation(table, id);
       return requestedAccomodation;
     } catch (error) {
       return error;

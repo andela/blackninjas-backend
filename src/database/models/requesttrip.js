@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const requesttrip = sequelize.define('requesttrip', {
     userId: DataTypes.INTEGER,
     managerId: DataTypes.INTEGER,
-    tripId: DataTypes.INTEGER,
+    tripId: DataTypes.STRING,
     status: DataTypes.STRING
   }, {});
   requesttrip.associate = (models) => {

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const Helper = {
-  GenerateToken(email, isVerified, firstName, id) {
+  GenerateToken(email, firstName, isVerified, id) {
     const token = jwt.sign({
       email,
       isVerified,
