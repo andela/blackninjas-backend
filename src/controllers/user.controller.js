@@ -41,7 +41,7 @@ class userController {
       };
       UserServices.CreateUser(NewUser);
 
-      const token = helper.GenerateToken(email, isVerified, firstName);
+      const token = helper.GenerateToken(email, firstName, isVerified);
       const data = {
         token,
       };

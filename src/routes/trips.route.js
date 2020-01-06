@@ -3,8 +3,12 @@ import tripsController from '../controllers/trips.controller';
 import verifyUser from '../middlewares/verify.user.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import checkTrip from '../middlewares/check.trip.middleware';
+import Validate from '../helpers/validate.helper';
+import isValid from '../middlewares/validate.middleware';
+
 
 const router = express.Router();
+
 
 /**
  * @swagger
@@ -13,15 +17,15 @@ const router = express.Router();
  *    post:
  *      summary: User can create one way trip
  *      tags: [Trips]
- *      requestBody:
- *        required: true
  *      parameters:
  *       - name: token
  *         in: header
  *         description: Check token authentication
  *         required: true
  *         type: string
- *         content:
+ *      requestBody:
+ *        required: true
+ *        content:
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/trips'
@@ -54,7 +58,8 @@ const router = express.Router();
  */
 
 
-router.post('/oneway', verifyToken.headerToken, verifyUser, checkTrip.checkTrip, tripsController.oneWayTrip);
+router.post('/oneway', Validate.tripsValidation(), isValid, verifyToken.headerToken, verifyUser, checkTrip.checkLocations, checkTrip.checkAvailableRooms, checkTrip.checkValidAccommodation, checkTrip.checkTrip, checkTrip.checkTripType, tripsController.tripRequest);
+
 
 /**
  * @swagger
@@ -106,6 +111,6 @@ router.post('/oneway', verifyToken.headerToken, verifyUser, checkTrip.checkTrip,
  *
  */
 
-router.post('/return_trip', verifyToken.headerToken, verifyUser, checkTrip.checkIfDateisValid, checkTrip.checkLocations, checkTrip.checkAvailableRooms, checkTrip.checkValidAccommodation, checkTrip.checkTrip, tripsController.returnTripController);
+router.post('/return_trip', verifyToken.headerToken, verifyUser, checkTrip.checkIfDateisValid, checkTrip.checkLocations, checkTrip.checkAvailableRooms, checkTrip.checkValidAccommodation, checkTrip.checkTrip, checkTrip.checkTripType, tripsController.tripRequest);
 
 export default router;

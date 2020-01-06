@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const locations = sequelize.define('locations', {
     city: DataTypes.STRING,

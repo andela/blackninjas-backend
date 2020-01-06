@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     authtype: { type: DataTypes.STRING, allowNull: true }
   }, {});
   user.associate = () => {
-    // associations should be defined here
+    // user.hasMany(models.requestTrip, { foreignKey: 'lineManager', sourceKey: 'id' });
   };
   return user;
 };
