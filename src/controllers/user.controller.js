@@ -25,29 +25,26 @@ class userController {
         email,
         gender,
         country,
-        birthday,
-        phoneNumber
+        birthdate
       } = req.body;
       const password = EncryptPassword(req.body.password);
       const isVerified = false;
-      const token = helper.GenerateToken(email, password, isVerified, firstName);
       const NewUser = {
         firstName,
         lastName,
         email,
         gender,
         country,
-        birthday,
+        birthdate,
         password,
-        phoneNumber,
-        isVerified: false,
-        token
+        isVerified: false
       };
       UserServices.CreateUser(NewUser);
+
+      const token = helper.GenerateToken(email, isVerified, firstName);
       const data = {
         token,
       };
-      // const userName = firstName;
       const emailView = mailer.activateAccountView(token, firstName);
       mailer.sendEmail(email, 'Verification link', emailView);
 
@@ -87,7 +84,7 @@ class userController {
    */
   static async updatedUser(req, res) {
     const activate = {
-      active: true
+      isVerified: true
     };
     const updaUser = await UserServices.activeUser(req.user.email, activate);
 
@@ -123,7 +120,8 @@ class userController {
       await UserServices.findOrCreate({
         email, firstName, lastName, isVerified, authtype
       });
-      done(null, userData);
+      const userEmail = await UserServices.findUserByEmail(email);
+      done(null, userEmail.dataValues);
     } catch (error) {
       done(error, false);
     }
@@ -139,8 +137,11 @@ class userController {
   *@returns {object} object
   */
   static authGoogleAndFacebook(req, res) {
-    const token = helper.GenerateToken(req.user);
-    return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
+    const {
+      id, firstName, email, isVerified, authtype
+    } = req.user;
+    const token = helper.GenerateToken(email, isVerified, firstName, id);
+    return response.successMessage(res, `user logged in successfully with ${authtype}`, 200, token);
   }
 
   /**
@@ -214,5 +215,6 @@ class userController {
     );
   }
 }
+
 
 export default userController;

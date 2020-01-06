@@ -19,7 +19,8 @@ const checkEmailpassword = async (req, res) => {
     return response.errorMessage(res, 'User Is Not Verified, Please verify the User First', status);
   }
 
-  const token = Token.GenerateToken(req.body.email, user.isVerified, user.id);
+  const token = Token.GenerateToken(req.body.email, user.isVerified, user.firstName, user.id);
+
   return response.successMessage(
     res,
     'user succefully loggedin',

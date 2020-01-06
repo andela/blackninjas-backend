@@ -10,7 +10,7 @@ class response {
    * @returns {Object} the response
    */
   static errorMessage(res, msg, status) {
-    res.status(status).json({
+    return res.status(status).json({
       status,
       error: msg,
     });
