@@ -1,7 +1,7 @@
 import db from '../database/models';
 import Queries from './Queries';
-/** */
-class tripsService {
+/** trip service */
+class tripService {
 /**
     * creating user query
     * @param {string} tripsRequest users table in database.
@@ -32,6 +32,20 @@ class tripsService {
       tripType
     };
     return Queries.create(db.trips, data);
+  }
+
+  /** Finds all bookings of a single user
+   *
+   * @param {integer} tripId
+   * @returns {array} the bookings that was found
+   */
+  static async findRequestByUser(tripId) {
+    try {
+      const requestedTrip = await Queries.findRequestByUser(db.requesttrip, tripId);
+      return requestedTrip;
+    } catch (error) {
+      return error;
+    }
   }
 
   /**
@@ -78,19 +92,6 @@ class tripsService {
     }
   }
 
-  /**
-   *
-   * @param {Integer} userId the id of the user
-   * @returns {Object} the booking of the exact passed user id
-   */
-  static async findUserManager(userId) {
-    try {
-      const trip = await Queries.findTrip(db.usermanagement, userId);
-      return trip;
-    } catch (error) {
-      return error;
-    }
-  }
 
   /**
     * searching a trip
@@ -106,35 +107,6 @@ class tripsService {
       return error;
     }
   }
-
-  /** Finds all accommodations
-   *
-   * @param{*} table the database table name to be used
-   * @param {*} id id of the accommodation
-   * @returns { array } the accommodations that were found
-   */
-  static async findAccomodation(table, id) {
-    try {
-      const requestedAccomodation = await Queries.findAccommodation(table, id);
-      return requestedAccomodation;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  /** Query to find a room by id
-   *
-   * @param {integer} id id of the room
-   * @return {array} room found
-   */
-  static async findRoom(id) {
-    try {
-      const requestedRoom = await Queries.findRoom(db.rooms, id);
-      return requestedRoom;
-    } catch (error) {
-      return error;
-    }
-  }
 }
 
-export default tripsService;
+export default tripService;

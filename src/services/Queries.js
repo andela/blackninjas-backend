@@ -111,13 +111,15 @@ class Queries {
   /** Query to find all accomodations
    *
    * @param {*} table to search into
-   * @param {*} accomodationId id of the accommodation
+   * @param {*} to destination of the
    * @returns { array } data found
    */
-  static async findAccommodation(table, accomodationId) {
+  static async findAccommodation(table, to) {
     try {
       const requestedAccomodation = await table.findAll({
-        where: accomodationId
+        where: {
+          locationId: to
+        }
       });
       return requestedAccomodation;
     } catch (error) {

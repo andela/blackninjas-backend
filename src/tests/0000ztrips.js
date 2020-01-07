@@ -42,7 +42,7 @@ describe('trips tests', () => {
       id: 1,
       name: 'marriot',
       description: 'very good',
-      locationId: 1,
+      locationId: 3,
       category: 'family',
       owner: 'jordan',
       image: 'image'
@@ -50,14 +50,6 @@ describe('trips tests', () => {
     await db.accomodationtype.create({
       id: 1,
       name: ''
-    });
-    await db.rooms.create({
-      id: 1,
-      name: 'muhabura',
-      accomodationId: 1,
-      typeId: 1,
-      status: 'available',
-      price: 300000
     });
     await db.usermanagement.create({
       userId: 6,
@@ -70,8 +62,8 @@ describe('trips tests', () => {
     });
   });
 
-  it('trip created successfully', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
+  it('should create trip when data are valid', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token2}`)
       .send(trip)
       .end((err, res) => {
@@ -80,8 +72,8 @@ describe('trips tests', () => {
         done();
       });
   });
-  it('when account is not verified', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
+  it('should not create a trip when account is not verified', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token}`)
       .send(trip)
       .end((err, res) => {
@@ -92,8 +84,8 @@ describe('trips tests', () => {
   });
 
 
-  it('should create return trip', (done) => {
-    chai.request(app).post('/api/v1/trips/return_trip')
+  it('should create return trip when data are valid', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token2}`)
       .send(returnTrip)
       .end((err, res) => {
@@ -101,8 +93,8 @@ describe('trips tests', () => {
         done();
       });
   });
-  it('you can not book that trip', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
+  it('should not create two trip with the same departure date', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token2}`)
       .send(Sametrip)
       .end((err, res) => {
@@ -111,17 +103,8 @@ describe('trips tests', () => {
         done();
       });
   });
-  it('should not create return trip when already booked', (done) => {
-    chai.request(app).post('/api/v1/trips/return_trip')
-      .set('token', `Bearer ${token2}`)
-      .send(returnTrip)
-      .end((err, res) => {
-        res.should.have.status(409);
-        done();
-      });
-  });
-  it('when origin dont exist', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
+  it('should not create a trip when origin is not supported by bareboot', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token2}`)
       .send(originFalse)
       .end((err, res) => {
@@ -130,23 +113,13 @@ describe('trips tests', () => {
         done();
       });
   });
-  it('when destination dont exist', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
+  it('should not create a trip when destination is not supported by bareboot', (done) => {
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token2}`)
       .send(destinationFalse)
       .end((err, res) => {
         res.should.have.status(404);
         res.body.should.be.an('object');
-        done();
-      });
-  });
-  it('when account is not verified', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway')
-      .set('token', `Bearer ${token}`)
-      .send(trip)
-      .end((err, res) => {
-        res.should.have.status(401);
-        chai.expect(res.body.error).to.eq('Account not verified');
         done();
       });
   });
