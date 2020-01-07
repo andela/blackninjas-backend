@@ -19,8 +19,6 @@ class checkTripExist {
     const trip = await tripsService.findTrip(userId);
     const foundTrip = trip.filter((trips) => departureDate === moment(trips.departureDate).format('YYYY-MM-DD'));
     if (trip.length === 0 || foundTrip.length === 0) return next();
-
-
     const data = {
       tripId: foundTrip[0].tripId
     };

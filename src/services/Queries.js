@@ -146,5 +146,67 @@ class Queries {
       return error;
     }
   }
+
+  /** function that gets a pending trip request from the parameter
+   * @param {object} table the table to be finding that request from
+   * @param {integer} requestId id of the request from the params
+   * @returns {object} the found trip request
+   */
+  static async getRequestData(table, requestId) {
+    try {
+      const requestFound = await table.findOne({
+        where: {
+          [Op.and]: [
+            { id: { [Op.eq]: requestId } },
+            { status: 'pending' }
+          ]
+        }
+      });
+      return requestFound;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to find a user with a manager role
+   *
+   * @param {object} table table to be searching from
+   * @param {integer} managerId id of the manager to be finding
+   * @returns {object} data of the manager found
+   */
+  static async findUserManager(table, managerId) {
+    try {
+      const managerData = table.findOne({
+        where: {
+          [Op.and]: [
+            { id: { [Op.eq]: managerId } },
+            { role: 'manager' }
+          ]
+        }
+      });
+      return managerData;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to update the status to approved or reject
+   *
+   * @param {object} table to be updating in
+   * @param {string} status status to repplacing the current one
+   * @param {integer} requestId request id to be found and then replace the status
+   * @returns {object} updated data
+   */
+  static async updateRequestStatus(table, status, requestId) {
+    try {
+      const updatedRequest = await table.update(
+        status,
+        { where: { id: requestId }, returning: true }
+      );
+      return updatedRequest;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;

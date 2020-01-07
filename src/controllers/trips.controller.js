@@ -1,5 +1,6 @@
 import faker from 'faker';
 import tripsService from '../services/trips.services';
+import requestService from '../services/request.services';
 import response from '../helpers/response.helper';
 /**
 * Class for users to create trips
@@ -36,6 +37,21 @@ class tripsController {
         500,
       );
     }
+  }
+
+  /** Function to approve the trip request and return the updated trip request
+   *
+   * @param {object} req the request we send to the server
+   * @param {object} res the response we get from the server
+   * @returns {object} data updated
+   */
+  static async approveTripRequest(req, res) {
+    const { requestId } = req.params;
+    const approvedStatus = {
+      status: 'approved'
+    };
+    const updateRequest = await requestService.updateRequestStatus(approvedStatus, requestId);
+    response.successMessage(res, 'request approved successfully', 200, updateRequest);
   }
 }
 

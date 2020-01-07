@@ -3,6 +3,7 @@ import tripsController from '../controllers/trips.controller';
 import verifyUser from '../middlewares/verify.user.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import checkTrip from '../middlewares/check.trip.middleware';
+import requestMiddleware from '../middlewares/request.middleware';
 import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
 
@@ -112,5 +113,9 @@ router.post('/oneway', Validate.tripsValidation(), isValid, verifyToken.headerTo
  */
 
 router.post('/return_trip', verifyToken.headerToken, verifyUser, checkTrip.checkIfDateisValid, checkTrip.checkLocations, checkTrip.checkAvailableRooms, checkTrip.checkValidAccommodation, checkTrip.checkTrip, checkTrip.checkTripType, tripsController.tripRequest);
+
+// swaggerific
+
+router.patch('/approve/:requestId', verifyToken.headerToken, verifyUser, requestMiddleware.checkIfManager, requestMiddleware.checkIfRequestFound, requestMiddleware.checkIfUserManager, tripsController.approveTripRequest);
 
 export default router;
