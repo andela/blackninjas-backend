@@ -2,6 +2,7 @@ import faker from 'faker';
 import tripService from '../services/trip.services';
 import userService from '../services/user.service';
 import response from '../helpers/response.helper';
+import tripsService from '../services/trips.services';
 /**
 * Class for users to create trips
 */
@@ -54,6 +55,26 @@ class tripController {
         e.message,
         500,
       );
+    }
+  }
+
+    /**
+   * user will save the his/her profile 
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected field
+   */
+  static async saveUserOnTravelRequest(req, res){
+    const { firstname, lastname, nationality, birthdate, comingfor, remember} = req.body;
+    const email = req.user.email;
+    const tripId = req.params.id;
+    const previousRecord = await tripsService.rememberedUserProfile(email);
+    if (previousRecord){
+      const getrecords = previousRecord;
+      const updateRecord = await tripsService.updateUserProfile();
+    }
+    else {
+      const saveRecord = await tripsService.saveUserProfile();
     }
   }
 }
