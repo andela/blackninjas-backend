@@ -18,12 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       { onDelete: 'cascade' },
       { onUpdate: 'cascade' }
     );
-    requesttrip.belongsTo(
-      models.trips,
-      { foreignKey: 'tripId' },
-      { onDelete: 'cascade' },
-      { onUpdate: 'cascade' }
-    );
   };
   return requesttrip;
 };

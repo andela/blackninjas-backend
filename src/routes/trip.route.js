@@ -2,20 +2,27 @@ import express from 'express';
 import tripController from '../controllers/trip.controller';
 import verifyUser from '../middlewares/verify.user.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
-import TripMiddleware from '../middlewares/trip.middleware';
-import AccomodationMiddleware from '../middlewares/accomodation.middleware';
 import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
+import TripMiddleware from '../middlewares/trip.middleware';
+import AccomodationMiddleware from '../middlewares/accomodation.middleware';
+
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Trips
+ *   description: Trips activities
+ */
 
 /**
  * @swagger
  *
- * /:
+ * /trips:
  *    post:
- *      summary: User can create one way trip
+ *      summary: User can request a trip
  *      tags: [Trips]
  *      parameters:
  *       - name: token
@@ -28,39 +35,35 @@ const router = express.Router();
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/trips'
+ *              $ref: '#/components/schemas/tripRequest'
  *      responses:
  *        "201":
- *          description: trip creates
+ *          description: trips schema
  *
  * components:
  *    schemas:
- *      trips:
+ *      tripRequest:
  *        type: object
  *        required:
  *          - From
  *          - To
- *          - reasons
- *          - accomodation
- *          - travelDate
+ *          - departureDate
+ *          - accomodationId
  *        properties:
  *          From:
- *            type: string
+ *            type: integer
  *          To:
+ *            type: integer
+ *          departureDate:
  *            type: string
- *          reasons:
- *            type: string
- *          accomodation:
- *            type: string
- *          travelDate:
- *            type: string
- *          returnDate:
- *            type: string
- *          type:
- *            type: string
- *
+ *          accomodationId:
+ *            type: integer
  */
-
+// router.post('/', verifyToken.headerToken, Validate.tripsValidation(), isValid, verifyUser, TripMiddleware.checkIfDateisValid,
+//   TripMiddleware.checkLocations, TripMiddleware.checkAvailableRooms,
+//   TripMiddleware.checkValidAccommodation, TripMiddleware.checkTrip,
+//   TripMiddleware.checkTripType, TripMiddleware.multiCityDataValidation,
+//   tripController.combineTripsConctroller);
 router.post(
   '/',
   Validate.tripsValidation(),
@@ -70,8 +73,7 @@ router.post(
   TripMiddleware.checkIfDateisValid,
   TripMiddleware.checkLocations,
   AccomodationMiddleware.findAccommodationByCity,
-  TripMiddleware.checkTripExist,
+  TripMiddleware.checkTripExist, TripMiddleware.multiCityDataValidation,
   tripController.combineTripsConctroller
 );
-
 export default router;

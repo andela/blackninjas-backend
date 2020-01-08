@@ -1,3 +1,4 @@
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('trips', {
@@ -28,6 +29,9 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
+      reason: {
+        type: Sequelize.STRING
+      },
       departureDate: {
         type: Sequelize.DATE
       },
@@ -37,7 +41,7 @@ module.exports = {
       accomodationId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'rooms',
+          model: 'accomodation',
           key: 'id'
         },
         onDelete: 'CASCADE',

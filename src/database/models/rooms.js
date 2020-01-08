@@ -3,8 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     accomodationId: DataTypes.INTEGER,
     typeId: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    price: DataTypes.DOUBLE
+    price: DataTypes.DOUBLE,
+    currency: DataTypes.STRING,
+    status: DataTypes.STRING
   }, {});
   rooms.associate = (models) => {
     rooms.belongsTo(

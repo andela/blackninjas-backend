@@ -6,7 +6,6 @@ import db from '../database/models';
 import tripsData from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
 
-
 chai.use(chaiHttp);
 chai.should();
 const token = GenToken.GenerateToken('shema@gmail.com', 'shema', false, 1);
@@ -63,7 +62,7 @@ describe('trips tests', () => {
   });
 
   it('should create trip when data are valid', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
       .send(trip)
       .end((err, res) => {
@@ -73,7 +72,7 @@ describe('trips tests', () => {
       });
   });
   it('should not create a trip when account is not verified', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token}`)
       .send(trip)
       .end((err, res) => {
@@ -85,7 +84,7 @@ describe('trips tests', () => {
 
 
   it('should create return trip when data are valid', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
       .send(returnTrip)
       .end((err, res) => {
@@ -94,7 +93,7 @@ describe('trips tests', () => {
       });
   });
   it('should not create two trip with the same departure date', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
       .send(Sametrip)
       .end((err, res) => {
@@ -104,7 +103,7 @@ describe('trips tests', () => {
       });
   });
   it('should not create a trip when origin is not supported by bareboot', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
       .send(originFalse)
       .end((err, res) => {
@@ -114,7 +113,7 @@ describe('trips tests', () => {
       });
   });
   it('should not create a trip when destination is not supported by bareboot', (done) => {
-    chai.request(app).post('/api/v1/trips')
+    chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
       .send(destinationFalse)
       .end((err, res) => {

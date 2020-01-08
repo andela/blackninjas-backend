@@ -2,8 +2,10 @@ import faker from 'faker';
 import tripService from '../services/trip.services';
 import userService from '../services/user.service';
 import response from '../helpers/response.helper';
+import userManagement from '../services/user.management.services';
+
 /**
-* Class for users to create trips
+* Class for users to create trip
 */
 class tripController {
   /**
@@ -54,6 +56,36 @@ class tripController {
         e.message,
         500,
       );
+    }
+  }
+
+  /**
+   * This controller will help a user to creates multiple sity trip
+   * and he or she will input multiple tips as objects inside an array.
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected fields
+   */
+  static async multiCityTripRequest(req, res) {
+    const GeneralTripId = faker.random.uuid(); const trips = []; let result;
+    try {
+      await Promise.all(req.body.map(async (trip) => {
+        const newTrip = await tripService.CreateMultiCityTrip(req, trip, GeneralTripId, 'multi-city');
+        trips.push(newTrip);
+      }));
+      if (trips.length > 0) {
+        const manager = await userManagement.findManagerByUserId(req.user.id);
+        const data = {
+          userId: req.user.id, managerId: manager, tripId: GeneralTripId, status: 'panding'
+        };
+        result = await tripService.CreateMultiCityTripRequest(data);
+      }
+      if (!result) {
+        return response.errorMessage(res, 'trip request has failed please try again', 500);
+      }
+      return response.successMessage(res, 'Trip successfully created ', 201);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
     }
   }
 }

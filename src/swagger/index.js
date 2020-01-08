@@ -31,6 +31,7 @@ const options = {
     //   this is an example of how to include file : path.resolve(__dirname,'./Users.js'),
     path.resolve(__dirname, '../routes/user.route.js'),
     path.resolve(__dirname, '../routes/trips.route.js'),
+    path.resolve(__dirname, '../routes/trip.route.js'),
   ]
 };
 export default options;
