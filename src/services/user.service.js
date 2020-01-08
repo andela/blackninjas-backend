@@ -136,5 +136,19 @@ class UserServices {
     const updatedUser = await userToUpdate.update(userInfo);
     return updatedUser;
   }
+
+  /**
+   *
+   * @param {Integer} userId the id of the user
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findUserManager(userId) {
+    try {
+      const trip = await Queries.findTrip(db.usermanagement, userId);
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default UserServices;
