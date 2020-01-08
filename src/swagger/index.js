@@ -30,8 +30,7 @@ const options = {
     // all swagger api files will included here like below example
     //   this is an example of how to include file : path.resolve(__dirname,'./Users.js'),
     path.resolve(__dirname, '../routes/user.route.js'),
-    path.resolve(__dirname, '../routes/trips.route.js'),
-    path.resolve(__dirname, '../routes/trip.route.js'),
+    path.resolve(__dirname, '../routes/trip.route.js')
   ]
 };
 export default options;

@@ -31,6 +31,18 @@ class UserServices {
     }
   }
 
+  /** Function to find a user with a manager role
+   *
+   * @param {integer} managerId id of the manager to be finding
+   * @returns {object} data of the manager found
+   */
+  static async findInUserManager(managerId) {
+    const managerData = await Queries.findInUserManager(db.user, managerId);
+
+    if (!managerData) return false;
+    return true;
+  }
+
   /**
    * This a function that creates a user if he is not found in the database
    * @param {object} user this is a user email to be updated
@@ -38,7 +50,7 @@ class UserServices {
    */
   static async findOrCreateUser(user) {
     try {
-      await db.user.findOrCreate({
+      return await db.user.findOrCreate({
         where: { email: user.email },
         defaults: user
       });

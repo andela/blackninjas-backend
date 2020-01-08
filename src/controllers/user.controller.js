@@ -104,22 +104,26 @@ class userController {
   *@returns {object} object
 */
   static async googleAndFacebookPlusAuth(accessToken, refreshToken, profile, done) {
-    const userData = {
-      id: profile.id,
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
-      email: profile.emails[0].value,
-      authtype: profile.provider,
-      profileImage: profile.photos[0].value,
-      isVerified: true
-    };
-    const {
-      email, firstName, lastName, isVerified, authtype, profileImage
-    } = userData;
-    await UserServices.findOrCreateUser({
-      email, firstName, lastName, isVerified, authtype, profileImage
-    });
-    done(null, userData);
+    try {
+      const userData = {
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+        email: profile.emails[0].value,
+        authtype: profile.provider,
+        profileImage: profile.photos[0].value,
+        isVerified: true
+      };
+      const {
+        email, firstName, lastName, isVerified, authtype, profileImage
+      } = userData;
+      await UserServices.findOrCreateUser({
+        email, firstName, lastName, isVerified, authtype, profileImage
+      });
+      const userEmail = await UserServices.findUserByEmail(email);
+      done(null, userEmail);
+    } catch (error) {
+      done(error, false);
+    }
   }
 
 
@@ -132,7 +136,8 @@ class userController {
   *@returns {object} object
   */
   static async authGoogleAndFacebook(req, res) {
-    const token = GenerateToken(req.user);
+    const { email, isVerified, id } = req.user;
+    const token = GenerateToken({ email, isVerified, id });
     await UserServices.updateUser(req.user.email, { token });
     return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
   }
