@@ -242,12 +242,24 @@ const UserDatabaseData = [
     email: 'linemanager@gmail.com',
     password: EncryptPassword('userpassword'),
     token: token2
+  },
+  {
+    id: 13,
+    firstName: 'manager',
+    lastName: 'eric',
+    isVerified: 'true',
+    email: 'user@gmail.com',
+    password: EncryptPassword('userpassword'),
   }
 ];
 
 const userManagementDatabaseData = [
   {
     userId: 11,
+    managerId: 12
+  },
+  {
+    userId: 13,
     managerId: 12
   }
 ];

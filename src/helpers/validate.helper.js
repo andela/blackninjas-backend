@@ -90,5 +90,15 @@ class Validate {
       check('isRead', 'isRead needs to be a boolean').isBoolean(),
     ];
   }
+
+  /**
+   * This method validate a comment on trip request
+   * @returns { Object } user message
+   */
+  static tripRequestCommentValidation() {
+    return [
+      check('comment', 'reason should be valid.').isLength({ min: 3 }).isString()
+    ];
+  }
 }
 export default Validate;

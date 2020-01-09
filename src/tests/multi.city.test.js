@@ -19,7 +19,7 @@ chai.should();
 
 describe('user should be able to make multi-city request', () => {
   before(async () => {
-    await db.user.destroy({ where: {}, force: true });
+    // await db.user.destroy({ where: {}, force: true });
     await db.user.create(UserDatabaseData[0]);
     await db.user.create(UserDatabaseData[1]);
     await db.locations.create(locationDatabaseData[0]);

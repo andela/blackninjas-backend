@@ -198,7 +198,7 @@ class tripService {
    */
   static async findTripRequestsByManager(managerId, limit, offset) {
     try {
-      const bookUser = await Queries.findTripRequestsByManager(db.requesttrip, managerId, limit, offset);
+      const bookUser = await Queries.paginationSearch(db.requesttrip, { managerId }, limit, offset);
       return bookUser;
     } catch (error) {
       return error;

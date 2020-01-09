@@ -140,21 +140,6 @@ class Queries {
     return data;
   }
 
-  // /**
-  //   * searching a trip
-  //   * @param {string} table users table in database.
-  //   * @param {string} supportedPlace the supported places in database.
-  //   * @returns {array} data the data to be returned.
-  //   */
-  // static async findPlace(table, supportedPlace) {
-  //   try {
-  //     const place = await table.findOne({ where: { supportedPlace } });
-  //     return place;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
-
   /** Query to find all accomodations
    *
    * @param {*} table to search into
@@ -163,11 +148,7 @@ class Queries {
    */
   static async findAccommodation(table, to) {
     try {
-      const requestedAccomodation = await table.findAll({
-        where: {
-          locationId: to
-        }
-      });
+      const requestedAccomodation = await table.findAll({ where: { locationId: to } });
       return requestedAccomodation;
     } catch (error) {
       return error;
@@ -216,7 +197,7 @@ class Queries {
  * @param { Object } value attribute and value
  * @returns { boolean } data or false
  */
-  static async findByOneAttribute(table, value) {
+  static async findOneRecord(table, value) {
     const data = await table.findOne({ where: value });
     if (data) {
       return data;
@@ -232,12 +213,11 @@ class Queries {
    * @param {Object} offset number
    * @returns { array } data found
    */
-  static async findTripRequestsByManager(table, managerId, limit, offset) {
+  static async paginationSearch(table, managerId, limit, offset) {
     try {
       const requestedTrip = await table.findAndCountAll({
-        where: {
-          managerId
-        },
+        where:
+          managerId,
         group: table.status,
         limit,
         offset
@@ -332,6 +312,26 @@ class Queries {
     } catch (error) {
       return error;
     }
+  }
+
+
+  /**
+    * This servise delete a trip request comment
+    * @param {String} table table
+    * @param {integer} Id trip id
+    * @returns { Object } user response as object
+    */
+  static async deleteComment(table, Id) {
+    const result = await table.destroy({
+      where: {
+        Id
+      }
+    });
+    if (result) {
+      return result;
+    }
+
+    return false;
   }
 }
 export default Queries;

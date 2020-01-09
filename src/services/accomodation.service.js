@@ -15,5 +15,14 @@ class accommodationService {
       return error;
     }
   }
+
+  /**
+     * find room status
+     * @param { Integer } accId accomodation id
+     * @returns { boolean } true or false
+     */
+  static async findAccomodation(accId) {
+    return Queries.findOneRecord(db.accomodation, { id: accId });
+  }
 }
 export default accommodationService;

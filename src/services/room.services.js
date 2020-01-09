@@ -9,7 +9,7 @@ class room {
      * @returns { boolean } true or false
      */
   static async findRoom(roomId) {
-    return Queries.findByOneAttribute(db.rooms, { id: roomId });
+    return Queries.findOneRecord(db.rooms, { id: roomId });
   }
 }
 
