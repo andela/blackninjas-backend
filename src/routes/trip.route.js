@@ -178,4 +178,5 @@ router.patch(
   requestMiddleware.checkIfAlreadyChanged,
   tripController.updateTripRequestStatus
 );
+
 export default router;

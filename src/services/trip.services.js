@@ -1,5 +1,6 @@
 import db from '../database/models';
 import Queries from './Queries';
+
 /** trip service */
 class TripService {
 /**
@@ -214,6 +215,25 @@ class TripService {
     const tripRequest = await Queries.findOneRecord(db.requesttrip, { tripId: tripID });
     if (tripRequest !== 0) return tripRequest;
     return null;
+  }
+
+  /**
+   * This service get a spacific trip request data
+   * @param {Object} tripId tripID
+   * @param {Object} userId userID
+   * @returns {Object} user response
+   */
+  static async getTripRequest(tripId, userId) {
+    const trips = await Queries.findAllRecord(db.trips, { tripId, userId });
+    const tripRequest = await Queries.findOneRecord(db.requesttrip, { tripId });
+    if (tripRequest) {
+      return {
+        tripRequest,
+        trips
+      };
+    }
+
+    return false;
   }
 }
 
