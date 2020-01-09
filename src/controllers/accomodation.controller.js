@@ -7,7 +7,7 @@ import roomServices from '../services/room.services';
 /**
 * Class for Travel administrator and supplier to deal with Accommodation
 */
-class AccomodationController {
+class Accommodation {
   /**
    * This function helps to create new accomodation
    * @param {Object} req request
@@ -61,4 +61,4 @@ class AccomodationController {
   }
 }
 
-export default AccomodationController;
+export default Accommodation;

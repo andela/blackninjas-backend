@@ -119,7 +119,6 @@ describe('Accommodation Tests', () => {
     chai
       .request(app).post('/api/v1/accommodations')
       .set('token', `Bearer ${token2}`)
-      .send()
       .end((err, res) => {
         res.should.have.status(401);
         chai.expect(res.body.error).to.eq('You are not authorized to perform this action');

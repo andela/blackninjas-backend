@@ -1,5 +1,5 @@
 import express from 'express';
-import AccomodationController from '../controllers/accomodation.controller';
+import Accommodation from '../controllers/accomodation.controller';
 import verifyUser from '../middlewares/verify.user.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import Validate from '../helpers/validate.helper';
@@ -77,7 +77,7 @@ const router = express.Router();
  *                status:
  *                   type: string
  */
-router.post('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.verifyTravelAdminAndSupplier, Validate.accomodationValidation(), isValid, AccomodationController.createAccomodation);
-router.get('/:accomodationId', verifyToken.headerToken, verifyUser, AccomodationController.getAccomodation);
+router.post('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.verifyTravelAdminAndSupplier, Validate.accomodationValidation(), isValid, Accommodation.createAccomodation);
+router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodation.getAccomodation);
 
 export default router;

@@ -22,6 +22,7 @@ class AccomodationMiddleware {
     if (accomodationId !== accomodations[0].id) return response.errorMessage(res, 'There are no available accommodations in that destination', 404);
     next();
   }
+
   /**
  *
  * @param {Object} req req
@@ -34,7 +35,7 @@ class AccomodationMiddleware {
     const role = user.role.toLowerCase();
     const supportedRole = await UserServices.getRole(role);
     const roleId = supportedRole.dataValues.id;
-    if (!((roleId === 6) || (roleId === 3))) {
+    if (!(roleId === 3)) {
       response.errorMessage(res, 'You are not authorized to perform this action', 401, 'error');
     }
     return next();

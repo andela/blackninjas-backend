@@ -66,6 +66,7 @@ class Accomodation {
       const makeRepeated = (arr, repeats) => Array.from({ length: repeats }, () => arr).flat();
       const roomsData = makeRepeated([newRoom], numberOfRoom);
       const createdRooms = await roomServices.createRoom(roomsData);
+      await accomodationServices.updateAccommodationNumberOfRooms(accomodationId, numberOfRoom);
       const newImage = { recordId: accomodationId, imageType: `roomType ${typeId}`, imageUrl: roomTypeImageUrl };
       let roomTypeImage = await imageServices.saveImage(newImage);
       roomTypeImage = roomTypeImage.dataValues;

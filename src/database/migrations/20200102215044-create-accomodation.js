@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('accomodation', {
@@ -27,6 +26,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       owner: {
+        type: Sequelize.STRING
+      },
+      image: {
         type: Sequelize.STRING
       },
       createdAt: {

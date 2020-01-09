@@ -67,5 +67,18 @@ class accommodationService {
   static async getAccomodationAmenities(accomodationId) {
     return Queries.findAllRecord(db.accomodationamenity, { accomodationId });
   }
+
+  /**
+     * updating AccommodationNumberOfRooms
+     * @param { Object } accomodationId contains amenity name and accommodationId
+     * @param { Object } numberOfRooms contains amenity name and accommodationId
+     * @returns {array} data the data to be returned.
+     */
+  static async updateAccommodationNumberOfRooms(accomodationId, numberOfRooms) {
+    return db.accomodation.increment(
+      { numberOfRooms, availableRooms: numberOfRooms },
+      { where: { id: accomodationId }, returning: true }
+      );
+  }
 }
 export default accommodationService;
