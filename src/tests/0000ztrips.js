@@ -8,8 +8,10 @@ import EncryptPassword from '../helpers/Encryptor';
 
 chai.use(chaiHttp);
 chai.should();
+
 let token;
 let token2;
+const token3 = GenerateToken({ email: 'shemad24@gmail.com', isVerified: true, id: 7 });
 describe('trips tests', () => {
   const { trip, returnTrip } = tripsData;
   const { Sametrip } = tripsData;
@@ -25,7 +27,8 @@ describe('trips tests', () => {
       birthdate: '12-04-1996',
       phoneNumber: '0785571790',
       password: EncryptPassword('shemaeric'),
-      isVerified: true
+      isVerified: true,
+      role: 'manager'
     });
     token2 = GenerateToken({ email: 'shemad@gmail.com', isVerified: true, id: user.id });
     await user.update({ token: token2 });
@@ -75,6 +78,13 @@ describe('trips tests', () => {
       destinationId: 2,
       lineManagerId: user.id
     });
+    await db.requesttrip.create({
+      userId: user.id,
+      managerId: user.id,
+      tripId: '',
+      status: 'pending'
+
+    });
   });
 
   it('should create trip when data are valid', (done) => {
@@ -83,6 +93,16 @@ describe('trips tests', () => {
       .send(trip)
       .end((err, res) => {
         res.should.have.status(201);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
+  it('should not create a trip when with the same departure date', (done) => {
+    chai.request(app).post('/api/v1/trip')
+      .set('token', `Bearer ${token2}`)
+      .send(trip)
+      .end((err, res) => {
+        res.should.have.status(409);
         res.body.should.be.an('object');
         done();
       });
@@ -135,6 +155,48 @@ describe('trips tests', () => {
       .end((err, res) => {
         res.should.have.status(404);
         res.body.should.be.an('object');
+        done();
+      });
+  });
+  it('manager should get request made by his/her own direct', (done) => {
+    chai.request(app).get('/api/v1/trip/trip-requests')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        chai.expect(res.body.message).to.eq('Trips requested by your direct reports');
+        done();
+      });
+  });
+  it('manager should get requests on the selected page', (done) => {
+    chai.request(app).get('/api/v1/trip/trip-requests?page=1')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        chai.expect(res.body.message).to.eq('Trips requested by your direct reports');
+        done();
+      });
+  });
+  it('should get error when a page is requesting dont have data', (done) => {
+    chai.request(app).get('/api/v1/trip/trip-requests?page=2')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.an('object');
+        chai.expect(res.body.error).to.eq('No trip requests on this page');
+
+        done();
+      });
+  });
+  it('should not get request he provides invalid token', (done) => {
+    chai.request(app).get('/api/v1/trip/trip-requests?=1')
+      .set('token', `Bearer ${token3}`)
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.body.should.be.an('object');
+        chai.expect(res.body.error).to.eq('You provided the invalid token!');
+
         done();
       });
   });

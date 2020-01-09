@@ -3,6 +3,7 @@ import tripService from '../services/trip.services';
 import userService from '../services/user.service';
 import response from '../helpers/response.helper';
 import userManagement from '../services/user.management.services';
+import Paginate from '../helpers/paginate.helper';
 
 /**
 * Class for users to create trip
@@ -50,7 +51,7 @@ class tripController {
       };
       const tripRequest = await tripService.CreateTripRequest(requestData);
 
-      return response.successMessage(res, 'Trip created successfully', 201, tripRequest);
+      return response.successMessage(res, 'Trip created successfully', 201, tripRequest.status);
     } catch (e) {
       return response.errorMessage(
         res,
@@ -89,6 +90,30 @@ class tripController {
       return response.errorMessage(res, error.message, 500);
     }
   }
-}
 
+  /**
+   * manager get trip requests made by their direct reports
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected field
+   */
+  static async getTripRequestsByManager(req, res) {
+    try {
+      const { page } = req.query;
+      const managerId = req.manager.id;
+      const limit = 10;
+      const offset = Paginate(page, limit);
+      const tripFound = await tripService.findTripRequestsByManager(managerId, limit, offset);
+      if (tripFound.managerId) return response.errorMessage(res, 'No trip requests on this page', 404, 'error');
+
+      return response.successMessage(res, 'Trips requested by your direct reports', 200, tripFound);
+    } catch (e) {
+      return response.errorMessage(
+        res,
+        e.message,
+        500,
+      );
+    }
+  }
+}
 export default tripController;

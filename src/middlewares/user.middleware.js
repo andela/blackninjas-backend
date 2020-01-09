@@ -23,7 +23,7 @@ const checkEmailpassword = async (req, res) => {
   await UserServices.updateUser(req.body.email, { token });
   return response.successMessage(
     res,
-    'user succefully loggedin',
+    'user has logged in successfully',
     200,
     token
   );

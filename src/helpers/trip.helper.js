@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import moment from 'moment';
 import tripService from '../services/trip.services';
 import locationServices from '../services/location.services';
@@ -90,7 +91,6 @@ class tripHelper {
         if (tripDepartureDate === trip.departureDate) {
           req.checker = true;
         }
-        return 0;
       });
       if (req.checker)bookedTrips.push(index + 1);
       req.errorMessage = (bookedTrips.length > 0) ? `Trip number ${bookedTrips} alread exist ` : req.errorMessage;
