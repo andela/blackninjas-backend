@@ -78,7 +78,7 @@ class accommodationService {
     return db.accomodation.increment(
       { numberOfRooms, availableRooms: numberOfRooms },
       { where: { id: accomodationId }, returning: true }
-      );
+    );
   }
 }
 export default accommodationService;
