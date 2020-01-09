@@ -1,6 +1,5 @@
 import db from '../database/models';
 import Queries from './Queries';
-import logger from '../helpers/logger.helper';
 import response from '../helpers/response.helper';
 
 
@@ -28,17 +27,16 @@ class UserServices {
       if (!user) return null;
       return user;
     } catch (error) {
-      logger('error', error);
       return undefined;
     }
   }
 
   /**
    * This a function that creates a user if he is not found in the database
-   * @param {string} user this is a user email to be updated
+   * @param {object} user this is a user email to be updated
    * @returns {object} return  a response object
    */
-  static async findOrCreate(user) {
+  static async findOrCreateUser(user) {
     try {
       await db.user.findOrCreate({
         where: { email: user.email },
@@ -105,26 +103,21 @@ class UserServices {
  */
   static async resetPassword(req, res, email, data) {
     const userToUpdate = await this.findUserByEmail(email);
-
     if (userToUpdate !== null && !userToUpdate.isVerified) {
       response.errorMessage(res, 'Account is not verified', 401);
     } else if (userToUpdate !== null) {
       await db.user.update(data,
         { where: { email }, returning: true, plain: true });
-
       response.successMessage(res, 'Password has successfuly changed', 200, req.user.token);
-    } else {
-      response.errorMessage(res, 'User not found! please check your email and try again', 404);
     }
   }
 
   /**
- * service to reset a password
- // eslint-disable-next-line valid-jsdoc
- * @param {Object} email user request
- * @param {Object} userInfo user response
- * @returns {Object} return user message
- */
+   * This a function that update a user account fields
+   * @param {string} email this is a user email
+   * @param {object} userInfo this is user's fields you want to update
+   * @returns {object} return  a response object
+   */
   static async updateUser(email, userInfo) {
     const userToUpdate = await this.findUserByEmail(email);
     if (!userToUpdate) {

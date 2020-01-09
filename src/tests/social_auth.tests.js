@@ -6,7 +6,6 @@ import sinon from 'sinon';
 import socialUser from './mock/userMockData';
 import userController from '../controllers/user.controller';
 import profile from './mock/socialMock';
-import db from '../services/user.service';
 
 chai.use(chaiHttp);
 chai.use(sinonChai);
@@ -25,16 +24,12 @@ describe('Social authentication tests', () => {
     await userController.googleAndFacebookPlusAuth(accessToken, refreshToken, profile, callBack);
     expect(callBack.withArgs(null, profile));
   });
-  it('should return catch error when there is an error', async () => {
-    const accessToken = 't';
-    const refreshToken = 't';
-    const callBack = sinon.spy();
-    db.findOrCreate = sinon.stub(new Error());
-    await userController.googleAndFacebookPlusAuth(accessToken, refreshToken, profile, callBack);
-    expect(callBack.withArgs(false));
-  });
-  it('should return the user in the request', () => {
-    const userCtroller = userController.authGoogleAndFacebook({ user: socialUser[1] }, response);
+
+  it('should return the user in the request', async () => {
+    const userCtroller = await userController.authGoogleAndFacebook(
+      { user: socialUser[1] },
+      response
+    );
     expect(userCtroller.statusCode).eql(200);
   });
 });

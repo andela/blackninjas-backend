@@ -8,7 +8,7 @@ use(chaiHttp);
 const signPath = '/api/v1/auth/signin';
 describe('/auth/signin', () => {
   before(async () => {
-    await db.user.destroy({ where: {}, force: true });
+    // await db.user.destroy({ where: {}, force: true });
     await db.user.create({
       firstName: 'benit',
       lastName: 'havuga',

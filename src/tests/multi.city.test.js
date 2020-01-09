@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
 import db from '../database/models';
-import GenToken from '../helpers/token.helper';
+
 import {
   roomDatabaseData,
   accomodationDatabaseData,
@@ -16,7 +16,6 @@ import {
 chai.use(chaiHttp);
 chai.should();
 
-const token = GenToken.GenerateToken('multicity@gmail.com', 'shemaeric', 'true');
 
 describe('user should be able to make multi-city request', () => {
   before(async () => {
@@ -45,7 +44,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[0])
       .end((err, res) => {
         res.should.have.status(201);
@@ -56,7 +55,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[1])
       .end((err, res) => {
         res.should.have.status(403);
@@ -67,7 +66,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[2])
       .end((err, res) => {
         res.should.have.status(404);
@@ -78,7 +77,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[3])
       .end((err, res) => {
         res.should.have.status(404);
@@ -89,7 +88,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[0])
       .end((err, res) => {
         res.should.have.status(409);
@@ -100,7 +99,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[4])
       .end((err, res) => {
         res.should.have.status(403);
@@ -111,7 +110,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[5])
       .end((err, res) => {
         res.should.have.status(401);
@@ -122,7 +121,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[7])
       .end((err, res) => {
         res.should.have.status(404);
@@ -133,7 +132,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[11])
       .end((err, res) => {
         res.should.have.status(404);
@@ -144,7 +143,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[8])
       .end((err, res) => {
         res.should.have.status(401);
@@ -155,7 +154,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[9])
       .end((err, res) => {
         res.should.have.status(401);
@@ -166,7 +165,7 @@ describe('user should be able to make multi-city request', () => {
     chai
       .request(app)
       .post('/api/v1/trip')
-      .set('token', `Bearer ${token}`)
+      .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[10])
       .end((err, res) => {
         res.should.have.status(401);

@@ -5,7 +5,7 @@ const userData = {
   user: {
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
-    email: 'resetpassword@gmail.com',
+    email: 'resetpasswordh@gmail.com',
     country: faker.address.county(),
     password: '2345678976543'
   }

@@ -16,7 +16,7 @@ class Accomodation {
    * @returns { Object} return user response
    */
   static async checkAccomodationAvailability(req) {
-    const { id } = await UserServices.findUserByEmail(req.user.email); req.user.id = id || 0;
+    const { id } = await UserServices.findUserByEmail(req.user.email); req.user.id = id;
     await Promise.all(req.body.map(async (trip, index) => {
       const accomodation = await accomodationServices.findAccomodation(trip.accomodationId);
       if (accomodation.dataValues) {
