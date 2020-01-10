@@ -155,5 +155,58 @@ class UserServices {
       return error;
     }
   }
+
+  /**
+ * service to all users in database by filtering 10 users by page
+ // eslint-disable-next-line valid-jsdoc
+ * @param {Object} limit user request
+ * @param {Object} offset user for the page
+ * @returns {Object} return user message
+ */
+  static async getUsers(limit, offset) {
+    try {
+      const searchUsers = await db.user.findAndCountAll({
+        attributes: ['firstName', 'lastName', 'email', 'role', 'createdAt', 'updatedAt'], order: [['createdAt', 'DESC']], limit, offset
+      });
+      if (!searchUsers) return null;
+      return searchUsers;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  /**
+ * service to get Supported Role In Database
+ // eslint-disable-next-line valid-jsdoc
+ * @param {Object} name user request
+ * @returns {Object} return user message
+ */
+  static async getRole(name) {
+    try {
+      const searchRole = await db.userRole.findOne({ where: { name } });
+      if (!searchRole) return null;
+      return searchRole;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  /**
+   * This a function that update a user account fields
+   * @param {string} id this is a user email
+   * @param {object} userInfo this is user's fields you want to update
+   * @returns {object} return  a response object
+   */
+  static async updateUserById(id, userInfo) {
+    const userToUpdate = await db.user.findByPk(id);
+    if (!userToUpdate) {
+      return {
+        status: 404,
+        message: 'User not found'
+      };
+    }
+    const updatedUser = await userToUpdate.update(userInfo);
+    return updatedUser;
+  }
 }
 export default UserServices;

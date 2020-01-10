@@ -5,7 +5,7 @@ import response from '../helpers/response.helper';
 import mailer from '../helpers/send.email.helper';
 import GenerateToken from '../helpers/token.helper';
 import profileHelper from '../helpers/profile.helper';
-
+import Paginate from '../helpers/paginate.helper';
 
 /**
  * Class for users related operations such Sign UP, Sign In and others
@@ -222,6 +222,59 @@ class userController {
   static async logout(req, res) {
     await UserServices.updateUser(req.user.email, { token: null });
     return response.successMessage(res, 'User is successfully logged out.', 200);
+  }
+
+  /** It gets all users especially username, email, role, created At, updated At
+   * @param {int} req This is the parameter(user id) that will be passed in url
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async getUsers(req, res) {
+    const { page } = req.query;
+    const limit = 10;
+    const offset = Paginate(page, limit);
+    const users = await UserServices.getUsers(limit, offset);
+    if (users.count > offset) {
+      return response.successMessage(
+        res,
+        'Users',
+        200,
+        users
+      );
+    }
+    return response.errorMessage(
+      res,
+      'No User Found',
+      404
+    );
+  }
+
+  /**
+   * It activate a user account by updating isVerified attribute to true
+   * @param {int} req This is the parameter(user id) that will be passed in url
+   * @param {object} res This is a response will be send to the user
+   * @returns {object} return object which include status and message
+   */
+  static async updateRole(req, res) {
+    const { role } = req.body;
+    const { userId } = req.params;
+    const roleToUpdate = { role: role.toLowerCase() };
+    const getRole = await UserServices.getRole(role);
+    if (getRole) {
+      const data = await UserServices.updateUserById(userId, roleToUpdate);
+      const userData = data.getDataValue('role');
+      return response.successMessage(
+        res,
+        'User Role successfully updated',
+        200,
+        { role: userData }
+      );
+    }
+    return response.errorMessage(
+      res,
+      'We dont support that role',
+      401
+    );
   }
 }
 
