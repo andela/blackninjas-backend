@@ -92,6 +92,33 @@ class tripController {
   }
 
   /**
+   * user will recieve all requests he/she  made and data is retrieved from the database
+   * @param {Object} req The request object that contains (UserId and the page number)
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected fields
+   */
+  static async getTripRequestsByUser(req, res) {
+    const userId = req.user.id;
+    const { page } = req.query;
+    const limit = 10;
+    const offset = Paginate(page, limit);
+    const requests = await tripService.getTripRequestsByUserId(userId, limit, offset);
+    if (requests.count > offset) {
+      return response.successMessage(
+        res,
+        'My Trip Requests',
+        200,
+        requests
+      );
+    }
+    return response.errorMessage(
+      res,
+      'No Trip Request Found',
+      404
+    );
+  }
+
+  /**
    * manager get trip requests made by their direct reports
    * @param {Object} req The request object
    * @param {Object} res The response object

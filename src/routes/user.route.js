@@ -5,10 +5,11 @@ import Validate from '../helpers/validate.helper';
 import isEmailUsed from '../middlewares/auth.middleware';
 import isValid from '../middlewares/validate.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
-import '../config/passport.config';
-
+import verifyUser from '../middlewares/verify.user.middleware';
 
 const router = express.Router();
+router.use(passport.initialize());
+router.use(passport.session());
 
 /**
  * @swagger
@@ -143,11 +144,12 @@ router.post('/signup', Validate.signup(), isValid, isEmailUsed, userController.s
  *
  */
 
-router.get('/activate/:autorizations', verifyToken.paramToken, userController.updatedUser);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/redirect', passport.authenticate('google', { session: false, failureRedirect: '/google' }), userController.authGoogleAndFacebook);
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: '/google' }), userController.authGoogleAndFacebook);
 router.get('/facebook', passport.authenticate('facebook'));
-router.get('/facebook/redirect', passport.authenticate('facebook', { session: false, failureRedirect: '/facebook' }), userController.authGoogleAndFacebook);
+router.get('/facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/facebook' }), userController.authGoogleAndFacebook);
+
+router.get('/activate/:autorizations', verifyToken.paramToken, userController.updatedUser);
 
 /**
  * @swagger
@@ -266,7 +268,7 @@ router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
  *      '500':
  *        description: Internal Server error
  * */
-router.get('/profile', verifyToken.headerToken, userController.viewProfile);
+router.get('/profile', verifyToken.headerToken, verifyUser, userController.viewProfile);
 
 /**
  * @swagger
@@ -323,5 +325,5 @@ router.get('/profile', verifyToken.headerToken, userController.viewProfile);
  *        description: Internal Server error
  * */
 
-router.patch('/profile', verifyToken.headerToken, userController.editProfile);
+router.patch('/profile', verifyToken.headerToken, verifyUser, userController.editProfile);
 export default router;

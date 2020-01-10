@@ -6,3 +6,4 @@ dist/
 src/database/models/index.js
 src/database/seeders/*
 src/database/migrations/*
+src/helpers/trip.helper.js
