@@ -37,7 +37,8 @@ class userController {
         country,
         birthdate,
         password,
-        isVerified: false
+        isVerified: false,
+        token
       };
       UserServices.CreateUser(NewUser);
 
@@ -113,14 +114,8 @@ class userController {
         profileImage: profile.photos[0].value,
         isVerified: true
       };
-      const {
-        email, firstName, lastName, isVerified, authtype, profileImage
-      } = userData;
-      await UserServices.findOrCreateUser({
-        email, firstName, lastName, isVerified, authtype, profileImage
-      });
-      const userEmail = await UserServices.findUserByEmail(email);
-      done(null, userEmail);
+      const [userCreated] = await UserServices.findOrCreateUser(userData);
+      done(null, userCreated.dataValues);
     } catch (error) {
       done(error, false);
     }
@@ -136,10 +131,12 @@ class userController {
   *@returns {object} object
   */
   static async authGoogleAndFacebook(req, res) {
-    const { email, isVerified, id } = req.user;
+    const {
+      email, isVerified, id, authtype
+    } = req.user;
     const token = GenerateToken({ email, isVerified, id });
     await UserServices.updateUser(req.user.email, { token });
-    return response.successMessage(res, `user logged in successfully with ${req.user.authtype}`, 200, token);
+    return response.successMessage(res, `user logged in successfully with ${authtype}`, 200, token);
   }
 
   /**
