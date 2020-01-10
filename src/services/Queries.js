@@ -1,5 +1,4 @@
 import { Op } from 'sequelize';
-
 /**
  * class for responses
  */
@@ -223,6 +222,36 @@ class Queries {
       return data;
     }
     return false;
+  }
+
+  /** Query to find and count all request made by a certain manager directs
+   *
+   * @param {*} table to search into
+   * @param {*} managerId the id of the manager
+   * @param {Object} limit which includes
+   * @param {Object} offset number
+   * @returns { array } data found
+   */
+  static async findTripRequestsByManager(table, managerId, limit, offset) {
+    try {
+      const requestedTrip = await table.findAndCountAll({
+        where: {
+          managerId
+        },
+        group: table.status,
+        limit,
+        offset
+      });
+      if (requestedTrip.count > offset) {
+        return requestedTrip;
+      }
+
+      return {
+        managerId
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }
 export default Queries;

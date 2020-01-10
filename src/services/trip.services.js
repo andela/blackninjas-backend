@@ -188,6 +188,22 @@ class tripService {
       return error;
     }
   }
+
+  /**
+   *
+   * @param {Integer} managerId the id of the manager
+   * @param {Object} limit which includes
+   * @param {Object} offset number
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findTripRequestsByManager(managerId, limit, offset) {
+    try {
+      const bookUser = await Queries.findTripRequestsByManager(db.requesttrip, managerId, limit, offset);
+      return bookUser;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
 export default tripService;

@@ -6,7 +6,7 @@ import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
 import TripMiddleware from '../middlewares/trip.middleware';
 import AccomodationMiddleware from '../middlewares/accomodation.middleware';
-
+import verifyIfIsManager from '../middlewares/verify.manager.middleware';
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ const router = express.Router();
 /**
  * @swagger
  *
- * /trips:
+ * /trip:
  *    post:
  *      summary: User can request a trip
  *      tags: [Trips]
@@ -59,11 +59,6 @@ const router = express.Router();
  *          accomodationId:
  *            type: integer
  */
-// router.post('/', verifyToken.headerToken, Validate.tripsValidation(), isValid, verifyUser, TripMiddleware.checkIfDateisValid,
-//   TripMiddleware.checkLocations, TripMiddleware.checkAvailableRooms,
-//   TripMiddleware.checkValidAccommodation, TripMiddleware.checkTrip,
-//   TripMiddleware.checkTripType, TripMiddleware.multiCityDataValidation,
-//   tripController.combineTripsConctroller);
 router.post(
   '/',
   Validate.tripsValidation(),
@@ -73,7 +68,39 @@ router.post(
   TripMiddleware.checkIfDateisValid,
   TripMiddleware.checkLocations,
   AccomodationMiddleware.findAccommodationByCity,
-  TripMiddleware.checkTripExist, TripMiddleware.multiCityDataValidation,
+  TripMiddleware.checkTripExist,
+  TripMiddleware.multiCityDataValidation,
   tripController.combineTripsConctroller
 );
+/**
+ * @swagger
+ *
+ * /trip/requests/:page:
+ *    get:
+ *      summary: Manager get request made by his
+ *      tags: [Trips]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *       - name: page
+ *         in: path
+ *         description: page number
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "201":
+ *          description: trips schema
+ *
+ */
+router.get(
+  '/trip-requests',
+  verifyToken.headerToken,
+  verifyUser,
+  verifyIfIsManager.verifyManager,
+  tripController.getTripRequestsByManager
+);
+
 export default router;
