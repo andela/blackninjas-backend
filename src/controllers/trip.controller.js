@@ -1,6 +1,7 @@
 import faker from 'faker';
 import tripService from '../services/trip.services';
 import userService from '../services/user.service';
+import tripRequestService from '../services/request.services';
 import response from '../helpers/response.helper';
 import userManagement from '../services/user.management.services';
 import Paginate from '../helpers/paginate.helper';
@@ -89,6 +90,22 @@ class tripController {
     } catch (error) {
       return response.errorMessage(res, error.message, 500);
     }
+  }
+
+  /** Function to approve the trip request and return the updated trip request
+   *
+   * @param {object} req the request we send to the server
+   * @param {object} res the response we get from the server
+   * @returns {object} data updated
+   */
+  static async updateTripRequestStatus(req, res) {
+    const { tripRequestId } = req.params;
+    const { status } = req.body;
+    const changedStatus = {
+      status
+    };
+    const [, updateTripRequestStatus] = await tripRequestService.updateTripRequestStatus(changedStatus, tripRequestId);
+    return response.successMessage(res, `Trip request has been ${status} successfully`, 200, ...updateTripRequestStatus);
   }
 
   /**

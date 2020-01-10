@@ -20,6 +20,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "NODE_ENV=production babel-node ./src/index.js",
+    "start:heroku": "NODE_ENV=production npm run db-migrate && babel-node ./src/index.js",
     "test": "NODE_ENV=testing npm run db-undo-migration && NODE_ENV=testing npm run db-migrate && NODE_ENV=testing nyc --reporter=html --reporter=text mocha --require @babel/register src/tests/*.js  --require @babel/polyfill --require @babel/register --timeout 100000000 --exit",
     "pretest-travis": "NODE_ENV=testing npm run db-undo-migration && NODE_ENV=testing  npm run db-migrate",
     "coverage": "nyc report --reporter=text-lcov | coveralls",

@@ -1,10 +1,17 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import app from '../app';
 import GenerateToken from '../helpers/token.helper';
 import db from '../database/models';
 import tripsData from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
+
+const { expect } = chai;
+
+
+dotenv.config();
 
 chai.use(chaiHttp);
 chai.should();
@@ -12,9 +19,12 @@ chai.should();
 let token;
 let token2;
 const token3 = GenerateToken({ email: 'shemad24@gmail.com', isVerified: true, id: 7 });
+
+const verifyToken = tokens => jwt.verify(tokens, process.env.JWTKEY, (err, data) => data);
+
+let requestTrip = {};
 describe('trips tests', () => {
   const { trip, returnTrip } = tripsData;
-  const { Sametrip } = tripsData;
   const { originFalse } = tripsData;
   const { destinationFalse } = tripsData;
   before(async () => {
@@ -78,34 +88,14 @@ describe('trips tests', () => {
       destinationId: 2,
       lineManagerId: user.id
     });
-    await db.requesttrip.create({
+    const tripRequest = await db.requesttrip.create({
       userId: user.id,
       managerId: user.id,
-      tripId: '',
-      status: 'pending'
-
+      tripId: 'ae989f24-5878-4736-87dd-a12d797e12ff',
+      status: 'pending',
     });
-  });
 
-  it('should create trip when data are valid', (done) => {
-    chai.request(app).post('/api/v1/trip')
-      .set('token', `Bearer ${token2}`)
-      .send(trip)
-      .end((err, res) => {
-        res.should.have.status(201);
-        res.body.should.be.an('object');
-        done();
-      });
-  });
-  it('should not create a trip when with the same departure date', (done) => {
-    chai.request(app).post('/api/v1/trip')
-      .set('token', `Bearer ${token2}`)
-      .send(trip)
-      .end((err, res) => {
-        res.should.have.status(409);
-        res.body.should.be.an('object');
-        done();
-      });
+    requestTrip = tripRequest;
   });
   it('should not create a trip when account is not verified', (done) => {
     chai.request(app).post('/api/v1/trip')
@@ -117,8 +107,6 @@ describe('trips tests', () => {
         done();
       });
   });
-
-
   it('should create return trip when data are valid', (done) => {
     chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
@@ -128,16 +116,17 @@ describe('trips tests', () => {
         done();
       });
   });
-  it('should not create two trip with the same departure date', (done) => {
+  it('should not create a trip when with the same departure date', (done) => {
     chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
-      .send(Sametrip)
+      .send(returnTrip)
       .end((err, res) => {
-        res.should.have.status(403);
+        res.should.have.status(409);
         res.body.should.be.an('object');
         done();
       });
   });
+
   it('should not create a trip when origin is not supported by bareboot', (done) => {
     chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token2}`)
@@ -196,7 +185,44 @@ describe('trips tests', () => {
         res.should.have.status(401);
         res.body.should.be.an('object');
         chai.expect(res.body.error).to.eq('You provided the invalid token!');
+        done();
+      });
+  });
 
+
+  it('should accept the trip request if status is accepted', (done) => {
+    const status = 'approved';
+    const decoded = verifyToken(token2);
+    chai.request(app).patch(`/api/v1/trip/trip-requests/${1}`)
+      .set('token', `Bearer ${token2}`)
+      .send({ status })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.data.should.have.property('userId');
+        expect(res.body.data.userId).eql(requestTrip.userId);
+        res.body.data.should.have.property('tripId');
+        expect(res.body.data.tripId).eql(requestTrip.tripId);
+        res.body.data.should.have.property('managerId');
+        expect(res.body.data.managerId).eql(decoded.payload.id);
+        expect(res.body.data.status).eql('approved');
+        done();
+      });
+  });
+  it('should reject the trip request if status is rejected', (done) => {
+    const status = 'rejected';
+    const decoded = verifyToken(token2);
+    chai.request(app).patch(`/api/v1/trip/trip-requests/${1}`)
+      .set('token', `Bearer ${token2}`)
+      .send({ status })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.data.should.have.property('userId');
+        expect(res.body.data.userId).eql(requestTrip.userId);
+        res.body.data.should.have.property('tripId');
+        expect(res.body.data.tripId).eql(requestTrip.tripId);
+        res.body.data.should.have.property('managerId');
+        expect(res.body.data.managerId).eql(decoded.payload.id);
+        expect(res.body.data.status).eql('rejected');
         done();
       });
   });

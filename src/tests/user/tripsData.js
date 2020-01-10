@@ -15,7 +15,7 @@ const tripsData = {
     returnDate: '2020-03-08',
     reason: 'festive holidays',
     accomodationId: 1,
-    type: 'round trip'
+    type: 'return trip'
   },
   tripWithWrongDate: {
     From: 1,
