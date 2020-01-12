@@ -1,5 +1,6 @@
 import response from '../helpers/response.helper';
-import accommodationService from '../services/accomodation.service';
+import tripServicres from '../services/trip.services';
+import db from '../database/models';
 
 /**
 * Class for users to create trips
@@ -16,7 +17,7 @@ class AccomodationMiddleware {
     if (bodyData === '[object Array]') return next();
     const { To, accomodationCategory, accomodationId } = req.body;
     if (accomodationCategory) return next();
-    const accomodations = await accommodationService.findAccomodationByCity(To);
+    const accomodations = await tripServicres.findRequestByID(db.accomodation, { locationId: To });
     if (accomodationId !== accomodations[0].id) return response.errorMessage(res, 'There are no available accommodations in that destination', 404);
     next();
   }

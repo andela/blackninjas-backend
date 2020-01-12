@@ -10,7 +10,7 @@ Router.use('/auth', userRoute);
 Router.use('/trip', tripsRoute);
 Router.use('/users', userSettings);
 Router.use('/notifications', notificationRoute);
-Router.use('/trip-request', comment);
+Router.use('/trip-requests', comment);
 
 
 export default Router;

@@ -4,6 +4,7 @@ import tripService from '../services/trip.services';
 import tripHelper from '../helpers/trip.helper';
 import multyCity from '../helpers/joi.validate';
 import accomodationHelper from '../helpers/accomodation.helper';
+import db from '../database/models';
 
 
 /**
@@ -25,7 +26,7 @@ class TripMiddleware {
     const trip = await tripService.findTrip(userId);
     const foundTrip = trip.filter((trips) => departureDate === moment(trips.departureDate).format('YYYY-MM-DD'));
     if (trip.length === 0 || foundTrip.length === 0) return next();
-    const requestUser = await tripService.findRequestByUser(foundTrip[0].tripId);
+    const requestUser = await tripService.findRequestByID(db.requesttrip, { tripId: foundTrip[0].tripId });
     if (requestUser[0]) {
       return response.errorMessage(res, 'this trip has been already created', 409);
     }

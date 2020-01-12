@@ -7,12 +7,13 @@ import response from '../helpers/response.helper';
 import userManagement from '../services/user.management.services';
 import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
+import commentService from '../services/comment.service';
 
 config();
 /**
 * Class for users to create trip
 */
-class tripController {
+class TripController {
   /**
    * This controller helps to know the type of trip
    * sothat it can redirect the request to a tageted controller
@@ -23,9 +24,9 @@ class tripController {
   static async combineTripsConctroller(req, res) {
     const body = Object.prototype.toString.call(req.body);
     if (body === '[object Array]') {
-      await tripController.multiCityTripRequest(req, res);
+      await TripController.multiCityTripRequest(req, res);
     } else {
-      await tripController.requestTrip(req, res);
+      await TripController.requestTrip(req, res);
     }
   }
 
@@ -123,7 +124,7 @@ class tripController {
     const { page } = req.query;
     const limit = 10;
     const offset = Paginate(page, limit);
-    const requests = await tripService.getTripRequestsByUserId(userId, limit, offset);
+    const requests = await tripService.findTripRequestsById(userId, limit, offset);
     if (requests.count > offset) {
       return response.successMessage(
         res,
@@ -151,7 +152,7 @@ class tripController {
       const managerId = req.manager.id;
       const limit = 10;
       const offset = Paginate(page, limit);
-      const tripFound = await tripService.findTripRequestsByManager(managerId, limit, offset);
+      const tripFound = await tripService.findTripRequestsById(managerId, limit, offset);
       if (tripFound.managerId) return response.errorMessage(res, 'No trip requests on this page', 404, 'error');
 
       return response.successMessage(res, 'Trips requested by your direct reports', 200, tripFound);
@@ -163,5 +164,48 @@ class tripController {
       );
     }
   }
+
+  /**
+     * This method create a comment
+     * @param {Object} req request data
+     * @param {Object} res response data
+     * @returns { Object} return a user message
+     */
+  static async createComment(req, res) {
+    const Id = req.params.tripRequestID;
+    const data = await commentService.createComment(req, Id, 'trip request');
+    return response.successMessage(res, 'comment created successfuly', 201, data);
+  }
+
+  /**
+     *
+     * This method will help to view all
+     * comments
+     * @param {Object} req user request data
+     * @param {Object} res user response data
+     * @returns { Object} return a user message
+     */
+  static async getAllComments(req, res) {
+    const subjectType = 'trip request';
+    const subjectID = req.params.tripRequestID;
+    const { page } = req.query;
+    const limitNumber = 10;
+    const offset = Paginate(page, limitNumber);
+    const data = await commentService.getAllCommets(subjectID, subjectType, limitNumber, offset);
+    if (data) return response.successMessage(res, 'success', 200, data);
+    return response.errorMessage(res, 'No comment yet', 404);
+  }
+
+  /**
+     * This method help to delete a comment
+     * @param { Object } req request
+     * @param { Object } res response
+     * @returns { Object } user respose as object
+     */
+  static async deleteComment(req, res) {
+    const Id = parseInt(req.params.commentID, 10);
+    const subjectId = req.params.subjectID;
+    await commentService.deleteComment(res, subjectId, Id);
+  }
 }
-export default tripController;
+export default TripController;

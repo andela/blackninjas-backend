@@ -1,5 +1,5 @@
 import express from 'express';
-import comment from '../controllers/comment.controller';
+import tripController from '../controllers/trip.controller';
 import commentMiddleware from '../middlewares/comment.validation.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import Validate from '../helpers/validate.helper';
@@ -18,7 +18,7 @@ const router = express.Router();
 /**
  * @swagger
  *
- * /trip-request/comment/{tripId}:
+ * /trip-request/{tripRequestID}/comments:
  *    post:
  *      summary: user and manager can comment to the trip request
  *      tags: [comment]
@@ -28,7 +28,7 @@ const router = express.Router();
  *         description: Check token authentication
  *         required: true
  *         type: string
- *       - name: tripId
+ *       - name: tripRequestID
  *         in: path
  *         description: trip request ID
  *         required: true
@@ -53,7 +53,8 @@ const router = express.Router();
  *          comment:
  *            type: string
  */
-router.post('/comment/:tripId', verifyToken.headerToken, Validate.tripRequestCommentValidation(), isValid, commentMiddleware.validateTipIdAndUserId, comment.createTripRequestComment);
+router.post('/:tripRequestID/comments', verifyToken.headerToken, Validate.CommentValidation(), isValid, commentMiddleware.validateUserAndSubjectRelationships, tripController.createComment);
+
 
 /**
  * @swagger
@@ -65,7 +66,7 @@ router.post('/comment/:tripId', verifyToken.headerToken, Validate.tripRequestCom
 /**
  * @swagger
  *
- * /trip-request/comment/{tripId}/view?page:
+ * /trip-request/{tripRequestID}/comments?page:
  *    get:
  *      summary: user and manager can view the trip request comment of
  *      tags: [comment]
@@ -75,7 +76,7 @@ router.post('/comment/:tripId', verifyToken.headerToken, Validate.tripRequestCom
  *         description: Check token authentication
  *         required: true
  *         type: string
- *       - name: tripId
+ *       - name: tripRequestID
  *         in: path
  *         description: trip request ID
  *         required: true
@@ -90,7 +91,34 @@ router.post('/comment/:tripId', verifyToken.headerToken, Validate.tripRequestCom
  *        "200":
  *          description: trip request comment schema
  */
-router.get('/comment/:tripId/view', verifyToken.headerToken, commentMiddleware.validateTipIdAndUserId, comment.viewTripRequestComment);
+router.get('/:tripRequestID/comments', verifyToken.headerToken, commentMiddleware.validateUserAndSubjectRelationships, tripController.getAllComments);
 
-router.delete('/comment/:commentId/delete', verifyToken.headerToken, commentMiddleware.deleteCommentValidation, comment.deleteTripRequestComment);
+/**
+ * @swagger
+ *
+ * /trip-request/{subjectID}/comments/{commentID}:
+ *    delete:
+ *      summary: user and manager can delete the trip request comment
+ *      tags: [comment]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *       - name: subjectID
+ *         in: path
+ *         description: subject ID
+ *         required: true
+ *         type: string
+ *       - name: commentID
+ *         in: path
+ *         description: comment ID
+ *         required: true
+ *         type: integer
+ *      responses:
+ *        "200":
+ *          description: trip request comment schema
+ */
+router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commentMiddleware.deleteCommentValidation, tripController.deleteComment);
 export default router;

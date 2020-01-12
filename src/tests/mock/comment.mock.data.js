@@ -4,12 +4,25 @@ import GenerateToken from '../../helpers/token.helper';
 const userToken = GenerateToken({ email: 'user@gmail.com', isVerified: 'true' });
 const anauthorizedToken = GenerateToken({ email: 'unauthorized@gmail.com', isVerified: 'true' });
 const linemanagerToken = GenerateToken({ email: 'linemanager@gmail.com', isVerified: 'true' });
-const comment = {
-  subjectId: 'ubjectId',
-  subjectType: 'trip request',
-  commentorId: 133,
-  comment: 'test test test'
-};
+const comment = [
+  {
+    id: 12,
+    subjectId: 'ubjectId',
+    subjectType: 'trip request',
+    commentorId: 133,
+    comment: 'test test test'
+  },
+  {
+    id: 14,
+    subjectId: 'ubjectId',
+    subjectType: 'trip request',
+    commentorId: 133,
+    comment: 'test test test'
+  },
+  {
+    comment: 'new comment'
+  }
+];
 
 const trip = [
   {
@@ -79,7 +92,7 @@ const UserDatabaseData = [
   },
   {
     id: 133,
-    firstName: 'manager',
+    firstName: 'username',
     lastName: 'eric',
     isVerified: 'true',
     email: 'user@gmail.com',

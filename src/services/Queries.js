@@ -93,32 +93,14 @@ class Queries {
     }
   }
 
-  /** Finds all bookings of a single user
-   *@param {object} table the table to search from
-   * @param {integer} tripId
-   * @returns {array} the bookings that was found
-   */
-  static async findRequestByUser(table, tripId) {
-    try {
-      const requestedTrip = await table.findAll({ where: { tripId } });
-      return requestedTrip;
-    } catch (error) {
-      return error;
-    }
-  }
-
   /**
     * searching a trip
     * @param {string} table table users table in database.
-    * @param {integer} requestUserId requestUserId user id in database.
+    * @param {integer} userId requestUserId user id in database.
     * @returns {array} data the data to be returned.
     */
-  static async findUserRequest(table, requestUserId) {
-    const data = await table.findAll({
-      where: {
-        userId: requestUserId
-      }
-    });
+  static async findAllRecord(table, userId) {
+    const data = await table.findAll({ where: userId });
     return data;
   }
 
@@ -138,21 +120,6 @@ class Queries {
       }
     });
     return data;
-  }
-
-  /** Query to find all accomodations
-   *
-   * @param {*} table to search into
-   * @param {*} to destination of the
-   * @returns { array } data found
-   */
-  static async findAccommodation(table, to) {
-    try {
-      const requestedAccomodation = await table.findAll({ where: { locationId: to } });
-      return requestedAccomodation;
-    } catch (error) {
-      return error;
-    }
   }
 
   /** Query to find a room by id
@@ -318,15 +285,11 @@ class Queries {
   /**
     * This servise delete a trip request comment
     * @param {String} table table
-    * @param {integer} Id trip id
+    * @param {Object} value subject id and accoment id
     * @returns { Object } user response as object
     */
-  static async deleteComment(table, Id) {
-    const result = await table.destroy({
-      where: {
-        Id
-      }
-    });
+  static async deleteComment(table, value) {
+    const result = await table.destroy({ where: value });
     if (result) {
       return result;
     }
