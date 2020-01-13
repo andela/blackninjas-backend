@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     department: { type: DataTypes.STRING, allowNull: true },
     profileImage: { type: DataTypes.STRING, allowNull: true },
     role: { type: DataTypes.STRING, allowNull: true, defaultValue: 'requester' },
-    authtype: { type: DataTypes.STRING, allowNull: true }
+    authtype: { type: DataTypes.STRING, allowNull: true },
+    appNotification: { type: DataTypes.BOOLEAN },
+    emailNotification: { type: DataTypes.BOOLEAN },
   }, {});
   user.associate = () => {
     // user.hasMany(models.requestTrip, { foreignKey: 'lineManager', sourceKey: 'id' });

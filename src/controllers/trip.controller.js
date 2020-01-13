@@ -5,6 +5,7 @@ import tripRequestService from '../services/request.services';
 import response from '../helpers/response.helper';
 import userManagement from '../services/user.management.services';
 import Paginate from '../helpers/paginate.helper';
+import NotificationService from '../services/notification.service';
 
 /**
 * Class for users to create trip
@@ -51,7 +52,7 @@ class tripController {
         tripId, userId, managerId, status
       };
       const tripRequest = await tripService.CreateTripRequest(requestData);
-
+      await NotificationService.sendNotification('trip_request_event', managerId, `New ${type} trip request.`, `${req.user.firstName} has requested a new ${type}`, tripRequest.id, 'http://localhost:3000/api/v1/notifications');
       return response.successMessage(res, 'Trip created successfully', 201, tripRequest.status);
     } catch (e) {
       return response.errorMessage(
