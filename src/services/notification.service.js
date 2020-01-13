@@ -72,5 +72,16 @@ class NotificationService {
     const query = await db.notification.findOne({ where });
     if (query) return query;
   }
+
+  /**
+   * update notifications
+   * @param { Object } where example: `{ receiver, userId }`.
+   * @param { Object } data example: `{ read: true }`.
+   * @returns { Promise } Returns a notification query result object.
+   */
+  static async updateNotifications(where, data) {
+    const query = await db.notification.update(data, { where });
+    return query;
+  }
 }
 export default NotificationService;

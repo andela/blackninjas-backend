@@ -87,4 +87,45 @@ router.get('/:id', verifyToken.headerToken, notificationController.getNotificati
  *            type: string
  */
 router.patch('/changePreference', Validate.userPreference(), isValid, verifyToken.headerToken, notificationController.changePreference);
+/**
+ * @swagger
+ *
+ * /notifications:
+ *    patch:
+ *      summary: Mark all notifications as read
+ *      tags: [Notification]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *          description: Successfully marked all notifications as read.
+ */
+router.patch('/', Validate.validateOnUpdateNotification(), isValid, verifyToken.headerToken, notificationController.updateNotificationsStatus);
+/**
+ * @swagger
+ *
+ * /notifications/{id}:
+ *    patch:
+ *      summary: Mark a notification as read
+ *      tags: [Notification]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check authentication
+ *         required: true
+ *         type: string
+ *       - name: id
+ *         in: path
+ *         description: Notification id
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *          description: Successfully marked a notification as read.
+ */
+router.patch('/:notificationID', Validate.validateOnUpdateNotification(), isValid, verifyToken.headerToken, notificationController.updateNotificationStatus);
 export default router;

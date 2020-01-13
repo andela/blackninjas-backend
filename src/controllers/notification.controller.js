@@ -40,5 +40,27 @@ class NotificationController {
     await UserService.updateUser(req.user.email, { appNotification, emailNotification });
     return response.successMessage(res, 'Successfully update user preference.', 200);
   }
+
+  /**
+   * Update all notifications as read
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Promise} res
+   */
+  static async updateNotificationsStatus(req, res) {
+    await NotificationService.updateNotifications({ receiver: req.user.id, read: false }, { read: true });
+    return response.successMessage(res, 'Successfully marked all notifications as read.', 200);
+  }
+
+  /**
+   * Update a notification as read
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Promise} res
+   */
+  static async updateNotificationStatus(req, res) {
+    await NotificationService.updateNotifications({ id: req.params.notificationID, receiver: req.user.id }, { read: req.body.isRead });
+    return response.successMessage(res, 'Successfully marked a notification as read.', 200);
+  }
 }
 export default NotificationController;
