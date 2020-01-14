@@ -70,11 +70,7 @@ class NotificationService {
    */
   static async getNotification(where) {
     const query = await db.notification.findOne({ where });
-    if (query && query.read === false) {
-      query.update({ read: true });
-      return query;
-    }
-    return query;
+    if (query) return query;
   }
 }
 export default NotificationService;

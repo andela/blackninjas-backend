@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { config } from 'dotenv';
 import tripService from '../services/trip.services';
 import userService from '../services/user.service';
 import tripRequestService from '../services/request.services';
@@ -7,6 +8,7 @@ import userManagement from '../services/user.management.services';
 import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
 
+config();
 /**
 * Class for users to create trip
 */
@@ -106,6 +108,7 @@ class tripController {
       status
     };
     const [, updateTripRequestStatus] = await tripRequestService.updateTripRequestStatus(changedStatus, tripRequestId);
+    await NotificationService.sendNotification('approve-or-reject-trip_request_event', updateTripRequestStatus[0].userId, `New ${status} request trip`, `Your manager has ${status} your trip request`, updateTripRequestStatus[0].id, `${process.env.BASE_URL}/`);
     return response.successMessage(res, `Trip request has been ${status} successfully`, 200, ...updateTripRequestStatus);
   }
 
