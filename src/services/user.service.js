@@ -208,5 +208,20 @@ class UserServices {
     const updatedUser = await userToUpdate.update(userInfo);
     return updatedUser;
   }
+
+  /**
+ * Find user
+ * @param {Object} where User atributes. example: `{ email, id, firstName, ... }`.
+ * @returns {Promise} Returns a user object and if user doesn't exist it returns null.
+ */
+  static async findUser(where) {
+    try {
+      const user = await db.user.findOne({ where });
+      if (!user) return null;
+      return user;
+    } catch (error) {
+      return undefined;
+    }
+  }
 }
 export default UserServices;

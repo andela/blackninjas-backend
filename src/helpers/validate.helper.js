@@ -69,5 +69,16 @@ class Validate {
 
     ];
   }
+
+  /**
+   * Validate user preference data
+   * @returns {[{ValidationChain}]}.
+   */
+  static userPreference() {
+    return [
+      check('appNotification', 'App notification need to be boolean').isBoolean(),
+      check('emailNotification', 'Email notification need to be boolean').isBoolean()
+    ];
+  }
 }
 export default Validate;

@@ -55,6 +55,14 @@ module.exports = {
     profileImage: {
       type: Sequelize.STRING
     },
+    appNotification: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true
+    },
+    emailNotification: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE
