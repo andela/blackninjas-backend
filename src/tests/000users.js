@@ -14,7 +14,6 @@ const invalidToken = GenerateToken({ email: 'invalid@gmail.com', isVerified: 'fa
 
 describe('user velify email', () => {
   before(async () => {
-    // await db.user.destroy({ where: {}, force: true });
     await db.user.create({
       firstName: 'shema',
       lastName: 'eric',

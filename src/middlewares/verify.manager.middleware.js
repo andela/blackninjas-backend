@@ -15,7 +15,7 @@ class verifyIfIsManager {
     const user = await UserServices.findUserByEmail(req.user.email);
 
 
-    if (user.role === 'user' || user.role === null) {
+    if (user.role === 'requester' || user.role === null) {
       return response.errorMessage(res, 'You are not authorised to perform this task', 401, 'error');
     }
     req.manager = user;

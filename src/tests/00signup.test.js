@@ -31,14 +31,6 @@ describe('Signup tests', () => {
         done();
       });
   });
-  it('User should not be able to signup with email which is already registered', (done) => {
-    chai.request(app).post('/api/v1/auth/signup')
-      .send(user)
-      .end((err, res) => {
-        res.should.have.status(409);
-        done();
-      });
-  });
   it('it should log error', async () => {
     const u = await UserServices.findUserByEmail();
     chai.expect(u).to.eq(undefined);

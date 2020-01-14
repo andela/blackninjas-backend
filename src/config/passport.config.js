@@ -23,5 +23,5 @@ passport.use(new FacebookStrategy({
   callbackURL: `${BASE_URL}/api/v1/auth/facebook/redirect`,
   clientID: FACEBOOK_CLIENT_ID,
   clientSecret: FACEBOOK_CLIENT_SECRET,
-  profileFields: ['id', 'displayName', 'first_name', 'last_name', 'email'],
+  profileFields: ['id', 'displayName', 'first_name', 'last_name', 'email', 'photos'],
 }, userController.googleAndFacebookPlusAuth));
