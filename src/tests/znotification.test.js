@@ -15,6 +15,7 @@ const token1 = GenerateToken({ email: 'shemhdsnbad@gmail.com', isVerified: 'true
 describe('Notification Tests', () => {
   before(async () => {
     await db.user.destroy({ where: {}, force: true });
+    await db.notification.destroy({ where: {}, force: true });
     await db.user.create({
       id: 198,
       firstName: 'Veda',
@@ -72,6 +73,24 @@ describe('Notification Tests', () => {
       id: 120,
       userId: 298,
       managerId: 198
+    });
+    await db.notification.create({
+      receiver: 198,
+      requestId: 9,
+      title: 'New requests',
+      message: 'New request'
+    });
+    await db.notification.create({
+      receiver: 198,
+      requestId: 9,
+      title: 'New requests',
+      message: 'New request'
+    });
+    await db.notification.create({
+      receiver: 198,
+      requestId: 9,
+      title: 'New requests',
+      message: 'New request'
     });
     const socketURL = 'http://localhost:3000';
 
@@ -131,6 +150,28 @@ describe('Notification Tests', () => {
       .end((err, res) => {
         res.should.have.status(200);
         chai.expect(res.body.message).eql('Successfully update user preference.');
+        done();
+      });
+  });
+  it('should mark a notification as read', (done) => {
+    chai.request(app)
+      .patch(`/api/v1/notifications/${2}`)
+      .set('token', `Bearer ${token}`)
+      .send({ isRead: true })
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('Successfully marked a notification as read.');
+        done();
+      });
+  });
+  it('should mark all notifications to read', (done) => {
+    chai.request(app)
+      .patch('/api/v1/notifications')
+      .set('token', `Bearer ${token}`)
+      .send({ isRead: true })
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('Successfully marked all notifications as read.');
         done();
       });
   });

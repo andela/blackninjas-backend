@@ -80,5 +80,15 @@ class Validate {
       check('emailNotification', 'Email notification need to be boolean').isBoolean()
     ];
   }
+
+  /**
+   * Validate when updating notification
+   * @returns {[{ValidationChain}]}.
+   */
+  static validateOnUpdateNotification() {
+    return [
+      check('isRead', 'isRead needs to be a boolean').isBoolean(),
+    ];
+  }
 }
 export default Validate;
