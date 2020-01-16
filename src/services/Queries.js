@@ -186,6 +186,9 @@ class Queries {
         where:
           managerId,
         group: table.status,
+        order: [
+          ['createdAt', 'DESC']
+        ],
         limit,
         offset
       });

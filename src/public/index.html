@@ -9,7 +9,7 @@
 <body>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://localhost:3000');
+        var socket = io.connect('https://blackninjas-backend-staging.herokuapp.com');
         socket.emit('connect_user', 3);
         socket.on('approve-or-reject-trip_request_event', function (data) {
             console.log(data);

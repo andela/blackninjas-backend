@@ -188,8 +188,8 @@ class TripController {
   static async getAllComments(req, res) {
     const subjectType = 'trip request';
     const subjectID = req.params.tripRequestID;
-    const { page } = req.query;
-    const limitNumber = 10;
+    const { page, limit } = req.query;
+    const limitNumber = (/[0-9]/g.test(limit)) ? limit : 10;
     const offset = Paginate(page, limitNumber);
     const data = await commentService.getAllCommets(subjectID, subjectType, limitNumber, offset);
     if (data) return response.successMessage(res, 'success', 200, data);
