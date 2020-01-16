@@ -184,8 +184,7 @@ describe('comment tests', () => {
   it('user should be able to get a trip request', (done) => {
     chai
       .request(app)
-      .get('/api/v1/trip-requests/tripId')
-      .set('token', `Bearer ${token}`)
+      .get(`/api/v1/trip-requests/tripId/${token}`)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.have.be.a('object');
@@ -197,8 +196,7 @@ describe('comment tests', () => {
   it('should display an error message in case a trip request does not exist', (done) => {
     chai
       .request(app)
-      .get('/api/v1/trip-requests/invalid')
-      .set('token', `Bearer ${token}`)
+      .get(`/api/v1/trip-requests/invalid/${token}`)
       .end((err, res) => {
         res.should.have.status(404);
         res.body.should.have.be.a('object');

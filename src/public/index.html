@@ -14,8 +14,10 @@
         socket.on('approve-or-reject-trip_request_event', function (data) {
             console.log(data);
         });
-
-        socket.emit('connect_user', 198);
+        socket.on('edit-trip-request', function (data) {
+            console.log(data);
+        });
+        socket.emit('connect_user', 3);
         socket.on('trip_request_event', function (data) {
             console.log(data);
         });
