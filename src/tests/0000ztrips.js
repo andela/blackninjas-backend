@@ -193,7 +193,7 @@ describe('trips tests', () => {
   it('should accept the trip request if status is accepted', (done) => {
     const status = 'approved';
     const decoded = verifyToken(token2);
-    chai.request(app).patch(`/api/v1/trip/trip-requests/${1}`)
+    chai.request(app).patch(`/api/v1/trip-requests/${1}`)
       .set('token', `Bearer ${token2}`)
       .send({ status })
       .end((err, res) => {
@@ -211,7 +211,7 @@ describe('trips tests', () => {
   it('should reject the trip request if status is rejected', (done) => {
     const status = 'rejected';
     const decoded = verifyToken(token2);
-    chai.request(app).patch(`/api/v1/trip/trip-requests/${1}`)
+    chai.request(app).patch(`/api/v1/trip-requests/${1}`)
       .set('token', `Bearer ${token2}`)
       .send({ status })
       .end((err, res) => {
@@ -223,6 +223,25 @@ describe('trips tests', () => {
         res.body.data.should.have.property('managerId');
         expect(res.body.data.managerId).eql(decoded.payload.id);
         expect(res.body.data.status).eql('rejected');
+        done();
+      });
+  });
+  it('should return found records from the search query', (done) => {
+    chai.request(app).get('/api/v1/trip-requests/search?keyword=she&page=1&limit=1')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        done();
+      });
+  });
+  it('should return error 404 when no found records from the search query', (done) => {
+    const keyword = 'lposd';
+    chai.request(app).get(`/api/v1/trip-requests/search?keyword=${keyword}&page=1&limit=1`)
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.have.property('error');
+        expect(res.body.error).eql(`No Records were found for keyword ${keyword}`);
         done();
       });
   });

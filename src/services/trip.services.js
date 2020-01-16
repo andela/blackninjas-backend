@@ -220,11 +220,10 @@ class TripService {
   /**
    * This service get a spacific trip request data
    * @param {Object} tripId tripID
-   * @param {Object} userId userID
    * @returns {Object} user response
    */
-  static async getTripRequest(tripId, userId) {
-    const trips = await Queries.findAllRecord(db.trips, { tripId, userId });
+  static async getTripRequest(tripId) {
+    const trips = await Queries.findAllRecord(db.trips, { tripId });
     const tripRequest = await Queries.findOneRecord(db.requesttrip, { tripId });
     if (tripRequest) {
       return {
