@@ -85,7 +85,6 @@ class tripHelper {
     await Promise.all(req.body.map(async (trip, index) => {
       const bookedTrips = [];
       const trips = await tripService.findUserTrip(res, req.body[index].From, req.body[index].To);
-
       trips.filter((trip2) => {
         const tripDepartureDate = moment(trip2.dataValues.departureDate).format('YYYY-MM-DD');
         if (tripDepartureDate === trip.departureDate) {

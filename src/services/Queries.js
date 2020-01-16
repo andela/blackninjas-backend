@@ -93,32 +93,14 @@ class Queries {
     }
   }
 
-  /** Finds all bookings of a single user
-   *@param {object} table the table to search from
-   * @param {integer} tripId
-   * @returns {array} the bookings that was found
-   */
-  static async findRequestByUser(table, tripId) {
-    try {
-      const requestedTrip = await table.findAll({ where: { tripId } });
-      return requestedTrip;
-    } catch (error) {
-      return error;
-    }
-  }
-
   /**
     * searching a trip
     * @param {string} table table users table in database.
-    * @param {integer} requestUserId requestUserId user id in database.
+    * @param {integer} userId requestUserId user id in database.
     * @returns {array} data the data to be returned.
     */
-  static async findUserRequest(table, requestUserId) {
-    const data = await table.findAll({
-      where: {
-        userId: requestUserId
-      }
-    });
+  static async findAllRecord(table, userId) {
+    const data = await table.findAll({ where: userId });
     return data;
   }
 
@@ -138,40 +120,6 @@ class Queries {
       }
     });
     return data;
-  }
-
-  // /**
-  //   * searching a trip
-  //   * @param {string} table users table in database.
-  //   * @param {string} supportedPlace the supported places in database.
-  //   * @returns {array} data the data to be returned.
-  //   */
-  // static async findPlace(table, supportedPlace) {
-  //   try {
-  //     const place = await table.findOne({ where: { supportedPlace } });
-  //     return place;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
-
-  /** Query to find all accomodations
-   *
-   * @param {*} table to search into
-   * @param {*} to destination of the
-   * @returns { array } data found
-   */
-  static async findAccommodation(table, to) {
-    try {
-      const requestedAccomodation = await table.findAll({
-        where: {
-          locationId: to
-        }
-      });
-      return requestedAccomodation;
-    } catch (error) {
-      return error;
-    }
   }
 
   /** Query to find a room by id
@@ -216,7 +164,7 @@ class Queries {
  * @param { Object } value attribute and value
  * @returns { boolean } data or false
  */
-  static async findByOneAttribute(table, value) {
+  static async findOneRecord(table, value) {
     const data = await table.findOne({ where: value });
     if (data) {
       return data;
@@ -232,12 +180,11 @@ class Queries {
    * @param {Object} offset number
    * @returns { array } data found
    */
-  static async findTripRequestsByManager(table, managerId, limit, offset) {
+  static async paginationSearch(table, managerId, limit, offset) {
     try {
       const requestedTrip = await table.findAndCountAll({
-        where: {
-          managerId
-        },
+        where:
+          managerId,
         group: table.status,
         limit,
         offset
@@ -332,6 +279,22 @@ class Queries {
     } catch (error) {
       return error;
     }
+  }
+
+
+  /**
+    * This servise delete a trip request comment
+    * @param {String} table table
+    * @param {Object} value subject id and accoment id
+    * @returns { Object } user response as object
+    */
+  static async deleteComment(table, value) {
+    const result = await table.destroy({ where: value });
+    if (result) {
+      return result;
+    }
+
+    return false;
   }
 }
 export default Queries;

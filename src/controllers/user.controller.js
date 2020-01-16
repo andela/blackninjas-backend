@@ -112,7 +112,7 @@ class userController {
         email: profile.emails[0].value,
         authtype: profile.provider,
         profileImage: profile.photos[0].value,
-        isVerified: true
+        isVerified: true,
       };
       const [userCreated] = await UserServices.findOrCreateUser(userData);
       done(null, userCreated.dataValues);

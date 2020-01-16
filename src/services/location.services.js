@@ -9,7 +9,7 @@ class location {
      * @returns { boolean } true or false
      */
   static async findLocation(locationId) {
-    return Queries.findByOneAttribute(db.locations, { id: locationId });
+    return Queries.findOneRecord(db.locations, { id: locationId });
   }
 }
 

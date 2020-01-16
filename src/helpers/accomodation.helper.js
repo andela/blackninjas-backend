@@ -1,6 +1,6 @@
 import UserServices from '../services/user.service';
 import locationServices from '../services/location.services';
-import accomodationServices from '../services/accomodation.services';
+import accomodationServices from '../services/accomodation.service';
 
 /**
  * all trip helpers

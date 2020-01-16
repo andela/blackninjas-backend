@@ -16,6 +16,7 @@ describe('Notification Tests', () => {
   before(async () => {
     await db.user.destroy({ where: {}, force: true });
     await db.notification.destroy({ where: {}, force: true });
+    await db.locations.destroy({ where: {}, force: true });
     await db.user.create({
       id: 198,
       firstName: 'Veda',
@@ -108,6 +109,7 @@ describe('Notification Tests', () => {
     chai.request(app).post('/api/v1/trip')
       .set('token', `Bearer ${token1}`)
       .send({
+        id: 93,
         From: 43,
         To: 76,
         departureDate: '2020-03-05',

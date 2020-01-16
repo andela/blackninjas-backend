@@ -1,7 +1,7 @@
 import db from '../database/models';
 import Queries from './Queries';
 /** trip service */
-class tripService {
+class TripService {
 /**
     * creating user query
     * @param {string} tripsRequest users table in database.
@@ -35,13 +35,13 @@ class tripService {
   }
 
   /** Finds all bookings of a single user
-   *
+  * @param {String} table table name
    * @param {integer} tripId
    * @returns {array} the bookings that was found
    */
-  static async findRequestByUser(tripId) {
+  static async findRequestByID(table, tripId) {
     try {
-      const requestedTrip = await Queries.findRequestByUser(db.requesttrip, tripId);
+      const requestedTrip = await Queries.findAllRecord(table, db.requesttrip, tripId);
       return requestedTrip;
     } catch (error) {
       return error;
@@ -134,7 +134,7 @@ class tripService {
     */
   static async findUserRequest(userId) {
     try {
-      const request = await Queries.findUserRequest(db.requesttrips, userId);
+      const request = await Queries.findAllRecord(db.requesttrips, { userId });
       if (request.dataValues) return request;
     } catch (error) {
       return error;
@@ -196,9 +196,9 @@ class tripService {
    * @param {Object} offset number
    * @returns {Object} the booking of the exact passed user id
    */
-  static async findTripRequestsByManager(managerId, limit, offset) {
+  static async findTripRequestsById(managerId, limit, offset) {
     try {
-      const bookUser = await Queries.findTripRequestsByManager(db.requesttrip, managerId, limit, offset);
+      const bookUser = await Queries.paginationSearch(db.requesttrip, { managerId }, limit, offset);
       return bookUser;
     } catch (error) {
       return error;
@@ -206,20 +206,15 @@ class tripService {
   }
 
   /**
-   *
-   * @param {Integer} userId the id of the user
-   * @param {Integer} limit the integer for the entry per page
-   * @param {Integer} offset the integer for going to the next pages
-   * @returns {Object} the booking of the exact passed user id
+   * This method search trip reqest by trip id
+   * @param { Integer } tripID the tripID
+   * @returns { Object } trip request data
    */
-  static async getTripRequestsByUserId(userId, limit, offset) {
-    try {
-      const bookUser = await Queries.findRecordById(db.requesttrip, userId, limit, offset);
-      return bookUser;
-    } catch (error) {
-      return error;
-    }
+  static async searchTripRequestByTripId(tripID) {
+    const tripRequest = await Queries.findOneRecord(db.requesttrip, { tripId: tripID });
+    if (tripRequest !== 0) return tripRequest;
+    return null;
   }
 }
 
-export default tripService;
+export default TripService;
