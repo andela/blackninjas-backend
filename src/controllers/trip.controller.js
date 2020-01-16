@@ -207,5 +207,19 @@ class TripController {
     const subjectId = req.params.subjectID;
     await commentService.deleteComment(res, subjectId, Id);
   }
+
+  /**
+   * This method get a specific trip request
+   * @param {Object} req requestx
+   * @param {Object} res response
+   * @returns {Object} user response
+   */
+  static async getTripRequest(req, res) {
+    const subjectID = req.params.tripRequestID;
+    const userID = req.user.id;
+    const data = await tripService.getTripRequest(subjectID, userID);
+    if (data) return response.successMessage(res, 'success', 200, data);
+    return response.errorMessage(res, 'Trip not found', 404);
+  }
 }
 export default TripController;

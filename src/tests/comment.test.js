@@ -24,6 +24,7 @@ const linemanagerToken = GenerateToken({ email: 'linemanager@gmail.com', isVerif
 describe('comment tests', () => {
   before(async () => {
     await db.user.destroy({ where: {}, force: true });
+    await db.requesttrip.destroy({ where: {}, force: true });
     await db.user.create(UserDatabaseData[0]);
     await db.user.create(UserDatabaseData[1]);
     await db.user.create(UserDatabaseData[2]);
@@ -176,6 +177,32 @@ describe('comment tests', () => {
         res.should.have.status(200);
         res.body.should.have.be.a('object');
         res.body.should.have.property('message').eql('Comment has been successfuly deleted');
+        done();
+      });
+  });
+
+  it('user should be able to get a trip request', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/trip-requests/tripId')
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('message').eql('success');
+        done();
+      });
+  });
+
+  it('should display an error message in case a trip request does not exist', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/trip-requests/invalid')
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('error').eql('Trip not found');
         done();
       });
   });
