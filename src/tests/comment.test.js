@@ -88,7 +88,7 @@ describe('comment tests', () => {
   it('should display all trip request comments', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1`)
+      .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1&limit=2`)
       .set('token', `Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -119,7 +119,7 @@ describe('comment tests', () => {
   it('should check if a user allowed to view others comment', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1`)
+      .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1&limit=2`)
       .set('token', `Bearer ${anauthorizedToken}`)
       .end((err, res) => {
         res.should.have.status(401);

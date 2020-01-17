@@ -42,7 +42,7 @@ class TripService {
    */
   static async findRequestByID(table, tripId) {
     try {
-      const requestedTrip = await Queries.findAllRecord(table, db.requesttrip, tripId);
+      const requestedTrip = await Queries.findAllRecord(table, tripId);
       return requestedTrip;
     } catch (error) {
       return error;
