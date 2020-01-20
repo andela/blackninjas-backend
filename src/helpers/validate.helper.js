@@ -118,5 +118,18 @@ class Validate {
       check('amenities', 'accomodation amenities should be valid.').isArray().optional(),
     ];
   }
+
+  /**
+   * This method validate a booking an accommodation facility request
+   * @returns {[{ValidationChain}]}.
+   */
+  static bookingValidation() {
+    return [
+      check('accommodationId', 'accommodationId needs to be a number').isInt(),
+      check('roomTypeId', 'roomTypeId needs to be a number').isInt(),
+      check('departureDate', 'departureDate needs to be a date format').toDate(),
+      check('checkoutDate', 'checkoutDate needs to be a date format').toDate(),
+    ];
+  }
 }
 export default Validate;

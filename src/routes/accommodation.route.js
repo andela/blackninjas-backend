@@ -79,5 +79,43 @@ const router = express.Router();
  */
 router.post('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.verifyTravelAdminAndSupplier, Validate.accomodationValidation(), isValid, Accommodation.createAccomodation);
 router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodation.getAccomodation);
-
+/**
+ * @swagger
+ *
+ * /accommodation/accommodationID:
+ *    patch:
+ *      summary: Book an accommodation
+ *      tags: [Accommodation]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "201":
+ *          description: Booking was successfully processed.
+ *
+ * * components:
+ *    schemas:
+ *      booking:
+ *        type: object
+ *        required:
+ *          - accommodationId
+ *          - roomTypeId
+ *          - departureDate
+ *          - checkoutDate
+ *        properties:
+ *          userId:
+ *            type: integer
+ *          accommodationId:
+ *            type: integer
+ *          roomTypeId:
+ *            type: integer
+ *          departureDate:
+ *            type: string
+ *          checkoutDate:
+ *            type: string
+ */
+router.post('/booking', Validate.bookingValidation(), isValid, verifyToken.headerToken, AccomodationMiddleware.validateDates, AccomodationMiddleware.checkBookingFacilitiesAvailability, Accommodation.bookAccommodation);
 export default router;

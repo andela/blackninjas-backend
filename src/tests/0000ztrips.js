@@ -22,7 +22,13 @@ let token;
 let token2;
 const token3 = GenerateToken({ email: 'shemad24@gmail.com', isVerified: true, id: 7 });
 
-const verifyToken = (tokens) => jwt.verify(tokens, process.env.JWTKEY, (err, data) => data);
+/**
+ * @param {String} tokens
+ * @returns {Object} JWT
+ */
+function verifyToken(tokens) {
+  return jwt.verify(tokens, process.env.JWTKEY, (_err, data) => data);
+}
 
 let requestTrip = {};
 describe('trips tests', () => {

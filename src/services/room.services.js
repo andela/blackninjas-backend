@@ -29,6 +29,16 @@ class room {
   static async findRooms(accomodationId) {
     return Queries.findAllRecord(db.rooms, { accomodationId });
   }
+
+  /** Finds all available rooms in accommodation for a particular room type
+   *
+   * @param {Integer} accommodationId destination  id
+   * @param {String} roomTypeId destination  id
+   * @returns { Object } list of rooms
+   */
+  static async getAvalableRoom(accommodationId, roomTypeId) {
+    return db.rooms.findOne({ where: { accomodationId: accommodationId, typeId: roomTypeId } });
+  }
 }
 
 export default room;

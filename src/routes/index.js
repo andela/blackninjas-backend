@@ -17,5 +17,4 @@ Router.use('/trip-requests', searchRoute, comment, tripRequest);
 Router.use('/trip-requests', comment, tripRequest);
 Router.use('/accommodations', accomodationRoute);
 
-
 export default Router;

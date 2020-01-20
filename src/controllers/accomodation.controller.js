@@ -59,6 +59,17 @@ class Accommodation {
     };
     response.successMessage(res, 'accommodation data', 201, data);
   }
+
+  /**
+   * Book an accommodation facility
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Promise} res
+   */
+  static async bookAccommodation(req, res) {
+    const query = await accomodationServices.bookAccommodation(req.user.id, req.body.accommodationId, req.body.roomId, req.body.departureDate, req.body.checkoutDate);
+    return response.successMessage(res, 'Booking was successfully processed', 201, query);
+  }
 }
 
 export default Accommodation;

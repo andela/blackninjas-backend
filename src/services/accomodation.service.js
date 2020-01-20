@@ -94,5 +94,46 @@ class accommodationService {
       return error;
     }
   }
+
+  /**
+  * book an accommodation facilities
+  * @param { Number } userId user id
+  * @param { Number } accommodationId accommodation id
+  * @param { String } roomid room id
+  * @param { Date } departureDate departure date
+  * @param { Date } checkoutDate checkout date
+  * @returns { Object } an accommodation
+  */
+  static async bookAccommodation(userId, accommodationId, roomid, departureDate, checkoutDate) {
+    const query = await db.booking.create({
+      userid: userId,
+      accommodationid: accommodationId,
+      roomid,
+      departuredate: departureDate,
+      checkoutdate: checkoutDate
+    });
+    await db.accomodation.decrement('availableRooms', { by: 1, where: { id: accommodationId } });
+    return query;
+  }
+
+  /**
+* check if user has already booked an accommodation facilities on the same date
+* @param { Number } userId user id
+* @param { Number } accommodationId accommodation id
+* @param { Date } departureDate departure date
+* @param { Date } checkoutDate checkout date
+* @returns { Object } an accommodation
+*/
+  static async checkIfUserAlreadyBookedAccommodation(userId, accommodationId, departureDate, checkoutDate) {
+    const query = await db.bookedaccommodations.findOne({
+      where: {
+        userid: userId,
+        accommodationid: accommodationId,
+        departuredate: departureDate,
+        checkoutdate: checkoutDate
+      }
+    });
+    return query;
+  }
 }
 export default accommodationService;
