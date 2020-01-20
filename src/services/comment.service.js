@@ -1,6 +1,7 @@
 import db from '../database/models';
 import Queries from './Queries';
 import response from '../helpers/response.helper';
+import Paginate from '../helpers/paginate.helper';
 
 /**
  * This class will provide all service ralated
@@ -11,60 +12,63 @@ class CommentServices {
     * This method will help to create
     * a comment
     * @param { Object } req request data
-    * @param {String} subjectId subjectId
+    * @param { Object } res response
     * @param {String} subjectType subjectId
     * @returns {array} data that was created
     */
-  static async createComment(req, subjectId, subjectType) {
-    const data = {
-      subjectId,
+  static async createComment(req, res, subjectType) {
+    const body = {
+      subjectId: req.params.subjectID,
       subjectType,
       commentorId: req.user.id,
       comment: req.body.comment,
     };
-    const comment = await Queries.findOneRecord(db.comment, data);
-    if (comment.dataValues) return false;
 
-    return Queries.create(db.comment, data);
+    const data = await Queries.create(db.comment, body);
+    return response.successMessage(res, 'comment created successfuly', 201, data);
   }
 
   /**
    * This method will help to search all comments
-   * @param {object} subjectId trip id
-   * @param { Object } subjectType subject type
-   * @param { Object } limit number of record
-   * @param { Object } offset offset
+   * @param {object} req request
+   * @param { Object } res response
+   * @param { String } subjectType subject Type
    * @returns { Object } all information needed
    */
-  static async getAllCommets(subjectId, subjectType, limit, offset) {
-    const tripRequest = await Queries.findOneRecord(db.requesttrip, { tripId: subjectId });
-    const trip = await Queries.findOneRecord(db.trips, { tripId: subjectId });
-    const comment = await Queries.paginationSearch(db.comment, { subjectId, subjectType }, limit, offset);
+  static async getAllCommets(req, res, subjectType) {
+    const subjectId = req.params.subjectID;
+    const { page, limit } = req.query;
+    const limitNumber = (/[0-9]/g.test(limit)) ? limit : 10;
+    const offset = Paginate(page, limitNumber);
+
+    const comment = await Queries.paginationSearch(db.comment, { subjectId, subjectType }, limitNumber, offset);
     if (!Object.prototype.hasOwnProperty.call(comment, 'managerId')) {
-      const userInfo = await Queries.findOneRecord(db.user, { id: tripRequest.dataValues.userId });
-      const managerInfo = await Queries.findOneRecord(db.user, { id: tripRequest.dataValues.managerId });
+      const userInfo = await Queries.findOneRecord(db.user, { id: comment.rows[0].commentorId });
+      const commenterInfo = userInfo && {
+        id: userInfo.id,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        profileImage: userInfo.profileImage
+      };
       const data = {
-        userId: userInfo.id,
-        managerId: managerInfo.id,
-        username: userInfo.firstName,
-        managerName: managerInfo.firstName,
-        date: trip.dataValues.departureDate,
+        commenterInfo,
         comment
       };
 
-      return data;
+      return response.successMessage(res, 'success', 200, data);
     }
-    return null;
+    return response.successMessage(res, 'No comment yet', 204);
   }
 
   /**
     * This servise delete a comment
+    * @param {Object} req request
     * @param {Object} res response
-    * @param {String} subjectId subjectId ID
-    * @param {integer} id comment id
     * @returns { Object } user response as object
     */
-  static async deleteComment(res, subjectId, id) {
+  static async deleteComment(req, res) {
+    const id = parseInt(req.params.commentID, 10);
+    const subjectId = req.params.subjectID;
     await Queries.deleteComment(db.comment, { subjectId, id });
     return response.successMessage(res, 'Comment has been successfuly deleted', 200);
   }

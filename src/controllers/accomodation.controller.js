@@ -3,6 +3,7 @@ import accomodationServices from '../services/accomodation.service';
 import AccommodationHelper from '../helpers/accomodation.helper';
 import imageServices from '../services/image.services';
 import roomServices from '../services/room.services';
+import commentService from '../services/comment.service';
 
 /**
 * Class for Travel administrator and supplier to deal with Accommodation
@@ -34,7 +35,7 @@ class Accommodation {
       accommodationServices,
       accommodationAmenities
     };
-    response.successMessage(res, 'accommodation is successfully created', 201, data);
+    return response.successMessage(res, 'accommodation is successfully created', 201, data);
   }
 
   /**
@@ -57,7 +58,41 @@ class Accommodation {
       accommodationServices,
       accommodationAmenities
     };
-    response.successMessage(res, 'accommodation data', 201, data);
+    return response.successMessage(res, 'accommodation data', 201, data);
+  }
+
+  /**
+     * This method create a comment
+     * @param {Object} req request data
+     * @param {Object} res response data
+     * @returns { Object} return a user message
+     */
+  static async createAccomodationComment(req, res) {
+    const subjectType = 'Accommodation';
+    await commentService.createComment(req, res, subjectType);
+  }
+
+  /**
+       *
+       * This method will help to view all
+       * comments
+       * @param {Object} req user request data
+       * @param {Object} res user response data
+       * @returns { Object} return a user message
+       */
+  static async getAccommodationComments(req, res) {
+    const subjectType = 'Accommodation';
+    await commentService.getAllCommets(req, res, subjectType);
+  }
+
+  /**
+       * This method help to delete a comment
+       * @param { Object } req request
+       * @param { Object } res response
+       * @returns { Object } user respose as object
+       */
+  static async deleteAccommodationComment(req, res) {
+    await commentService.deleteComment(req, res);
   }
 
   /**

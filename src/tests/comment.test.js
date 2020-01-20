@@ -50,6 +50,8 @@ describe('comment tests', () => {
     await db.requesttrip.create(requestTrip[1]);
     await db.comment.create(comment[0]);
     await db.comment.create(comment[1]);
+    await db.comment.create(comment[3]);
+    await db.comment.create(comment[4]);
   });
 
   it('comment should be created successfuly', (done) => {
@@ -72,15 +74,13 @@ describe('comment tests', () => {
       });
   });
 
-  it('should display an error message in case a trip request does not have a comment', (done) => {
+  it('should return an empty body in case a trip request does not have a comment', (done) => {
     chai
       .request(app)
       .get(`/api/v1/trip-requests/${trip[1].tripId}/comments?page=1`)
       .set('token', `Bearer ${anauthorizedToken}`)
       .end((err, res) => {
-        res.should.have.status(404);
-        res.body.should.have.be.a('object');
-        res.body.should.have.property('error').eql('No comment yet');
+        res.should.have.status(204);
         done();
       });
   });
@@ -94,16 +94,15 @@ describe('comment tests', () => {
         res.should.have.status(200);
         res.body.should.have.be.a('object');
         res.body.should.have.property('message').eql('success');
-        res.body.data.should.have.property('userId').eql(UserDatabaseData[2].id);
-        res.body.data.should.have.property('managerId').eql(UserDatabaseData[1].id);
-        res.body.data.should.have.property('username').eql(UserDatabaseData[2].firstName);
-        res.body.data.should.have.property('managerName').eql(UserDatabaseData[1].firstName);
-        res.body.data.should.have.property('date');
+        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[2].id);
+        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[2].firstName);
+        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[2].lastName);
+        res.body.data.commenterInfo.should.have.property('profileImage');
         done();
       });
   });
 
-  it('should check if a trip exist', (done) => {
+  it('should check if a trip exist then display a message', (done) => {
     chai
       .request(app)
       .get('/api/v1/trip-requests/invalidTripId/comments?page=1')
@@ -116,7 +115,7 @@ describe('comment tests', () => {
       });
   });
 
-  it('should check if a user allowed to view others comment', (done) => {
+  it('should check if a user allowed to view others comment then display a message', (done) => {
     chai
       .request(app)
       .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1&limit=2`)
@@ -129,20 +128,18 @@ describe('comment tests', () => {
       });
   });
 
-  it('should display error message in case a comment does not exist', (done) => {
+  it('should display an empty body in case a comment does not exist', (done) => {
     chai
       .request(app)
       .delete('/api/v1/trip-requests/ubjectId/comments/0')
       .set('token', `Bearer ${token}`)
       .end((err, res) => {
-        res.should.have.status(404);
-        res.body.should.have.be.a('object');
-        res.body.should.have.property('error').eql('Comment not found');
+        res.should.have.status(204);
         done();
       });
   });
 
-  it('should check if a user allowed to delete athers comment', (done) => {
+  it('should check if a user allowed to delete others comment', (done) => {
     chai
       .request(app)
       .delete('/api/v1/trip-requests/ubjectId/comments/14')
@@ -155,7 +152,7 @@ describe('comment tests', () => {
       });
   });
 
-  it('should check if comment id is a number', (done) => {
+  it('should check if comment id is a number then display a message', (done) => {
     chai
       .request(app)
       .delete('/api/v1/trip-requests/ubjectId/comments/invalid')
@@ -168,7 +165,7 @@ describe('comment tests', () => {
       });
   });
 
-  it('user should be able to delete a comment', (done) => {
+  it('should allow a user to delete a comment', (done) => {
     chai
       .request(app)
       .delete('/api/v1/trip-requests/ubjectId/comments/14')
@@ -181,7 +178,7 @@ describe('comment tests', () => {
       });
   });
 
-  it('user should be able to get a trip request', (done) => {
+  it('should allow a user to get a trip request', (done) => {
     chai
       .request(app)
       .get(`/api/v1/trip-requests/tripId/${token}`)
@@ -201,6 +198,77 @@ describe('comment tests', () => {
         res.should.have.status(404);
         res.body.should.have.be.a('object');
         res.body.should.have.property('error').eql('Trip not found');
+        done();
+      });
+  });
+
+  it('should return an empty body in case a accomodation does not have a comment', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/accommodations/${accomodationDatabaseData[3].id}/comments?page=1`)
+      .set('token', `Bearer ${anauthorizedToken}`)
+      .end((err, res) => {
+        res.should.have.status(204);
+        done();
+      });
+  });
+
+  it('should display all accommodation comments', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/accommodations/${accomodationDatabaseData[0].id}/comments?page=1&limit=1`)
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('message').eql('success');
+        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[2].id);
+        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[2].firstName);
+        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[2].lastName);
+        res.body.data.commenterInfo.should.have.property('profileImage');
+        res.body.data.comment.rows.should.have.be.a('array');
+        res.body.data.comment.rows[0].should.have.property('id').eql(comment[4].id);
+        res.body.data.comment.rows[0].should.have.property('subjectType').eql(comment[4].subjectType);
+        res.body.data.comment.rows[0].should.have.property('commentorId').eql(comment[4].commentorId);
+        res.body.data.comment.rows[0].should.have.property('comment').eql(comment[4].comment);
+        done();
+      });
+  });
+
+  it('should check if a accomodation exist and display a message', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/accommodations/0/comments?page=1')
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('error').eql('Accommodation not found');
+        done();
+      });
+  });
+
+  it('should return an empty body in case a comment does not exist', (done) => {
+    chai
+      .request(app)
+      .delete(`/api/v1/accommodations/${accomodationDatabaseData[0].id}/comments/0`)
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(204);
+        done();
+      });
+  });
+
+  it('should check if a user is allowed to provided a feedback on the accommodation', (done) => {
+    chai
+      .request(app)
+      .post(`/api/v1/accommodations/${accomodationDatabaseData[0].id}/comments`)
+      .set('token', `Bearer ${token}`)
+      .send(comment[2])
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('error').eql('You are not allowed to provide the feedback on this accommodation');
         done();
       });
   });

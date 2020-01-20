@@ -14,9 +14,8 @@ Router.use('/auth', userRoute);
 Router.use('/trips', tripsRoute);
 Router.use('/users', userSettings);
 Router.use('/notifications', notificationRoute);
-Router.use('/trip-requests', searchRoute, comment, tripRequest);
-Router.use('/trip-requests', comment, tripRequest);
 Router.use('/accommodations', accomodationRoute);
 Router.use('/locations', locationRoute);
+Router.use('/trip-requests', comment, tripRequest, searchRoute);
 
 export default Router;
