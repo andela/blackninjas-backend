@@ -216,10 +216,29 @@ class TripController {
    */
   static async getTripRequest(req, res) {
     const subjectID = req.params.tripRequestID;
-    const userID = req.user.id;
-    const data = await tripService.getTripRequest(subjectID, userID);
+    const data = await tripService.getTripRequest(subjectID);
     if (data) return response.successMessage(res, 'success', 200, data);
     return response.errorMessage(res, 'Trip not found', 404);
+  }
+
+  /** Function to search in the trip requests table according to what the user is typing
+   * @param {object} req the request sent to the server
+   * @param {object} res the response returned
+   * @returns {object} found data
+   */
+  static async search(req, res) {
+    const { id } = req.user;
+    const { keyword, limit, page } = req.query;
+    try {
+      const offset = Paginate(page, limit);
+      const foundTripRequestRecord = await tripRequestService.search(id, keyword, limit, offset);
+      const returnResponse = (foundTripRequestRecord[0]) ? response.successMessage(res, `Record found for keyword ${keyword}`, 200, foundTripRequestRecord)
+        : response.errorMessage(res, `No Records were found for keyword ${keyword}`, 404);
+
+      return returnResponse;
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
   }
 }
 export default TripController;

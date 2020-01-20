@@ -1,11 +1,10 @@
 import express from 'express';
 import tripController from '../controllers/trip.controller';
-import verifyUser from '../middlewares/verify.user.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
+import verifyUser from '../middlewares/verify.user.middleware';
 import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
 import TripMiddleware from '../middlewares/trip.middleware';
-import requestMiddleware from '../middlewares/request.middleware';
 import AccomodationMiddleware from '../middlewares/accomodation.middleware';
 import verifyIfIsManager from '../middlewares/verify.manager.middleware';
 
@@ -128,55 +127,5 @@ router.get(
  *
  */
 router.get('/my-trip-requests', verifyToken.headerToken, verifyUser, tripController.getTripRequestsByUser);
-/**
- * @swagger
- *
- * /trip/trip-requests/{tripRequestId}:
- *    patch:
- *      summary: Manager can approve or reject
- *      tags: [Trips]
- *      parameters:
- *       - name: tripRequestId
- *         in: path
- *         description: Update that specific request
- *         required: true
- *         type: string
- *       - name: token
- *         in: header
- *         description: Check token authentication
- *         required: true
- *         type: string
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/status'
- *      responses:
- *        "200":
- *           description: trip request schema
- *
- * components:
- *    schemas:
- *      status:
- *        type: object
- *        required:
- *          - status
- *        properties:
- *          status:
- *            type: string
- *
- */
-
-router.patch(
-  '/trip-requests/:tripRequestId',
-  verifyToken.headerToken,
-  verifyUser, requestMiddleware.checkIfUserIsManager,
-  requestMiddleware.checkIfRequestFound,
-  requestMiddleware.checkIfUsersManager,
-  requestMiddleware.checkIfBodyIsValid,
-  requestMiddleware.checkIfAlreadyChanged,
-  tripController.updateTripRequestStatus
-);
 
 export default router;
