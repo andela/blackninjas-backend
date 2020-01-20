@@ -7,9 +7,6 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER
         },
-        name: {
-          type: Sequelize.STRING
-        },
         accomodationId: {
           type: Sequelize.INTEGER,
           references: {

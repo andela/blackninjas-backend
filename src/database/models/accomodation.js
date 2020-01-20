@@ -4,8 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     locationId: DataTypes.INTEGER,
     category: DataTypes.STRING,
-    owner: DataTypes.STRING,
-    image: DataTypes.STRING
+    owner: DataTypes.STRING
   }, {
     freezeTableName: true,
     tableName: 'accomodation'
