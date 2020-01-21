@@ -86,13 +86,13 @@ class userController {
     const activate = {
       isVerified: true
     };
-    const updaUser = await UserServices.activeUser(req.user.email, activate);
+    const updateUser = await UserServices.activeUser(req.user.email, activate);
 
-    if (updaUser.status === 200) {
-      return response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
+    if (updateUser.status === 200) {
+      return response.successMessage(res, updateUser.message, updateUser.status, 'isVerified:True');
     }
 
-    return response.errorMessage(res, updaUser.message, updaUser.status);
+    return response.errorMessage(res, updateUser.message, updateUser.status);
   }
 
   /**

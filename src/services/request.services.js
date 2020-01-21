@@ -48,9 +48,10 @@ class TripRequestService {
     }
   }
 
+
   /**
-   * This method will be used to delete a certain request in multicity when the request of the user decreased
-   * a trip data in database
+   * This method will be user to delete the selected trip in multi city
+* a trip data in database
    * @param { integer } tripId trip id as integer
    * @param {Object} tripType type of trip
    * @returns { Object } response data

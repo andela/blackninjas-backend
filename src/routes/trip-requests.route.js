@@ -117,7 +117,7 @@ router.patch(
  *
  */
 router.get(
-  '/:tripRequestID', verifyToken.headerToken,
+  '/:tripRequestID/:autorizations', verifyToken.paramToken,
   tripRequestValidation.validateUserAndSubjectRelationships, tripController.getTripRequest
 );
 /**

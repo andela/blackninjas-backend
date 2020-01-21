@@ -110,7 +110,7 @@ class TripController {
       status
     };
     const [, updateTripRequestStatus] = await tripRequestService.updateTripRequestStatus(changedStatus, tripRequestId);
-    await NotificationService.sendNotification('approve-or-reject-trip_request_event', updateTripRequestStatus[0].userId, `New ${status} request trip`, `Your manager has ${status} your trip request`, updateTripRequestStatus[0].id, `${process.env.BASE_URL}/`);
+    await NotificationService.sendNotification('approve-or-reject-trip_request_event', updateTripRequestStatus[0].userId, `New ${status} request trip`, `Your manager has ${status} your trip request`, updateTripRequestStatus[0].id, `${process.env.BASE_URL}/api/v1/trip-requests/${updateTripRequestStatus[0].tripId}/${req.user.token}`);
     return response.successMessage(res, `Trip request has been ${status} successfully`, 200, ...updateTripRequestStatus);
   }
 
@@ -268,10 +268,15 @@ class TripController {
     try {
       const { tripId } = req.params;
       const { id } = req.tripRequest[0];
+      const { type } = req.body;
+      const userId = req.user.id;
+      const userManager = await userService.findUserManager(userId);
+      const { managerId } = userManager[0];
       const Trip = await tripService.getTripByTripId(tripId);
       await tripService.updateTrip(Trip[0].id, req.body);
       await tripRequestService.updateTripRequestStatusById(id);
       const updatedtrip = await tripService.getTripByTripId(tripId);
+      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
       return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
     } catch (e) {
       return response.errorMessage(
@@ -294,7 +299,11 @@ class TripController {
       const { tripId } = req.params;
       const tripBody = req.body;
       let trips = 0;
+      const type = 'multi-city';
       const { id } = req.tripRequest[0];
+      const userId = req.user.id;
+      const userManager = await userService.findUserManager(userId);
+      const { managerId } = userManager[0];
       const Trip = await tripService.getTripByTripId(tripId);
       if (Trip.length > tripBody.length) {
         trips = Trip;
@@ -312,6 +321,7 @@ class TripController {
           await tripRequestService.updateTripRequestStatusById(id);
         }
       }));
+      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
       const updatedtrip = await tripService.getTripByTripId(tripId);
       return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
     } catch (error) {
