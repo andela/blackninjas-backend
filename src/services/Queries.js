@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+
 /**
  * class for responses
  */
@@ -204,6 +205,26 @@ class Queries {
     }
   }
 
+  /** Query to find all accomodations
+   *
+   * @param {*} table to search into
+   * @param {*} to destination of the
+   * @returns { array } data found
+   */
+  static async findAccommodation(table, to) {
+    try {
+      const requestedAccomodation = await table.findAll({
+        where: {
+          locationId: to
+        }
+      });
+      return requestedAccomodation;
+    } catch (error) {
+      return error;
+    }
+  }
+
+
   /**
    *
     * @param {string} table users table in database.
@@ -313,6 +334,76 @@ class Queries {
         defaults: data
       });
       return datas[0];
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   * find trip function
+   * @param {String} table table name
+   * @param {Object} tripId trip id
+   * @returns { Object } result
+   */
+  static async getTripByTripId(table, tripId) {
+    const data = await table.findAll({
+      where: {
+        tripId,
+      }
+    });
+    return data;
+  }
+
+  /**
+   *
+   * Function to update the status to approved or reject
+   * @param {String} table the name of the table to updated
+   * @param {string} tripId the id of the selected trip
+   * @param {Object} data it gets the data from req.body
+   * @returns {object} updated data
+   */
+  static async updateTrip(table, tripId, data) {
+    try {
+      const updatedRequest = await table.update(
+        data,
+        { where: { id: tripId } }
+      );
+      return updatedRequest;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to update the status to approved or reject
+   *
+   * @param {object} table to be updating in
+   * @param {integer} id trip id to be found and then replace the status
+   * @returns {object} updated data
+   */
+  static async updateTripRequestStatusById(table, id) {
+    try {
+      const updatedRequest = await table.update(
+        { status: 'pending' },
+        { where: { id } }
+      );
+      return updatedRequest;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+   *
+   * This method will be used to delete a certain request in multicity when the request of the user decreased
+   * @param {String} table the name of the table to updated
+   * @param {string} tripId the id of the selected trip
+   * @param {Object} data it gets the data from req.body
+   * @returns {object} updated data
+   */
+  static async deleteMultiCityTripRequestByTripId(table, tripId) {
+    try {
+      const updatedRequest = await table.destroy({ where: { id: tripId } });
+      return updatedRequest;
     } catch (error) {
       return error;
     }

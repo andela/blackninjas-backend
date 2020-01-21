@@ -26,7 +26,8 @@ const multyCity = Joi.object().keys({
   type: Joi.string().required().messages({
     'any.required': 'Type is required please',
     'string.empty': 'Type is not allowed to be empty'
-  })
+  }),
+  isUpdated: Joi.boolean().optional()
 });
 
 export default multyCity;

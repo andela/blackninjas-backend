@@ -17,7 +17,6 @@ const verifyAllTokens = async (req, res, next, token) => {
     if (user.token !== token && user.token === null) {
       return response.successMessage(res, 'You need to signin first!', 401);
     }
-
     req.user = user;
     return next();
   } catch (error) {

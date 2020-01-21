@@ -106,7 +106,7 @@ describe('Notification Tests', () => {
     });
   });
   it('should send notifications when a trip is created', (done) => {
-    chai.request(app).post('/api/v1/trip')
+    chai.request(app).post('/api/v1/trips')
       .set('token', `Bearer ${token1}`)
       .send({
         id: 93,

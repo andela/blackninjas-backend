@@ -91,6 +91,7 @@ class userController {
     if (updaUser.status === 200) {
       return response.successMessage(res, updaUser.message, updaUser.status, 'isVerified:True');
     }
+
     return response.errorMessage(res, updaUser.message, updaUser.status);
   }
 

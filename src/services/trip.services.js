@@ -191,6 +191,24 @@ class TripService {
   }
 
   /**
+    * find trip services
+    * @param {Object} tripId trip id
+    * @returns { Object} user response
+    */
+  static async getTripByTripId(tripId) {
+    try {
+      const trip = await Queries.getTripByTripId(db.trips, tripId);
+      if (!trip) {
+        return false;
+      }
+
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
    *
    * @param {Integer} managerId the id of the manager
    * @param {Object} limit which includes
@@ -233,6 +251,66 @@ class TripService {
     }
 
     return false;
+  }
+
+  /**
+    * find trip services
+    * @param {Object} tripId trip id
+    * @returns { Object} user response
+    */
+  static async getTripRequestByTripId(tripId) {
+    try {
+      const trip = await Queries.getTripByTripId(db.requesttrip, tripId);
+
+
+      if (!trip) {
+        return false;
+      }
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to update the trip which has the status of approved or reject
+   *
+   * @param {string} tripId the id of the selected trip
+   * @param {Object} body it gets the data from req.body
+   * @returns {object} updated data
+   */
+  static async updateTrip(tripId, body) {
+    const data = {
+      reason: body.reason,
+      originId: body.From,
+      destinationId: body.To,
+      accomodationId: body.accomodationId,
+      departureDate: body.departureDate,
+      returnDate: '' || body.returnDate,
+      tripType: body.type
+    };
+    const updatedRequest = Queries.updateTrip(db.trips, tripId, data);
+    return updatedRequest;
+  }
+
+  /**
+   * This method will provide a service of updating multi city
+   * a trip data in database
+   * @param {Object} body data posted by user
+   * @param { integer } tripId trip id as integer
+   * @param {Object} tripType type of trip
+   * @returns { Object } response data
+   */
+  static async updateMultiCityTrip(body, tripId) {
+    const data = {
+      originId: body.From,
+      reason: body.reason,
+      destinationId: body.To,
+      departureDate: body.departureDate,
+      accomodationId: body.accomodationId,
+      tripType: body.tripType,
+      leavingDays: body.leavingDays,
+    };
+    return Queries.updateTrip(db.trips, tripId, data);
   }
 }
 

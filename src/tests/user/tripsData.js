@@ -2,20 +2,20 @@
 const tripsData = {
   trip: {
     From: 1,
-    To: 3,
+    To: 2,
     reason: 'staff meeting',
-    accomodationId: 1,
+    accomodationId: 2,
     departureDate: '2020-12-30',
     type: 'one way'
   },
   returnTrip: {
     From: 1,
-    To: 3,
+    To: 2,
     departureDate: '2020-03-05',
-    returnDate: '2020-03-08',
+    returnDate: '2020-06-08',
     reason: 'festive holidays',
-    accomodationId: 1,
-    type: 'return trip'
+    accomodationId: 2,
+    type: 'round trip'
   },
   tripWithWrongDate: {
     From: 1,
@@ -47,4 +47,58 @@ const tripsData = {
     accomodationId: 1
   }
 };
-export default tripsData;
+const multiCityData = [
+
+  {
+    From: 1,
+    To: 2,
+    reason: 'staff meeting',
+    accomodationId: 2,
+    departureDate: '2020-12-30',
+    type: 'multi-city'
+  },
+  {
+    From: 2,
+    To: 1,
+    reason: 'staff meeting',
+    accomodationId: 1,
+    departureDate: '2021-12-30',
+    type: 'multi-city'
+  }
+];
+const multiCity = [
+  {
+    From: 1,
+    To: 2,
+    reason: 'I want to visite that place',
+    departureDate: '2101-01-03',
+    accomodationId: 2,
+    type: 'multi-city'
+  },
+  {
+    From: 2,
+    To: 1,
+    reason: 'I want to visite that place',
+    departureDate: '2101-01-03',
+    accomodationId: 1,
+    type: 'multi-city'
+  },
+  {
+    From: 1,
+    To: 2,
+    reason: 'I want to visite that place',
+    departureDate: '2109-01-04',
+    accomodationId: 2,
+    type: 'multi-city'
+  }
+];
+const notMultiCity = [
+  {
+    From: 1,
+    To: 2,
+    reason: 'I want to visite that place',
+    departureDate: '2101-01-03',
+    accomodationId: 2,
+    type: 'multi-city'
+  }];
+export { multiCityData, tripsData, multiCity, notMultiCity };

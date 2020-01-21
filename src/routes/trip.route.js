@@ -6,7 +6,6 @@ import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
 import TripMiddleware from '../middlewares/trip.middleware';
 import AccomodationMiddleware from '../middlewares/accomodation.middleware';
-import verifyIfIsManager from '../middlewares/verify.manager.middleware';
 
 const router = express.Router();
 
@@ -73,32 +72,6 @@ router.post(
   tripController.combineTripsConctroller
 );
 
-/**
- * @swagger
- *
- * /trip/requests/:page:
- *    get:
- *      summary: Manager get request made by his
- *      tags: [Trips]
- *      parameters:
- *      responses:
- *       200:
- *         description: "Successful operation"
- *       400:
- *         description: "Bad request"
- *       401:
- *         description: "Unauthorized"
- *       409:
- *         description: "Conflict"
- *
- * */
-router.get(
-  '/trip-requests',
-  verifyToken.headerToken,
-  verifyUser,
-  verifyIfIsManager.verifyManager,
-  tripController.getTripRequestsByManager
-);
 
 /**
  * @swagger
@@ -127,5 +100,67 @@ router.get(
  *
  */
 router.get('/my-trip-requests', verifyToken.headerToken, verifyUser, tripController.getTripRequestsByUser);
+/**
+ * @swagger
+ *
+ * /trips/{tripId}:
+ *    patch:
+ *      summary: user should be able to edit trip
+ *      tags: [Trips]
+ *      parameters:
+ *       - name: tripId
+ *         in: path
+ *         description: Update that specific request
+ *         required: true
+ *         type: string
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/tripRequest'
+ *      responses:
+ *        "200":
+ *           description: trip request schema
+ *
+ * components:
+ *    schemas:
+ *      tripRequest:
+ *        type: object
+ *        required:
+ *          - From
+ *          - To
+ *          - departureDate
+ *          - accomodationId
+ *        properties:
+ *          From:
+ *            type: integer
+ *          To:
+ *            type: integer
+ *          departureDate:
+ *            type: string
+ *          accomodationId:
+ *            type: integer
+ */
+
+router.patch(
+  '/:tripId',
+  Validate.tripsValidation(),
+  isValid,
+  verifyToken.headerToken,
+  verifyUser,
+  TripMiddleware.checkTripRequestStatus,
+  TripMiddleware.checkIfDateisValid,
+  TripMiddleware.checkLocations,
+  AccomodationMiddleware.findAccommodationByCity,
+  TripMiddleware.multiCityDataValidation,
+  tripController.redirectTripFunctionsByType
+
+);
 
 export default router;

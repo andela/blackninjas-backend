@@ -17,10 +17,9 @@ class verifyToken {
   static paramToken(req, res, next) {
     const token = req.params.autorizations;
     if (Number(token)) {
-      response.errorMessage(res, 'Token must not be a number', 401);
-    } else {
-      verifyAllTokens(req, res, next, token);
+      return response.errorMessage(res, 'Token must not be a number', 401);
     }
+    verifyAllTokens(req, res, next, token);
   }
 
   /**
