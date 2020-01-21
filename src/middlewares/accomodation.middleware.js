@@ -35,7 +35,7 @@ class AccomodationMiddleware {
     const role = user.role.toLowerCase();
     const supportedRole = await UserServices.getRole(role);
     const roleId = supportedRole.dataValues.id;
-    if (!(roleId === 3)) {
+    if (!((roleId === 3) || (roleId === 6))) {
       response.errorMessage(res, 'You are not authorized to perform this action', 401, 'error');
     }
     return next();
