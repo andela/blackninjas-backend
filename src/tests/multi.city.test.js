@@ -43,7 +43,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check user are making multi-city', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[0])
       .end((err, res) => {
@@ -54,7 +54,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if the second trip departure date is not greater than the firtst trip', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[1])
       .end((err, res) => {
@@ -65,7 +65,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if accomodation exist at destination', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[2])
       .end((err, res) => {
@@ -76,7 +76,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if accomodation exist in database', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[3])
       .end((err, res) => {
@@ -87,7 +87,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if trip exist', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[0])
       .end((err, res) => {
@@ -98,7 +98,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check the trip pattern', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[4])
       .end((err, res) => {
@@ -109,7 +109,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if date is valid', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[5])
       .end((err, res) => {
@@ -120,7 +120,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if origin exist', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[7])
       .end((err, res) => {
@@ -131,7 +131,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if destination  exist', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[11])
       .end((err, res) => {
@@ -142,7 +142,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if location is valid', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[8])
       .end((err, res) => {
@@ -153,7 +153,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if accomodation id is valid', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[9])
       .end((err, res) => {
@@ -164,7 +164,7 @@ describe('user should be able to make multi-city request', () => {
   it('it should  check if date is valid', (done) => {
     chai
       .request(app)
-      .post('/api/v1/trip')
+      .post('/api/v1/trips')
       .set('token', `Bearer ${UserDatabaseData[0].token}`)
       .send(multiCity[10])
       .end((err, res) => {

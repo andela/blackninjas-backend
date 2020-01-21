@@ -10,7 +10,7 @@ import accomodationRoute from './accommodation.route';
 
 const Router = express.Router();
 Router.use('/auth', userRoute);
-Router.use('/trip', tripsRoute);
+Router.use('/trips', tripsRoute);
 Router.use('/users', userSettings);
 Router.use('/notifications', notificationRoute);
 Router.use('/trip-requests', searchRoute, comment, tripRequest);

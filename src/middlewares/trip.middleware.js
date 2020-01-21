@@ -79,6 +79,10 @@ class TripMiddleware {
   static async multiCityDataValidation(req, res, next) {
     const bodyData = Object.prototype.toString.call(req.body);
     if (bodyData !== '[object Array]') return next();
+    if (req.body.length <= 1) {
+      req.errorMessage = 'Multi city can not go below two cities kindly use one way or round trip';
+      req.errorStatus = 401;
+    }
     await Promise.all(req.body.map(async (trip, index) => {
       const { error } = multyCity.validate(trip);
       if (error) {
@@ -89,7 +93,9 @@ class TripMiddleware {
         await tripHelper.checkLocationExistance(req);
         const { firstTravelDate, secondTravelDate } = tripHelper.extractDaysInDate(req);
         tripHelper.validateTripPattern(req, firstTravelDate, secondTravelDate);
-        await tripHelper.checkTripExistence(req, res);
+        if (req.route.stack[0].method !== 'patch') {
+          await tripHelper.checkTripExistence(req, res);
+        }
       }
     }));
 
@@ -97,6 +103,25 @@ class TripMiddleware {
       return response.errorMessage(res, req.errorMessage, req.errorStatus, 'error');
     }
 
+    return next();
+  }
+
+  /**
+   * this function is used to check status of the trip so that it can be edited
+   * @param {Object} req user request
+   * @param {Object} res user response
+   * @param {Object} next next to the middleware chain
+   * @returns { Object} return user response
+   */
+  static async checkTripRequestStatus(req, res, next) {
+    const { tripId } = req.params;
+    const tripRequest = await tripService.getTripRequestByTripId(tripId);
+
+    const { status } = tripRequest[0];
+    if (status === 'approved') {
+      return response.errorMessage(res, 'trip request is closed,you can not edit it. ', 401);
+    }
+    req.tripRequest = tripRequest;
     return next();
   }
 }

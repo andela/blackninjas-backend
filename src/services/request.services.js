@@ -47,6 +47,46 @@ class TripRequestService {
       return error.message;
     }
   }
+
+  /**
+   * This method will be used to delete a certain request in multicity when the request of the user decreased
+   * a trip data in database
+   * @param { integer } tripId trip id as integer
+   * @param {Object} tripType type of trip
+   * @returns { Object } response data
+   */
+  static async deleteMultiCityTripRequestByTripId(tripId) {
+    return Queries.deleteMultiCityTripRequestByTripId(db.trips, tripId);
+  }
+
+  /**
+    * find trip services
+    * @param {Object} tripId trip id
+    * @returns { Object} user response
+    */
+  static async getTripRequestByTripId(tripId) {
+    try {
+      const trip = await Queries.getTripRequestByTripId(db.trips, tripId);
+
+
+      if (!trip) {
+        return false;
+      }
+      return trip;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to update the status to approved or reject
+   *
+   * @param {string} id the id of the selected trip
+   * @returns {object} updated data
+   */
+  static async updateTripRequestStatusById(id) {
+    const updatedRequest = Queries.updateTripRequestStatusById(db.requesttrip, id);
+    return updatedRequest;
+  }
 }
 
 export default TripRequestService;

@@ -55,8 +55,8 @@ class TripController {
         tripId, userId, managerId, status
       };
       const tripRequest = await tripService.CreateTripRequest(requestData);
-      await NotificationService.sendNotification('trip_request_event', managerId, `New ${type} trip request.`, `${req.user.firstName} has requested a new ${type}`, tripRequest.id, 'http://localhost:3000/api/v1/notifications');
-      return response.successMessage(res, 'Trip created successfully', 201, tripRequest.status);
+      await NotificationService.sendNotification('trip_request_event', managerId, `New ${type} trip request.`, `${req.user.firstName} has requested a new ${type}`, tripRequest.id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
+      return response.successMessage(res, 'Trip created successfully', 201, createdTrip);
     } catch (e) {
       return response.errorMessage(
         res,
@@ -83,14 +83,15 @@ class TripController {
       if (trips.length > 0) {
         const manager = await userManagement.findManagerByUserId(req.user.id);
         const data = {
-          userId: req.user.id, managerId: manager, tripId: GeneralTripId, status: 'panding'
+          userId: req.user.id, managerId: manager, tripId: GeneralTripId, status: 'pending'
         };
         result = await tripService.CreateMultiCityTripRequest(data);
       }
       if (!result) {
         return response.errorMessage(res, 'trip request has failed please try again', 500);
       }
-      return response.successMessage(res, 'Trip successfully created ', 201);
+      const createdtrip = await tripService.getTripByTripId(GeneralTripId);
+      return response.successMessage(res, 'Trip successfully created ', 201, createdtrip);
     } catch (error) {
       return response.errorMessage(res, error.message, 500);
     }
@@ -236,6 +237,83 @@ class TripController {
         : response.errorMessage(res, `No Records were found for keyword ${keyword}`, 404);
 
       return returnResponse;
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * This controller helps to know the type of trip
+   * sothat it can redirect the request to a tageted controller
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return user response
+   */
+  static async redirectTripFunctionsByType(req, res) {
+    const body = Object.prototype.toString.call(req.body);
+    if (body === '[object Array]') {
+      await TripController.updateMultiCityTripInfo(req, res);
+    } else {
+      await TripController.updateTripInfo(req, res);
+    }
+  }
+
+  /**
+   * user should be able to edit trip  which is when the request is still open
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected field
+   */
+  static async updateTripInfo(req, res) {
+    try {
+      const { tripId } = req.params;
+      const { id } = req.tripRequest[0];
+      const Trip = await tripService.getTripByTripId(tripId);
+      await tripService.updateTrip(Trip[0].id, req.body);
+      await tripRequestService.updateTripRequestStatusById(id);
+      const updatedtrip = await tripService.getTripByTripId(tripId);
+      return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
+    } catch (e) {
+      return response.errorMessage(
+        res,
+        e.message,
+        500,
+      );
+    }
+  }
+
+  /**
+   * This controller will help a user to edit multiple city trip
+   * and user will input multiple trips as objects inside an array.
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A user object with selected fields
+   */
+  static async updateMultiCityTripInfo(req, res) {
+    try {
+      const { tripId } = req.params;
+      const tripBody = req.body;
+      let trips = 0;
+      const { id } = req.tripRequest[0];
+      const Trip = await tripService.getTripByTripId(tripId);
+      if (Trip.length > tripBody.length) {
+        trips = Trip;
+      } else {
+        trips = tripBody;
+      }
+
+      await Promise.all(trips.map(async (trip, index) => {
+        if (tripBody[index] && !Trip[index]) {
+          await tripService.CreateMultiCityTrip(req, tripBody[index], tripId, 'multi-city');
+        } else if (Trip[index] && !tripBody[index]) {
+          await tripRequestService.deleteMultiCityTripRequestByTripId(Trip[index].id);
+        } else if (Trip[index] && tripBody[index] && tripBody[index].isUpdated === 'true') {
+          await tripService.updateTrip(Trip[index].id, tripBody[index]);
+          await tripRequestService.updateTripRequestStatusById(id);
+        }
+      }));
+      const updatedtrip = await tripService.getTripByTripId(tripId);
+      return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
     } catch (error) {
       return response.errorMessage(res, error.message, 500);
     }
