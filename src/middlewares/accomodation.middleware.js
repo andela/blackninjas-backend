@@ -1,7 +1,9 @@
+
 import response from '../helpers/response.helper';
 import UserServices from '../services/user.service';
 import accommodationService from '../services/accomodation.service';
 import roomService from '../services/room.services';
+
 
 /**
 * Class for users to create trips
@@ -41,6 +43,34 @@ class AccomodationMiddleware {
     return next();
   }
 
+  /** This function if the rate is correct not greater five and if it is not a string
+   *  @param {req} req it contains the request from the body
+   *  @param {res} res it contains the response to be returned
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async checkValidAccomodationRates(req, res, next) {
+    const { rate } = req.body;
+    const { accommodationId } = req.params;
+    if (rate >= 6) { return response.errorMessage(res, 'Rating value can not be greater than five', 401); }
+    if (!/[0-9]/g.test(rate) || !/[0-9]/g.test(accommodationId)) { return response.errorMessage(res, 'Rating or accommodation id value must be integer', 401); }
+    next();
+  }
+
+  /** This function if used to check if the user has booked that accommodation
+   *  @param {req} req it contains the request from the body
+   *  @param {res} res it contains the response to be returned
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async checkIfUserBookedThatAccomodation(req, res, next) {
+    const userid = req.user.id;
+    const accommodationid = req.params.accommodationId;
+    const accommodationExist = await accommodationService.findIfAccomodationBooked(userid, accommodationid);
+    if (!accommodationExist) { return response.errorMessage(res, 'You have not booked that accomodation', 401); }
+    next();
+  }
+
   /** Checks if the accomodation selected have facilities available and choose a room for a client
    *  @param {req} req it contains the request of the user
    *  @param {res} res it contains the response the user receive
@@ -77,18 +107,17 @@ class AccomodationMiddleware {
     next();
   }
 
-  /** This function if used to check if the user has booked that accommodation
+  /** This function if the the accommodation id provided is in our database
    *  @param {req} req it contains the request from the body
    *  @param {res} res it contains the response to be returned
    *  @param {function} next it jumps to the next middleware in the route
    * @return {object} the data from the first middleware
    */
-  static async checkIfUserBookedThatAccomodation(req, res, next) {
-    const userid = req.user.id;
-    const accommodationid = req.params.subjectID;
-    const accommodationExist = await accommodationService.findIfAccomodationBooked(userid, accommodationid);
-    if (!accommodationExist) { return response.errorMessage(res, 'You have not booked that accomodation', 401); }
-    return next();
+  static async checkIfAccommodationIdExist(req, res, next) {
+    const { accommodationId } = req.params;
+    const accomodations = await accommodationService.checkAccommodationById(accommodationId);
+    if (!accomodations[0]) { return response.errorMessage(res, 'This accommodation does not exist', 401); }
+    next();
   }
 }
 export default AccomodationMiddleware;

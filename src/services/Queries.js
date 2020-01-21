@@ -426,13 +426,12 @@ class Queries {
     }
   }
 
-  /** Function to find a user with a manager role
+  /** Function to find if the user booked that specific accommodation
    *
-   * This service get a spacific trip that corresponds to user id and accomodation id
    * @param {object} table table to be searching from
    * @param {Object} userid user id
    * @param {Object} accommodationid accomodation id
-   * @returns {object} data of the trip found that corresponds to that user and accomodation id
+   * @returns {object} data of the accommodation found that corresponds to that user id and accomodation id
    */
   static async findIfAccomodationBooked(table, userid, accommodationid) {
     try {
@@ -474,6 +473,120 @@ class Queries {
         }
       });
       return privateMessages;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+ * checking if the accommodation exist
+ * @param {object} table table to be searching from
+ * @param {string} accomodationId rate data.
+ * @returns {array} data the data to be returned.
+ */
+  static async checkAccommodationById(table, accomodationId) {
+    const data = await table.findAll({
+      where: {
+        id: accomodationId
+      }
+    });
+    return data;
+  }
+
+  /**
+ * checking if the accommodation exist
+ * @param {object} table table to be searching from
+ * @param {string} accommodationId rate data.
+ * @returns {array} data the data to be returned.
+ */
+  static async getRatedAccommodations(table, accommodationId) {
+    const data = await table.findAll({
+      where: {
+        accommodationId
+      }
+    });
+    return data;
+  }
+
+  /**
+ * updating average rate in accommodation
+ * @param {object} table table to be searching from
+ * @param {integer} accomodationId accommodation id
+ * @param {integer} averageRate the rate average
+ * @returns {array} data the data to be returned.
+ */
+  static async updateAverageRate(table, accomodationId, averageRate) {
+    try {
+      const updatedRate = await table.update(
+        { averageRate },
+        { where: { id: accomodationId } }
+      );
+      return updatedRate;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+ * updating rating
+ * @param {object} table table to be searching from
+ * @param {integer} accomodationId accommodation id
+ * @param {Object} userId user id
+ * @param {integer} rate rating value
+ * @returns {array} data the data to be returned.
+ */
+  static async updateAccomodationRate(table, accomodationId, userId, rate) {
+    try {
+      const updatedRate = await table.update(
+        { rate },
+        {
+          where: {
+            [Op.and]: [
+              { userId: { [Op.eq]: userId } },
+              { accomodationId: { [Op.eq]: accomodationId } }
+            ]
+          }
+        }
+      );
+      return updatedRate;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Function to find updated rating
+   *
+   * @param {object} table table to be searching from
+   * @param {Object} accommodationId accomodation id
+   * @param {Object} userId user id
+   * @returns {object} data of the trip found that corresponds to that user and accomodation id
+   */
+  static async getAccommodationRate(table, accommodationId, userId) {
+    try {
+      const updatedRate = table.findOne({
+        where: {
+          [Op.and]: [
+            { userId: { [Op.eq]: userId } },
+            { accommodationId: { [Op.eq]: accommodationId } }
+          ]
+        }
+      });
+      return updatedRate;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
+ * Get average accommodation using accommodation id
+ * @param {object} table table to be searching from
+ * @param {integer} accomodationId accommodation id
+ * @returns {array} data the data to be returned.
+ */
+  static async getAverageRatings(table, accomodationId) {
+    try {
+      const averageRate = await table.findAll({ where: { id: accomodationId } });
+      return averageRate;
     } catch (error) {
       return error;
     }

@@ -246,6 +246,133 @@ router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commen
 /**
  * @swagger
  *
+ * /accommodations/{accommodationId}/ratings:
+ *    post:
+ *      summary: user should be to rate an accommodation
+ *      tags: [Accommodations]
+ *      parameters:
+ *       - name: accomodationId
+ *         in: path
+ *         description: rate that specific accomodation
+ *         required: true
+ *         type: string
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/rate'
+ *      responses:
+ *        "201":
+ *           description: rate create successfully
+ *
+ * components:
+ *    schemas:
+ *      rate:
+ *        type: object
+ *        required:
+ *          - rate
+ *        properties:
+ *          rate:
+ *            type: integer
+ */
+
+router.post('/:accommodationId/ratings', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkValidAccomodationRates, AccomodationMiddleware.checkIfUserBookedThatAccomodation, Accommodation.rateAccomodation);
+/**
+ * @swagger
+ *
+ * /accommodations/{accommodationId}/ratings:
+ *    patch:
+ *      summary: user should be to update accommodation rate
+ *      tags: [Accommodations]
+ *      parameters:
+ *       - name: accomodationId
+ *         in: path
+ *         description: rate that specific accomodation
+ *         required: true
+ *         type: string
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/rate'
+ *      responses:
+ *        "200":
+ *           description: rate updated successfully
+ *
+ * components:
+ *    schemas:
+ *      rate:
+ *        type: object
+ *        required:
+ *          - rate
+ *        properties:
+ *          rate:
+ *            type: integer
+ */
+
+router.patch('/:accommodationId/ratings', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkValidAccomodationRates, AccomodationMiddleware.checkIfUserBookedThatAccomodation, Accommodation.updateAccomodationRate);
+/**
+ * @swagger
+ *
+ * /accommodations/{accommodationId}/ratings:
+ *    get:
+ *      summary: user should get rate of an accommodation
+ *      tags: [Accommodations]
+ *      parameters:
+ *       - name: accomodationId
+ *         in: path
+ *         description: id of the accommodation
+ *         required: true
+ *         type: string
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *           description: get rate successfully
+ */
+router.get('/:accommodationId/ratings', verifyToken.headerToken, verifyUser, Accommodation.getAccommodationRate);
+/**
+ * @swagger
+ *
+ * /accommodations/{accommodationId}/average-ratings:
+ *    get:
+ *      summary: user should get average rate of an accommodation
+ *      tags: [Accommodations]
+ *      parameters:
+ *       - name: accomodationId
+ *         in: path
+ *         description: id of the accommodation
+ *         required: true
+ *         type: string
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *           description: get average rate successfully
+ */
+router.get('/:accommodationId/average-ratings', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkIfAccommodationIdExist, Accommodation.getAverageRatings);
+
+/**
+ * @swagger
+ *
  * /accommodation/accommodationID:
  *    patch:
  *      summary: Like or unlike an accommodation

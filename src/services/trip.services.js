@@ -309,27 +309,6 @@ class TripService {
     const updatedRequest = Queries.updateTrip(db.trips, tripId, data);
     return updatedRequest;
   }
-
-  /**
-   * This method will provide a service of updating multi city
-   * a trip data in database
-   * @param {Object} body data posted by user
-   * @param { integer } tripId trip id as integer
-   * @param {Object} tripType type of trip
-   * @returns { Object } response data
-   */
-  static async updateMultiCityTrip(body, tripId) {
-    const data = {
-      originId: body.From,
-      reason: body.reason,
-      destinationId: body.To,
-      departureDate: body.departureDate,
-      accomodationId: body.accomodationId,
-      tripType: body.tripType,
-      leavingDays: body.leavingDays,
-    };
-    return Queries.updateTrip(db.trips, tripId, data);
-  }
 }
 
 export default TripService;

@@ -179,6 +179,43 @@ class accommodationService {
   }
 
   /**
+ * creating rating query
+ * @param {string} rateData rate data.
+ * @returns {array} data the data to be returned.
+ */
+  static async CreateAccomodationRate(rateData) {
+    return Queries.create(db.accomodationRates, rateData);
+  }
+
+  /**
+ * creating rating query
+ * @param {integer} accomodationId accommodation id
+ * @param {integer} averageRate the rate average
+ * @returns {array} data the data to be returned.
+ */
+  static async updateAverageRate(accomodationId, averageRate) {
+    return Queries.updateAverageRate(db.accomodation, accomodationId, averageRate);
+  }
+
+  /**
+ * checking if the accommodation exist using it's id
+ * @param {integer} accomodationId accommodation id
+ * @returns {array} data the data to be returned.
+ */
+  static async checkAccommodationById(accomodationId) {
+    return Queries.checkAccommodationById(db.accomodation, accomodationId);
+  }
+
+  /**
+ * get dated accommodations to that id
+ * @param {integer} accommodationId accommodation id
+ * @returns {array} data the data to be returned.
+ */
+  static async getRatedAccommodations(accommodationId) {
+    return Queries.getRatedAccommodations(db.accomodationRates, accommodationId);
+  }
+
+  /**
    * This service get a booked accommodation that corresponds to user id and accomodation id
    * @param {Object} userid user id
    * @param {Object} accommodationid accomodation id
@@ -190,6 +227,37 @@ class accommodationService {
       return accommodatioBooked;
     }
     return false;
+  }
+
+
+  /**
+ * creating of updating rate
+ * @param {integer} accomodationId accommodation id
+ * @param {Object} userId user id
+ * @param {integer} rate rating value
+ * @returns {array} data the data to be returned.
+ */
+  static async updateAccomodationRate(accomodationId, userId, rate) {
+    return Queries.updateAccomodationRate(db.accomodationRates, accomodationId, userId, rate);
+  }
+
+  /**
+ * Get updated ratings
+ * @param {integer} accommodationId accommodation id
+ * @param {Object} userId user id
+ * @returns {array} data the data to be returned.
+ */
+  static async getAccommodationRate(accommodationId, userId) {
+    return Queries.getAccommodationRate(db.accomodationRates, accommodationId, userId);
+  }
+
+  /**
+ * Get average accommodation using accommodation id
+ * @param {integer} accomodationId accommodation id
+ * @returns {array} data the data to be returned.
+ */
+  static async getAverageRatings(accomodationId) {
+    return Queries.getAverageRatings(db.accomodation, accomodationId);
   }
 }
 export default accommodationService;
