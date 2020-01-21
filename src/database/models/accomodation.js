@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     locationId: DataTypes.INTEGER,
     category: DataTypes.STRING,
     owner: DataTypes.STRING,
-    image: DataTypes.STRING
+    numberOfRooms: DataTypes.INTEGER,
+    availableRooms: DataTypes.INTEGER
   }, {
     freezeTableName: true,
     tableName: 'accomodation'

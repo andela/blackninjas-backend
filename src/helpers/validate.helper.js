@@ -100,5 +100,23 @@ class Validate {
       check('comment', 'Comment should be valid.').isLength({ min: 3 }).isString()
     ];
   }
+
+  /**
+ * this function validate creating accomodation
+ * @returns {Object} user response
+ */
+  static accomodationValidation() {
+    return [
+      check('accommodationName', 'accomodation name should be valid.').isString(),
+      check('description', 'accomodation description should be valid.').isString().optional(),
+      check('locationId', 'accommodation location should be valid.').isInt(),
+      check('owner', 'owner name should be valid.').isString(),
+      check('category', 'accomodation category should be valid.').isString().optional(),
+      check('images', 'images should be valid.').isArray().optional(),
+      check('rooms', 'rooms should be valid.').isArray().optional(),
+      check('services', 'accomodation services should be valid.').isArray().optional(),
+      check('amenities', 'accomodation amenities should be valid.').isArray().optional(),
+    ];
+  }
 }
 export default Validate;

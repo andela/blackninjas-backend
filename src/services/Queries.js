@@ -284,7 +284,6 @@ class Queries {
     }
   }
 
-
   /**
     * This servise delete a trip request comment
     * @param {String} table table
@@ -298,6 +297,25 @@ class Queries {
     }
 
     return false;
+  }
+
+  /**
+ * find or create query
+ * @param {string} table users table in database.
+ * @param {string} data the data to be inputed in database.
+ * @param {string} condition to prevent the same data in database.
+ * @returns {array} data the data to be returned.
+ */
+  static async findOrCreate(table, data, condition) {
+    try {
+      const datas = await table.findOrCreate({
+        where: condition,
+        defaults: data
+      });
+      return datas[0];
+    } catch (error) {
+      return error;
+    }
   }
 }
 export default Queries;

@@ -67,13 +67,16 @@ describe('/users/role', () => {
       name: 'travel-team-member',
     });
     await db.userRole.create({
-      name: 'travel-administration',
+      name: 'travel-administrator',
     });
     await db.userRole.create({
       name: 'admin',
     });
     await db.userRole.create({
       name: 'requester',
+    });
+    await db.userRole.create({
+      name: 'supplier',
     });
   });
   it('should check if page number has data', (done) => {

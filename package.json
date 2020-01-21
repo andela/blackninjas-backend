@@ -15,7 +15,8 @@
       "src/services/user.service.js ",
       "src/services/trips.service.js ",
       "src/middlewares/admin.verify.middleware.js",
-      "src/middlewares/auth.middleware.js "
+      "src/middlewares/auth.middleware.js ",
+      "src/helpers/accomodation.helper.js"
     ]
   },
   "scripts": {
