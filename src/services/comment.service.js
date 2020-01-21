@@ -23,8 +23,10 @@ class CommentServices {
       commentorId: req.user.id,
       comment: req.body.comment,
     };
-
     const data = await Queries.create(db.comment, body);
+
+    if (subjectType === 'trip request') return data;
+
     return response.successMessage(res, 'comment created successfuly', 201, data);
   }
 

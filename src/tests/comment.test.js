@@ -74,6 +74,26 @@ describe('comment tests', () => {
       });
   });
 
+  it('comment should be created successfuly', (done) => {
+    chai
+      .request(app)
+      .post(`/api/v1/trip-requests/${trip[0].tripId}/comments`)
+      .set('token', `Bearer ${linemanagerToken}`)
+      .send(comment[2])
+      .end((err, res) => {
+        res.should.have.status(201);
+        res.body.should.have.be.a('object');
+        res.body.should.have.property('message').eql('comment created successfuly');
+        res.body.data.should.have.property('id').eql(2);
+        res.body.data.should.have.property('subjectId').eql(trip[0].tripId);
+        res.body.data.should.have.property('commentorId').eql(UserDatabaseData[1].id);
+        res.body.data.should.have.property('comment').eql(comment[2].comment);
+        res.body.data.should.have.property('updatedAt');
+        res.body.data.should.have.property('createdAt');
+        done();
+      });
+  });
+
   it('should return an empty body in case a trip request does not have a comment', (done) => {
     chai
       .request(app)
@@ -94,9 +114,9 @@ describe('comment tests', () => {
         res.should.have.status(200);
         res.body.should.have.be.a('object');
         res.body.should.have.property('message').eql('success');
-        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[2].id);
-        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[2].firstName);
-        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[2].lastName);
+        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[1].id);
+        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[1].firstName);
+        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[1].lastName);
         res.body.data.commenterInfo.should.have.property('profileImage');
         done();
       });
