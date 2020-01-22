@@ -1,6 +1,7 @@
 import response from '../helpers/response.helper';
 import UserServices from '../services/user.service';
 import accommodationService from '../services/accomodation.service';
+import roomService from '../services/room.services';
 
 /**
 * Class for users to create trips
@@ -38,6 +39,42 @@ class AccomodationMiddleware {
       response.errorMessage(res, 'You are not authorized to perform this action', 401, 'error');
     }
     return next();
+  }
+
+  /** Checks if the accomodation selected have facilities available and choose a room for a client
+   *  @param {req} req it contains the request of the user
+   *  @param {res} res it contains the response the user receive
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async checkBookingFacilitiesAvailability(req, res, next) {
+    const accomodation = await accommodationService.findAccomodation(req.body.accommodationId);
+    if (!accomodation) {
+      return response.errorMessage(res, 'We don\'t have accommodation for an accommodationId provided.', 404);
+    }
+    const room = await roomService.getAvalableRoom(req.body.accommodationId, req.body.roomTypeId);
+    if (accomodation.availableRooms === 0 || room === null) {
+      return response.successMessage(res, 'There\'s no rooms available for accommodation facility provided.', 404);
+    }
+    req.body.roomId = room.id;
+    next();
+  }
+
+  /** Chech if departure date greater than checkout date
+   *  @param {req} req it contains the request of the user
+   *  @param {res} res it contains the response the user receive
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async validateDates(req, res, next) {
+    const departureDate = new Date(req.body.departureDate);
+    const checkoutDate = new Date(req.body.checkoutDate);
+    if (checkoutDate <= departureDate) {
+      return response.errorMessage(res, 'The departure date cannot be later than the return date', 400);
+    }
+    req.body.departureDate = departureDate;
+    req.body.checkoutDate = checkoutDate;
+    next();
   }
 }
 export default AccomodationMiddleware;
