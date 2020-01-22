@@ -7,6 +7,7 @@ import notificationRoute from './notification.route';
 import comment from './comment.routes';
 import tripRequest from './trip-requests.route';
 import accomodationRoute from './accommodation.route';
+import locationRoute from './locations.route';
 
 const Router = express.Router();
 Router.use('/auth', userRoute);
@@ -16,5 +17,6 @@ Router.use('/notifications', notificationRoute);
 Router.use('/trip-requests', searchRoute, comment, tripRequest);
 Router.use('/trip-requests', comment, tripRequest);
 Router.use('/accommodations', accomodationRoute);
+Router.use('/locations', locationRoute);
 
 export default Router;
