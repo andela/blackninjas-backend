@@ -83,7 +83,7 @@ router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodatio
 /**
  * @swagger
  *
- * /accommodation/accommodationID:
+ * /booking:
  *    patch:
  *      summary: Book an accommodation
  *      tags: [Accommodation]
@@ -239,4 +239,40 @@ router.get('/:subjectID/comments', verifyToken.headerToken, commentMiddleware.va
  */
 router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commentMiddleware.validateSubjectAvailability, commentMiddleware.deleteCommentValidation, Accommodation.deleteAccommodationComment);
 
+/**
+ * @swagger
+ *
+ * /accommodation/accommodationID:
+ *    patch:
+ *      summary: Like or unlike an accommodation
+ *      tags: [Accommodation]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *          description: Like was successfully processed.
+ */
+router.patch('/:accommodationId', Validate.likeOrUnlikeValidation(), isValid, verifyToken.headerToken, Accommodation.likeOrUnlike);
+/**
+ * @swagger
+ *
+ * /accommodation/accommodationID/like-status:
+ *    get:
+ *      summary: Check if user has already like or unlike an accommodation
+ *      tags: [Accommodation]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check authentication
+ *         required: true
+ *         type: string
+ *      responses:
+ *        "200":
+ *          description: Check if user has already like or unlike an accommodation.
+ */
+router.get('/:accommodationId/like-status', isValid, verifyToken.headerToken, Accommodation.checkIfUserLikedOrUnlikedAccommodation);
 export default router;

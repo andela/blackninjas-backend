@@ -131,5 +131,15 @@ class Validate {
       check('checkoutDate', 'checkoutDate needs to be a date format').toDate(),
     ];
   }
+
+  /**
+   * This method validate a like or unlike accommodation request
+   * @returns { Object } user message
+   */
+  static likeOrUnlikeValidation() {
+    return [
+      check('isLike', 'isLike needs to be a boolean').isBoolean(),
+    ];
+  }
 }
 export default Validate;

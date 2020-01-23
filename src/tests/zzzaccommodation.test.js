@@ -9,6 +9,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const token = GenerateToken({ email: 'nsengimanavedadom@gmail.com', isVerified: 'true', id: 1 });
+const tokeni = GenerateToken({ email: 'nsengimanavedadomi@gmail.com', isVerified: 'true', id: 1 });
 
 describe('Book accommodation Tests', () => {
   before(async () => {
@@ -27,6 +28,21 @@ describe('Book accommodation Tests', () => {
       phoneNumber: '0785571790',
       isVerified: true,
       token,
+      emailNotification: true,
+      appNotification: true
+    });
+    await db.user.create({
+      id: 199,
+      firstName: 'Veda',
+      lastName: 'Dominique',
+      email: 'nsengimanavedadomi@gmail.com',
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1994',
+      password: EncryptPassword('vedadom'),
+      phoneNumber: '0785571790',
+      isVerified: true,
+      token: tokeni,
       emailNotification: true,
       appNotification: true
     });
@@ -97,6 +113,48 @@ describe('Book accommodation Tests', () => {
       .end((err, res) => {
         res.should.have.status(404);
         chai.expect(res.body.message).eql('There\'s no rooms available for accommodation facility provided.');
+        done();
+      });
+  });
+  it('should like an accommodation', (done) => {
+    chai.request(app).patch('/api/v1/accommodations/142')
+      .set('token', `Bearer ${token}`)
+      .send({
+        isLike: true
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('Like has successfully done');
+        done();
+      });
+  });
+  it('should unlike an accommodation', (done) => {
+    chai.request(app).patch('/api/v1/accommodations/142')
+      .set('token', `Bearer ${token}`)
+      .send({
+        isLike: false
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('Unlike has successfully done');
+        done();
+      });
+  });
+  it('should return status of user liking or unliking an accommodation', (done) => {
+    chai.request(app).get('/api/v1/accommodations/142/like-status')
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('User status on liking or unliking an accommodation');
+        done();
+      });
+  });
+  it('should return status of user liking or unliking an accommodation', (done) => {
+    chai.request(app).get('/api/v1/accommodations/142/like-status')
+      .set('token', `Bearer ${tokeni}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('User status on liking or unliking an accommodation');
         done();
       });
   });

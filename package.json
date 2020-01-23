@@ -8,6 +8,7 @@
       "src/database/*",
       "src/tests",
       "src/helpers/logger.helper.js",
+      "src/helpers/socket.helper.js",
       "src/helpers/verify.token.helper.js",
       "src/middlewares/user.middleware.js",
       "src/helpers/send.email.helper",

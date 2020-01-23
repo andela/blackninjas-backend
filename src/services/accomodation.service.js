@@ -135,5 +135,47 @@ class accommodationService {
     });
     return query;
   }
+
+
+  /**
+  * like or unlike an accommodation facilities
+  * @param { Boolean } isLike this will be true or false
+  * @param { Number } userId user id
+  * @param { Number } accommodationId accommodation id
+  * @returns { Object } an accommodation
+  */
+  static async likeOrUnlike(isLike, userId, accommodationId) {
+    const result = await this.findIfUserAlreadLiked(userId, accommodationId);
+    if (result) {
+      if (result.islike === isLike) return this.findAccomodation(accommodationId);
+      await result.update({ islike: isLike });
+      if (isLike) {
+        await db.accomodation.increment('likes', { by: 1, where: { id: accommodationId } });
+        await db.accomodation.decrement('unlikes', { by: 1, where: { id: accommodationId } });
+        return this.findAccomodation(accommodationId);
+      }
+      await db.accomodation.increment('unlikes', { by: 1, where: { id: accommodationId } });
+      await db.accomodation.decrement('likes', { by: 1, where: { id: accommodationId } });
+      return this.findAccomodation(accommodationId);
+    }
+    await db.accommodationLikesAndUnlikes.create({ islike: isLike, userid: userId, accommodationid: accommodationId });
+    if (isLike) {
+      await db.accomodation.increment('likes', { by: 1, where: { id: accommodationId } });
+      return this.findAccomodation(accommodationId);
+    }
+    await db.accomodation.increment('unlikes', { by: 1, where: { id: accommodationId } });
+    return this.findAccomodation(accommodationId);
+  }
+
+  /**
+  * like or unlike an accommodation facilities
+  * @param { Number } userId user id
+  * @param { Number } accommodationId accommodation id
+  * @returns { Object } an accommodation
+  */
+  static async findIfUserAlreadLiked(userId, accommodationId) {
+    const query = await db.accommodationLikesAndUnlikes.findOne({ where: { userid: userId, accommodationid: accommodationId } });
+    return query;
+  }
 }
 export default accommodationService;
