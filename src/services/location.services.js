@@ -11,6 +11,14 @@ class location {
   static async findLocation(locationId) {
     return Queries.findOneRecord(db.locations, { id: locationId });
   }
+
+  /**
+     * get most traveled destinations
+     * @returns { Object } Locations and travelledTimes
+     */
+  static async getMostTraveled() {
+    return db.sequelize.query('SELECT locations.country, locations.city, count (locations.city) as "travelledTimes" FROM trips INNER JOIN locations ON trips."destinationId"=locations.id group by locations.country,locations.city ORDER BY "travelledTimes" DESC;', { type: db.sequelize.QueryTypes.SELECT });
+  }
 }
 
 export default location;

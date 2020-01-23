@@ -96,7 +96,7 @@ router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodatio
  *        "201":
  *          description: Booking was successfully processed.
  *
- * * components:
+ * components:
  *    schemas:
  *      booking:
  *        type: object

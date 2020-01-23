@@ -33,7 +33,10 @@ const options = {
     path.resolve(__dirname, '../routes/trip.route.js'),
     path.resolve(__dirname, '../routes/user.settings.route.js'),
     path.resolve(__dirname, '../routes/comment.routes.js'),
-    path.resolve(__dirname, '../routes/search.route.js')
+    path.resolve(__dirname, '../routes/search.route.js'),
+    path.resolve(__dirname, '../routes/locations.route.js'),
+    path.resolve(__dirname, '../routes/notification.route.js'),
+    path.resolve(__dirname, '../routes/accommodation.route.js')
   ]
 };
 export default options;
