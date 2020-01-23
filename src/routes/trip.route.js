@@ -163,4 +163,8 @@ router.patch(
 
 );
 
+// swagger
+
+router.get('/trip-statistics', verifyToken.headerToken, verifyUser, tripController.getTripStatistics);
+
 export default router;

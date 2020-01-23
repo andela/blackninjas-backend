@@ -143,6 +143,24 @@ class TripService {
   }
 
   /**
+    * searching a trip that is created by a given user in a given period of time
+    * @param {object} userId id of the user who created trips.
+    * @param {object} searchDate date to get the trips that was created since this date.
+    * @returns {array} data the data to be returned.
+    */
+  static async findTripsCreatedByuser(userId, searchDate) {
+    try {
+      const foundTrips = await db.sequelize.query(
+        `SELECT trips."tripType", count(DISTINCT trips."tripId") from trips where trips."userId" = ${userId} and trips."createdAt" < '${searchDate}' GROUP BY trips."tripType"`,
+        { type: db.sequelize.QueryTypes.SELECT }
+      );
+      return foundTrips;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
    *
    * @param {Integer} userId the id of the user
    * @returns {Object} the booking of the exact passed user id

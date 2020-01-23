@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-
+import db from '../database/models';
 /**
  * class for responses
  */
@@ -134,8 +134,7 @@ class Queries {
       const requestedRoom = await table.findAll({
         where: {
           [Op.and]: [
-            { id: { [Op.eq]: accomodationId } },
-            { status: 'available' }
+            { id: { [Op.eq]: accomodationId } }, { status: 'available' }
           ]
         }
       });
@@ -259,6 +258,24 @@ class Queries {
         }
       });
       return requestFound;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** function that gets all trips that a user created in a given time
+   * @param {object} table the table to be finding that request from
+   * @param {integer} userId id of the request from the params
+   * @param {date} searchDate the date the user searches from
+   * @returns {object} the found trip request
+   */
+  static async getTripCreatedByUser(table, userId, searchDate) {
+    try {
+      const tripFound = await table.findAll({
+        distinct: 'tripId',
+        where: { [Op.and]: [{ userId: { [Op.eq]: userId } }, db.sequelize.where(db.sequelize.fn('date', db.sequelize.col('createdAt')), '<=', `${searchDate}`)] }
+      });
+      return tripFound;
     } catch (error) {
       return error;
     }

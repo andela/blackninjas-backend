@@ -42,6 +42,7 @@ describe('trips tests', () => {
   const returnTripId = 'e6e057aa-56b8-4622-9fb7-dfeba7762ee5';
   before(async () => {
     const user = await db.user.create({
+      id: 10,
       firstName: 'shema',
       lastName: 'eric',
       email: 'shemad@gmail.com',
@@ -119,35 +120,53 @@ describe('trips tests', () => {
       originId: 1,
       destinationId: 2,
       tripId: 'ae989f24-5878-4736-87dd-a12d797e12ff',
-      userId: user.id
+      tripType: 'one way',
+      userId: user.id,
+      createdAt: new Date()
     });
     await db.trips.create({
       id: 34,
       tripId: 'ba20e112-bbe8-4bb2-afb8-0f43ec105667',
+      tripType: 'one way',
       originId: 1,
       destinationId: 2,
-      userId: user.id
+      userId: user.id,
+      createdAt: new Date()
     });
     await db.trips.create({
       id: 35,
       tripId: 'ba20e112-bbe8-4bb2-afb8-0f43ec105667',
+      tripType: 'one way',
       originId: 2,
       destinationId: 1,
-      userId: user.id
+      userId: user.id,
+      createdAt: new Date()
     });
     await db.trips.create({
       id: 36,
       tripId: 'ba20e112-bbe8-4bb2-afb8-0f43ec105667',
+      tripType: 'one way',
       originId: 1,
       destinationId: 2,
-      userId: user.id
+      userId: user.id,
+      createdAt: new Date()
+    });
+    await db.trips.create({
+      tripId: 'ae989f24-5878-4736-87dd-a12d797e12ff',
+      tripType: 'one way',
+      originId: 1,
+      destinationId: 2,
+      userId: user.id,
+      createdAt: new Date()
     });
     await db.trips.create({
       id: 37,
       tripId: 'e6e057aa-56b8-4622-9fb7-dfeba7762ee5',
+      tripType: 'one way',
       originId: 1,
       destinationId: 2,
-      userId: user.id
+      userId: user.id,
+      createdAt: new Date()
     });
 
     const tripRequest = await db.requesttrip.create({
@@ -387,6 +406,23 @@ describe('trips tests', () => {
         res.should.have.status(401);
         res.body.should.be.an('object');
         chai.expect(res.body.error).to.eq('Multi city can not go below two cities kindly use one way or round trip');
+        done();
+      });
+  });
+  it('should return the number of trips created by a user', (done) => {
+    const startDate = '2020-01-30';
+    chai.request(app).get(`/api/v1/trip-statistics?startDate=${startDate}`)
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        const { details, totalTrips } = res.body.data;
+        const [typeOne, typeTwo, typeThree] = details;
+        const totalNumber = details.reduce((sum, trips) => sum + parseInt(trips.count, 10), 0);
+        res.body.data.should.have.property('totalTrips');
+        res.body.data.should.have.property('details');
+        expect(details).to.be.an('array');
+        expect(totalTrips).eql(totalNumber);
+        expect(details).to.include.deep.members([typeOne, typeTwo, typeThree]);
+        res.should.have.status(200);
         done();
       });
   });

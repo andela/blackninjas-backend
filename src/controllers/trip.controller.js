@@ -328,5 +328,24 @@ class TripController {
       return response.errorMessage(res, error.message, 500);
     }
   }
+
+  /** Function to return the number of trips created by a user and breaks them down into
+   * types
+   *
+   * @param {*} req the request sent to the server
+   * @param {*} res the response
+   * @returns {*} the data found and the message
+   */
+  static async getTripStatistics(req, res) {
+    try {
+      const { startDate } = req.query;
+      const { id, firstName } = req.user;
+      const details = await tripService.findTripsCreatedByuser(id, startDate);
+      const totalNumber = details.reduce((sum, trip) => sum + parseInt(trip.count, 10), 0);
+      return response.successMessage(res, `Trip statistics for ${firstName}`, 200, { totalTrips: totalNumber, details });
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
 }
 export default TripController;
