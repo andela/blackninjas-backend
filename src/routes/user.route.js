@@ -332,4 +332,5 @@ router.get('/profile', verifyToken.headerToken, verifyUser, userController.viewP
  * */
 
 router.patch('/profile', verifyToken.headerToken, verifyUser, userController.editProfile);
+
 export default router;
