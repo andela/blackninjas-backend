@@ -5,6 +5,7 @@ import verifyToken from '../middlewares/verify.token.middleware';
 import Validate from '../helpers/validate.helper';
 import isValid from '../middlewares/validate.middleware';
 import AccomodationMiddleware from '../middlewares/accomodation.middleware';
+import commentMiddleware from '../middlewares/comment.validation.middleware';
 
 const router = express.Router();
 
@@ -118,4 +119,124 @@ router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodatio
  *            type: string
  */
 router.post('/booking', Validate.bookingValidation(), isValid, verifyToken.headerToken, AccomodationMiddleware.validateDates, AccomodationMiddleware.checkBookingFacilitiesAvailability, Accommodation.bookAccommodation);
+
+/**
+ * @swagger
+ * tags:
+ *   name: comment
+ *   description: Accommodation activities
+ */
+
+/**
+ * @swagger
+ *
+ * /accommodations/{subjectID}/comments:
+ *    post:
+ *      summary: All users can comment to an Accommodation
+ *      tags: [comment]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *       - name: subjectID
+ *         in: path
+ *         description: Accommodation ID
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Accommodationcomment'
+ *      responses:
+ *        "201":
+ *          description: Accommodation comment schema
+ *
+ * components:
+ *    schemas:
+ *      Accommodationcomment:
+ *        type: object
+ *        required:
+ *          - comment
+ *        properties:
+ *          comment:
+ *            type: string
+ */
+router.post('/:subjectID/comments', verifyToken.headerToken, Validate.CommentValidation(), isValid, commentMiddleware.validateSubjectAvailability, Accommodation.createAccomodationComment);
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: comment
+ *   description: Accommodation activities
+ */
+
+/**
+ * @swagger
+ *
+ * /accommodations/{subjectID}/comments:
+ *    get:
+ *      summary: All users can view Accommodation comments of
+ *      tags: [comment]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *       - name: subjectID
+ *         in: path
+ *         description: Accommodation ID
+ *         required: true
+ *         type: string
+ *       - name: page
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         description: page number
+ *       - name: limit
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         description: limit number
+ *         required: true
+ *      responses:
+ *        "200":
+ *          description: Accommodation comment schema
+ */
+router.get('/:subjectID/comments', verifyToken.headerToken, commentMiddleware.validateSubjectAvailability, Accommodation.getAccommodationComments);
+
+/**
+ * @swagger
+ *
+ * /accommodations/{subjectID}/comments/{commentID}:
+ *    delete:
+ *      summary: All users can delete an Accommodation comment
+ *      tags: [comment]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *       - name: subjectID
+ *         in: path
+ *         description: subject ID
+ *         required: true
+ *         type: string
+ *       - name: commentID
+ *         in: path
+ *         description: comment ID
+ *         required: true
+ *         type: integer
+ *      responses:
+ *        "200":
+ *          description: Accommodation comment schema
+ */
+router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commentMiddleware.validateSubjectAvailability, commentMiddleware.deleteCommentValidation, Accommodation.deleteAccommodationComment);
+
 export default router;

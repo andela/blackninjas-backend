@@ -173,9 +173,8 @@ class TripController {
      * @returns { Object} return a user message
      */
   static async createComment(req, res) {
-    const Id = req.params.tripRequestID;
-    const data = await commentService.createComment(req, Id, 'trip request');
-    return response.successMessage(res, 'comment created successfuly', 201, data);
+    const subjectType = 'trip request';
+    await commentService.createComment(req, res, subjectType);
   }
 
   /**
@@ -188,13 +187,7 @@ class TripController {
      */
   static async getAllComments(req, res) {
     const subjectType = 'trip request';
-    const subjectID = req.params.tripRequestID;
-    const { page, limit } = req.query;
-    const limitNumber = (/[0-9]/g.test(limit)) ? limit : 10;
-    const offset = Paginate(page, limitNumber);
-    const data = await commentService.getAllCommets(subjectID, subjectType, limitNumber, offset);
-    if (data) return response.successMessage(res, 'success', 200, data);
-    return response.errorMessage(res, 'No comment yet', 404);
+    await commentService.getAllCommets(req, res, subjectType);
   }
 
   /**
@@ -204,9 +197,7 @@ class TripController {
      * @returns { Object } user respose as object
      */
   static async deleteComment(req, res) {
-    const Id = parseInt(req.params.commentID, 10);
-    const subjectId = req.params.subjectID;
-    await commentService.deleteComment(res, subjectId, Id);
+    await commentService.deleteComment(req, res);
   }
 
   /**
@@ -216,8 +207,9 @@ class TripController {
    * @returns {Object} user response
    */
   static async getTripRequest(req, res) {
-    const subjectID = req.params.tripRequestID;
-    const data = await tripService.getTripRequest(subjectID);
+    const { subjectID } = req.params;
+    const userID = req.user.id;
+    const data = await tripService.getTripRequest(subjectID, userID);
     if (data) return response.successMessage(res, 'success', 200, data);
     return response.errorMessage(res, 'Trip not found', 404);
   }

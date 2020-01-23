@@ -21,6 +21,27 @@ const comment = [
   },
   {
     comment: 'new comment'
+  },
+  {
+    id: 16,
+    subjectId: 110,
+    subjectType: 'Accommodation',
+    commentorId: 133,
+    comment: 'test test test'
+  },
+  {
+    id: 17,
+    subjectId: 110,
+    subjectType: 'Accommodation',
+    commentorId: 133,
+    comment: 'test test test'
+  },
+  {
+    id: 18,
+    subjectId: 110,
+    subjectType: 'Accommodation',
+    commentorId: 111,
+    comment: 'test test test'
   }
 ];
 
@@ -65,6 +86,13 @@ const requestTrip = [
     userId: 111,
     managerId: 122,
     tripId: 'secondTripId',
+    status: 'pending'
+  },
+  {
+    id: 1124,
+    userId: 111,
+    managerId: 122,
+    tripId: 'othersTripId',
     status: 'pending'
   }
 ];
@@ -145,11 +173,11 @@ const accomodationDatabaseData = [
   {
     id: 110,
     name: 'marriott',
-    description: '',
+    description: '5 star',
     locationId: 110,
     category: 'hotel',
-    owner: '',
-    image: ''
+    owner: 'shema eric',
+    image: 'logo'
   }, {
     id: 210,
     name: 'raddison blue',

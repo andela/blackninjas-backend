@@ -96,14 +96,14 @@ router.patch(
 /**
  * @swagger
  *
- * /trip-requests/{tripRequestID}:
+ * /trip-requests/{tripRequestID}/{autorizations}:
  *    get:
  *      summary: user can get a specific trip request
  *      tags: [Trips]
  *      parameters:
- *       - name: token
- *         in: header
- *         description: Check token authentication
+ *       - name: tripRequestID
+ *         in: path
+ *         description: get a specific trip request
  *         required: true
  *         type: string
  *       - name: tripRequestID
@@ -117,7 +117,7 @@ router.patch(
  *
  */
 router.get(
-  '/:tripRequestID/:autorizations', verifyToken.paramToken,
+  '/:subjectID/:autorizations', verifyToken.paramToken,
   tripRequestValidation.validateUserAndSubjectRelationships, tripController.getTripRequest
 );
 /**
