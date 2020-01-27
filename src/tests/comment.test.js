@@ -288,7 +288,7 @@ describe('comment tests', () => {
       .end((err, res) => {
         res.should.have.status(401);
         res.body.should.have.be.a('object');
-        res.body.should.have.property('error').eql('You are not allowed to provide the feedback on this accommodation');
+        res.body.should.have.property('error').eql('You have not booked that accomodation');
         done();
       });
   });

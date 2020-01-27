@@ -425,5 +425,29 @@ class Queries {
       return error;
     }
   }
+
+  /** Function to find a user with a manager role
+   *
+   * This service get a spacific trip that corresponds to user id and accomodation id
+   * @param {object} table table to be searching from
+   * @param {Object} userid user id
+   * @param {Object} accommodationid accomodation id
+   * @returns {object} data of the trip found that corresponds to that user and accomodation id
+   */
+  static async findIfAccomodationBooked(table, userid, accommodationid) {
+    try {
+      const tripData = table.findOne({
+        where: {
+          [Op.and]: [
+            { userid: { [Op.eq]: userid } },
+            { accommodationid: { [Op.eq]: accommodationid } }
+          ]
+        }
+      });
+      return tripData;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;
