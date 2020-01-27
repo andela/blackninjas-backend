@@ -105,6 +105,36 @@ class Accommodation {
     const query = await accomodationServices.bookAccommodation(req.user.id, req.body.accommodationId, req.body.roomId, req.body.departureDate, req.body.checkoutDate);
     return response.successMessage(res, 'Booking was successfully processed', 201, query);
   }
+
+  /**
+   * Like an accommodation
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Promise} res
+   */
+  static async likeOrUnlike(req, res) {
+    const query = await accomodationServices.likeOrUnlike(req.body.isLike, req.user.id, req.params.accommodationId);
+    const likeOrUnlike = req.body.isLike ? 'Like' : 'Unlike';
+    return response.successMessage(res, `${likeOrUnlike} has successfully done`, 200, query);
+  }
+
+  /**
+   * Has user liked or unliked an accommodation
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Promise} res
+   */
+  static async checkIfUserLikedOrUnlikedAccommodation(req, res) {
+    let query = null;
+    query = await accomodationServices.findIfUserAlreadLiked(req.user.id, req.params.accommodationId);
+    if (!query) {
+      query = {
+        like: false,
+        dislike: false
+      };
+    }
+    return response.successMessage(res, 'User status on liking or unliking an accommodation', 200, query);
+  }
 }
 
 export default Accommodation;
