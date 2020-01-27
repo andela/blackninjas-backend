@@ -177,5 +177,19 @@ class accommodationService {
     const query = await db.accommodationLikesAndUnlikes.findOne({ where: { userid: userId, accommodationid: accommodationId } });
     return query;
   }
+
+  /**
+   * This service get a booked accommodation that corresponds to user id and accomodation id
+   * @param {Object} userid user id
+   * @param {Object} accommodationid accomodation id
+   * @returns {Object} user response
+   */
+  static async findIfAccomodationBooked(userid, accommodationid) {
+    const accommodatioBooked = await Queries.findIfAccomodationBooked(db.booking, userid, accommodationid);
+    if (accommodatioBooked) {
+      return accommodatioBooked;
+    }
+    return false;
+  }
 }
 export default accommodationService;

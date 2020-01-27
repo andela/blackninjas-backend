@@ -38,19 +38,23 @@ class CommentValidation {
    */
   static async validateSubjectAvailability(req, res, next) {
     const { subjectID } = req.params;
-    if (!isValide(subjectID)) return response.errorMessage(res, 'Accommodation id must be a number', 400);
-
     const result = await Queries.findOneRecord(db.accomodation, { id: subjectID });
 
     if (!result) return response.errorMessage(res, 'Accommodation not found', 404);
 
-    if (req.route.stack[0].method === 'post') {
-      const hasBookedThisAccomodation = await Queries.findOneRecord(db.booking, { userid: req.user.dataValues.id, accommodationid: subjectID });
-      if (!hasBookedThisAccomodation) {
-        return response.errorMessage(res, 'You are not allowed to provide the feedback on this accommodation', 401);
-      }
-    }
+    return next();
+  }
 
+  /**
+   * This method validate the accommodation id
+   * @param {Object} req request
+   * @param {Object} res responce
+   * @param {Object} next next steps
+   * @returns {Object} message
+   */
+  static async validateSubjectId(req, res, next) {
+    const { subjectID } = req.params;
+    if (!isValide(subjectID)) return response.errorMessage(res, 'Accommodation id must be a number', 400);
     return next();
   }
 

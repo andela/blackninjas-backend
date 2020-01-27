@@ -76,5 +76,19 @@ class AccomodationMiddleware {
     req.body.checkoutDate = checkoutDate;
     next();
   }
+
+  /** This function if used to check if the user has booked that accommodation
+   *  @param {req} req it contains the request from the body
+   *  @param {res} res it contains the response to be returned
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async checkIfUserBookedThatAccomodation(req, res, next) {
+    const userid = req.user.id;
+    const accommodationid = req.params.subjectID;
+    const accommodationExist = await accommodationService.findIfAccomodationBooked(userid, accommodationid);
+    if (!accommodationExist) { return response.errorMessage(res, 'You have not booked that accomodation', 401); }
+    return next();
+  }
 }
 export default AccomodationMiddleware;

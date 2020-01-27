@@ -165,7 +165,11 @@ router.post('/booking', Validate.bookingValidation(), isValid, verifyToken.heade
  *          comment:
  *            type: string
  */
-router.post('/:subjectID/comments', verifyToken.headerToken, Validate.CommentValidation(), isValid, commentMiddleware.validateSubjectAvailability, Accommodation.createAccomodationComment);
+router.post(
+  '/:subjectID/comments', verifyToken.headerToken, Validate.CommentValidation(),
+  isValid, commentMiddleware.validateSubjectId, commentMiddleware.validateSubjectAvailability,
+  AccomodationMiddleware.checkIfUserBookedThatAccomodation, Accommodation.createAccomodationComment
+);
 
 
 /**
@@ -208,7 +212,7 @@ router.post('/:subjectID/comments', verifyToken.headerToken, Validate.CommentVal
  *        "200":
  *          description: Accommodation comment schema
  */
-router.get('/:subjectID/comments', verifyToken.headerToken, commentMiddleware.validateSubjectAvailability, Accommodation.getAccommodationComments);
+router.get('/:subjectID/comments', verifyToken.headerToken, commentMiddleware.validateSubjectId, commentMiddleware.validateSubjectAvailability, Accommodation.getAccommodationComments);
 
 /**
  * @swagger
@@ -237,7 +241,7 @@ router.get('/:subjectID/comments', verifyToken.headerToken, commentMiddleware.va
  *        "200":
  *          description: Accommodation comment schema
  */
-router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commentMiddleware.validateSubjectAvailability, commentMiddleware.deleteCommentValidation, Accommodation.deleteAccommodationComment);
+router.delete('/:subjectID/comments/:commentID', verifyToken.headerToken, commentMiddleware.validateSubjectId, commentMiddleware.validateSubjectAvailability, commentMiddleware.deleteCommentValidation, Accommodation.deleteAccommodationComment);
 
 /**
  * @swagger
