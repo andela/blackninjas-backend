@@ -8,6 +8,7 @@ import userManagement from '../services/user.management.services';
 import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
 import commentService from '../services/comment.service';
+import db from '../database/models';
 
 config();
 /**
@@ -174,7 +175,13 @@ class TripController {
      */
   static async createComment(req, res) {
     const subjectType = 'trip request';
-    await commentService.createComment(req, res, subjectType);
+    const data = await commentService.createComment(req, res, subjectType);
+    const Id = req.params.subjectID;
+    const tripRequest = await tripService.findRequestByID(db.requesttrip, { tripId: Id });
+    const tripRequestData = tripRequest[0].dataValues;
+    const receiver = (req.user.dataValues.id === tripRequestData.managerId) ? tripRequestData.userId : tripRequestData.managerId;
+    await NotificationService.sendNotification('trip_request_comment_event', receiver, 'New Comment', `${req.user.firstName} has posted a new comment`, data.dataValues.id, `${process.env.BASE_URL}/api/v1/trip-requests/${Id}/comments?page=1`);
+    return response.successMessage(res, 'comment created successfuly', 201, data);
   }
 
   /**

@@ -10,15 +10,20 @@
     <script src="https://blackninjas-backend-staging.herokuapp.com/socket.io/socket.io.js"></script>
     <script>
         var socket = io.connect('https://blackninjas-backend-staging.herokuapp.com');
-        socket.emit('connect_user', 3);
+        socket.emit('connect_user', 2);
         socket.on('approve-or-reject-trip_request_event', function (data) {
             console.log(data);
         });
         socket.on('edit-trip-request', function (data) {
             console.log(data);
         });
-        socket.emit('connect_user', 3);
+        //socket.emit('connect_user', 3);
         socket.on('trip_request_event', function (data) {
+            console.log(data);
+        });
+
+        //socket.emit('connect_user', 3);
+        socket.on('trip_request_comment_event', function (data) {
             console.log(data);
         });
     </script>
