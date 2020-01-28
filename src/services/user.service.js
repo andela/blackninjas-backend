@@ -176,6 +176,22 @@ class UserServices {
   }
 
   /**
+ * service to all users in database
+ // eslint-disable-next-line valid-jsdoc
+ * @returns {Object} return user message
+ */
+  static async getAllUsers() {
+    try {
+      const searchUsers = await db.user.findAll({
+        attributes: ['id', 'firstName', 'lastName', 'profileImage']
+      });
+      return searchUsers;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
  * service to get Supported Role In Database
  // eslint-disable-next-line valid-jsdoc
  * @param {Object} name user request

@@ -449,5 +449,34 @@ class Queries {
       return error;
     }
   }
+
+  /**
+   *
+   * This method will be used to get all messages between a sender and receiver upon login
+   * @param {String} table the name of the table to updated
+   * @param {integer} senderId the id of the user who sent the message
+   * @param {integer} receiverId the id of the connected user
+   * @returns {object} messages retrieved
+   */
+  static async getPrivateMessage(table, senderId, receiverId) {
+    try {
+      const privateMessages = await table.findAll({
+        where: {
+          [Op.or]: [
+            {
+              [Op.and]: [{ senderId },
+                { receiverId }]
+            }, {
+              [Op.and]: [{ senderId: receiverId },
+                { receiverId: senderId }]
+            }
+          ]
+        }
+      });
+      return privateMessages;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;

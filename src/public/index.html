@@ -1,31 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+<style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font: 13px Helvetica, Arial;
+      }
+      form {
+        background: grey;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+     #user {
+        background: grey;
+        padding: 3px;
+      }
+      #senderId {
+        background: white;
+        border: 0;
+        padding: 10px;
+        width: 80%;
+        margin-right: 0.5%;
+      }
+      form input {
+        border: 0;
+        padding: 10px;
+        width: 80%;
+        margin-right: 0.5%;
+      }
+      button {
+        width: 19%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
+      #messages {
+        margin: 70px;
+      }
+      #messagesent {
+        font-size: 40;
+        margin: 40px;
+        padding: 5px 10px;
+        border: 3px solid #4CAF50; 
+      }
+      #messagerecevied {
+        font-size: 40;
+        margin: 1px;
+        padding: 5px 10px;
+        border: 3px solid blue;  
+      }
+      #messages li {
+        padding: 5px 10px;
+      }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
 <body>
-    <script src="https://blackninjas-backend-staging.herokuapp.com/socket.io/socket.io.js"></script>
+    <div id="user">
+        <input type="text" id="senderId"/>senderId<br><br>
+        <button type="button" onclick="myFunction()">Connect</button>
+    </div>
+    <div id='messages'></div>
+    <form action="">
+      <input type="number" id="receiverId">receiverId<br><br>
+      <input id="message" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        var socket = io.connect('https://blackninjas-backend-staging.herokuapp.com');
-        socket.emit('connect_user', 2);
-        socket.on('approve-or-reject-trip_request_event', function (data) {
-            console.log(data);
-        });
-        socket.on('edit-trip-request', function (data) {
-            console.log(data);
-        });
-        //socket.emit('connect_user', 3);
-        socket.on('trip_request_event', function (data) {
-            console.log(data);
-        });
+        function myFunction() { 
+            var socket = io.connect('https://blackninjas-backend-staging.herokuapp.com');
+            var senderId = document.getElementById("senderId").value;
+            socket.emit('connect_user', parseInt(senderId));
+            socket.on('approve-or-reject-trip_request_event', function (data) {
+                console.log(data);
+            });
+            socket.on('edit-trip-request', function (data) {
+                console.log(data);
+            });
+            // socket.emit('connect_user', 7);
+            // socket.on('trip_request_event', function (data) {
+            //     console.log(data);
+            // });
+          $("form").submit(event => {
+          event.preventDefault(); // prevents page reloading
+          socket.emit('send_message', {
+            senderId: parseInt(senderId),
+            receiverId: parseInt($("#receiverId").val()),
+            message: $("#message").val(),
 
-        //socket.emit('connect_user', 3);
-        socket.on('trip_request_comment_event', function (data) {
-            console.log(data);
+          });
+          console.log(`You: ${$("#message").val()}`);
+          document.getElementById('messages').innerHTML += `<p id="messagesent">You: ${$("#message").val()}</p>`;
         });
+          socket.on('receive_message', (data) => {
+             console.log(`Message from ${data.senderId}: ${data.message}`);
+             document.getElementById('messages').innerHTML += `<p id="messagerecevied">Message from ${data.senderId}: ${data.message}</p>`;
+          });
+    }
     </script>
 </body>
+
 </html>
