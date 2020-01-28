@@ -109,6 +109,21 @@ class Accomodation {
       return data;
     }));
   }
+
+  /**
+   * This function helps to get rates on a certain accommodation id
+   * @param { Integer } accommodationId id of accomodation
+   * @returns {Arrat} return array of rated values on that ceratain accommodation
+   */
+  static async getRateValues(accommodationId) {
+    const accommodationsRated = await accomodationServices.getRatedAccommodations(accommodationId);
+    const rates = [];
+    accommodationsRated.map((accomodation, index) => {
+      rates.push(accommodationsRated[index].rate);
+      return 0;
+    });
+    return rates;
+  }
 }
 
 export default Accomodation;

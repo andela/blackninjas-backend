@@ -135,6 +135,103 @@ class Accommodation {
     }
     return response.successMessage(res, 'User status on liking or unliking an accommodation', 200, query);
   }
+
+  /**
+   * This function helps user to rate accommodation which he booked.
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return accommodation response
+   */
+  static async rateAccomodation(req, res) {
+    try {
+      const { rate } = req.body;
+      const userId = req.user.id;
+      const { accommodationId } = req.params;
+
+      const rateData = { rate, userId, accommodationId };
+
+      const ratedAccommodation = await accomodationServices.CreateAccomodationRate(rateData);
+      const ratings = await AccommodationHelper.getRateValues(accommodationId);
+
+
+      const sum = ratings.reduce((total, amount) => total + amount);
+      const averageRate = (sum / ratings.length);
+
+      const average = averageRate.toFixed(3);
+      await accomodationServices.updateAverageRate(accommodationId, average);
+      return response.successMessage(res, 'You rated this accomodation successfully', 201, ratedAccommodation);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * This function helps user to update accommodation rate.
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return accommodation response
+   */
+  static async updateAccomodationRate(req, res) {
+    try {
+      const { rate } = req.body;
+      const userId = req.user.id;
+      const { accommodationId } = req.params;
+      await accomodationServices.updateAccomodationRate(accommodationId, userId, rate);
+      const rateData = { rate };
+      const ratings = await AccommodationHelper.getRateValues(accommodationId);
+
+      const sum = ratings.reduce((total, amount) => total + amount);
+      const averageRate = (sum / ratings.length);
+
+      const average = averageRate.toFixed(3);
+      await accomodationServices.updateAverageRate(accommodationId, average);
+      return response.successMessage(res, 'Rate was updated successfully', 200, rateData);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * This function helps user to get accommodation rate
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return accommodation response
+   */
+  static async getAccommodationRate(req, res) {
+    try {
+      const userId = req.user.id;
+      const { accommodationId } = req.params;
+      const accommodationRate = await accomodationServices.getAccommodationRate(accommodationId, userId);
+      if (!accommodationRate) {
+        return response.errorMessage(res, 'Rating not found', 404);
+      }
+      return response.successMessage(res, 'Accommodation rate', 201, accommodationRate);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * This function helps user to rate accommodation which he booked.
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return accommodation response
+   */
+  static async getAverageRatings(req, res) {
+    try {
+      const { accommodationId } = req.params;
+      const ratingsAverage = await accomodationServices.getAverageRatings(accommodationId);
+      let average;
+      if (ratingsAverage[0].averageRate === null || ratingsAverage[0].averageRate === 0) {
+        average = 0;
+      } else {
+        average = ratingsAverage[0].averageRate;
+      }
+      return response.successMessage(res, 'The average rate of this accommodation', 200, { average });
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
 }
 
 export default Accommodation;

@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const booking = sequelize.define('booking', {
     userid: DataTypes.INTEGER,
     accommodationid: DataTypes.INTEGER,
-    roomid: DataTypes.STRING,
+    roomid: DataTypes.INTEGER,
     departuredate: DataTypes.DATE,
     checkoutdate: DataTypes.DATE
   }, {});

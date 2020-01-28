@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     numberOfRooms: DataTypes.INTEGER,
     availableRooms: DataTypes.INTEGER,
     likes: DataTypes.INTEGER,
-    unlikes: DataTypes.INTEGER
+    unlikes: DataTypes.INTEGER,
+    averageRate: DataTypes.FLOAT
   }, {
     freezeTableName: true,
     tableName: 'accomodation'
