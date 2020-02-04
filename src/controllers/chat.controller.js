@@ -62,7 +62,7 @@ class ChatController {
       const privateMessages = await chatService.getPrivateMessage(userId, id);
       return response.successMessage(res, 'Messages', 200, privateMessages);
     } catch (error) {
-      response.errorMessage(res, error.message, 500);
+      return response.errorMessage(res, error.message, 500);
     }
   }
 }

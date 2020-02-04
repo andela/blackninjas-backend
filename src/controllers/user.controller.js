@@ -133,11 +133,14 @@ class userController {
   */
   static async authGoogleAndFacebook(req, res) {
     const {
-      email, isVerified, id, authtype
+      authtype, email, firstName, isVerified, id
     } = req.user;
-    const token = GenerateToken({ email, isVerified, id });
+    const token = GenerateToken({
+      email, firstName, isVerified, id
+    });
     await UserServices.updateUser(req.user.email, { token });
-    return response.successMessage(res, `user logged in successfully with ${authtype}`, 200, token);
+    const userInfo = JSON.stringify({ authtype, token });
+    return res.redirect(`${process.env.BASE_URL_REACT}?info=${userInfo}`);
   }
 
   /**
