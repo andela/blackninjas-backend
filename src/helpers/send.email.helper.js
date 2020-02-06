@@ -142,7 +142,7 @@ class mailer {
   
               </br>  </br>  </br> </div>
           </div>
-         <a href="${process.env.BASE_URL}/api/v1/auth/resetpassword/${token}" class="Email-wrapper_button" style="cursor: pointer !important; justify-self: center; margin-left: 80px; text-decoration: none; color: white;">Reset Password</a>
+         <a href="${process.env.RESET_PASSWORD_FRONTED}/ResetPassword?resetToken=${token}" class="Email-wrapper_button" style="cursor: pointer !important; justify-self: center; margin-left: 80px; text-decoration: none; color: white;">Reset Password</a>
   
   
       </div>
