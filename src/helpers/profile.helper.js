@@ -19,7 +19,7 @@ class ProfileHelper {
       gender, birthdate,
       preferredlanguage,
       preferredcurrency,
-      place, department, profileImage
+      place, department, profileImage, appNotification, emailNotification
     } = userData;
     return {
       email,
@@ -32,7 +32,9 @@ class ProfileHelper {
       preferredcurrency,
       place,
       department,
-      profileImage
+      profileImage,
+      appNotification,
+      emailNotification
     };
   }
 
