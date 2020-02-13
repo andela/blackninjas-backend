@@ -4,7 +4,7 @@ import tripService from '../services/trip.services';
 import userService from '../services/user.service';
 import tripRequestService from '../services/request.services';
 import response from '../helpers/response.helper';
-import userManagement from '../services/user.management.services';
+import userManagement from '../services/user-management.services';
 import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
 import commentService from '../services/comment.service';

@@ -6,6 +6,7 @@ import mailer from '../helpers/send.email.helper';
 import GenerateToken from '../helpers/token.helper';
 import profileHelper from '../helpers/profile.helper';
 import Paginate from '../helpers/paginate.helper';
+import userManagement from '../services/user-management.services';
 
 /**
  * Class for users related operations such Sign UP, Sign In and others
@@ -40,8 +41,8 @@ class userController {
         isVerified: false,
         token
       };
-      UserServices.CreateUser(NewUser);
-
+      const createdUser = await UserServices.CreateUser(NewUser);
+      userManagement.CreateUserManagement({ userId: createdUser.id });
       const data = {
         token,
       };
@@ -276,6 +277,54 @@ class userController {
       'We dont support that role',
       401
     );
+  }
+
+
+  /**
+ * @param {*} req the request sent to the server
+ * @param {*} res the response from the server
+ * @returns {*} the response from the server
+*/
+  static async assignUserToManager(req, res) {
+    try {
+      const { userId } = req.params;
+      const { managerId } = req.body;
+      const [, updateUserManagements] = await userManagement.assignUsersManagers(parseInt(userId, 10), managerId);
+      return response.successMessage(res, 'User assigned to manager successfully', 200, updateUserManagements);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   *
+   * @param {*} req the request sent to the server
+   * @param {*} res the response from the server
+   * @returns {*} response to the user
+   */
+  static async getUsersWithManagers(req, res) {
+    try {
+      const { limit, page } = req.query;
+      const offset = Paginate(page, limit);
+      const usersManagers = await userManagement.getUsersWithManagers(limit, offset);
+      return response.successMessage(res, 'Users and their manager', 200, usersManagers);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * @param {*} req the request sent to the server
+   * @param {*} res the response from the server
+   * @returns {*} response to the user
+   */
+  static async getAllManagers(req, res) {
+    try {
+      const allManagers = await userManagement.getAllManagers();
+      return response.successMessage(res, 'All managers on barefoot nomad', 200, allManagers);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
   }
 }
 

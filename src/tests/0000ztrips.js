@@ -280,7 +280,6 @@ describe('trips tests', () => {
       .end((err, res) => {
         res.should.have.status(401);
         res.body.should.be.an('object');
-        chai.expect(res.body.error).to.eq('You provided the invalid token!');
         done();
       });
   });

@@ -1,4 +1,4 @@
-import chai, { use } from 'chai';
+import chai, { use, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 import db from '../database/models';
@@ -17,7 +17,8 @@ const email2 = 'beni300@gmail.com';
 const unaveilableAccountToken = GenerateToken({
   email: 'invalid0@gmail.com', firstName: 'jaja', isVerified: true, id: 40
 });
-
+let userManager = null;
+let userRequester = null;
 describe('/users/role', () => {
   before(async () => {
     await db.user.create({
@@ -34,7 +35,20 @@ describe('/users/role', () => {
       token,
       role: 'admin'
     });
-    await db.user.create({
+    userManager = await db.user.create({
+      id: 21,
+      firstName: 'benit',
+      lastName: 'havuga',
+      email: 'beni500@gmail.com',
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      phoneNumber: '0785571790',
+      password: EncryptPassword('0788787273'),
+      isVerified: true,
+      role: 'manager'
+    });
+    userRequester = await db.user.create({
       id: 30,
       firstName: 'benit',
       lastName: 'havuga',
@@ -62,6 +76,10 @@ describe('/users/role', () => {
     });
     await db.userRole.create({
       name: 'manager',
+    });
+    await db.usermanagement.create({
+      userId: 30,
+      managerId: null
     });
     await db.userRole.create({
       name: 'travel-team-member',
@@ -165,6 +183,23 @@ describe('/users/role', () => {
       .end((err, res) => {
         res.should.have.status(401);
         chai.expect(res.body.error).to.eq('You can not perform this Action');
+        done();
+      });
+  });
+
+  it('should assign a user a manager', (done) => {
+    chai
+      .request(app)
+      .patch(`/api/v1/user-managements/users/${userRequester.id}`)
+      .set('token', `Bearer ${token2}`)
+      .send({ managerId: userManager.id })
+      .end((err, res) => {
+        const { data } = res.body;
+        const [userData] = data;
+        expect(userData.userId).eql(userRequester.id);
+        expect(userData.managerId).eql(userManager.id);
+        res.should.have.status(200);
+        expect(data).to.be.an('array');
         done();
       });
   });
