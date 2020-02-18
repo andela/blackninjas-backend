@@ -232,6 +232,29 @@ class Accommodation {
       return response.errorMessage(res, error.message, 500);
     }
   }
+
+  /**
+   * This function helps to get accomodations located in user destination
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return user response
+   */
+  static async getAccomodationsByDestination(req, res) {
+    const { To } = req.body;
+    const destinaton = parseInt(To, 10);
+    const accommodations = await accomodationServices.findAccomodationByCity(destinaton);
+    const accommodationDetails = [];
+    await Promise.all(accommodations.map(async (accomodation) => {
+      const { id, name } = accomodation;
+      const accomodationId = id;
+      const accommodationImages = await imageServices.findImages(accomodationId);
+      accommodationImages.map(async (image) => {
+        const { imageUrl } = image;
+        accommodationDetails.push({ id, name, imageUrl });
+      });
+    }));
+    return response.successMessage(res, 'accommodation data', 201, accommodationDetails);
+  }
 }
 
 export default Accommodation;

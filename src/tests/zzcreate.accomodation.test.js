@@ -135,4 +135,15 @@ describe('Accommodation Tests', () => {
         done();
       });
   });
+  it('should return accommodation from supported locations', (done) => {
+    chai
+      .request(app).get('/api/v1/accommodations')
+      .set('token', `Bearer ${token}`)
+      .send({ To: 120 })
+      .end((err, res) => {
+        res.should.have.status(201);
+        chai.expect(res.body.message).eql('accommodation data');
+        done();
+      });
+  });
 });

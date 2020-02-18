@@ -19,6 +19,15 @@ class location {
   static async getMostTraveled() {
     return db.sequelize.query('SELECT locations.country, locations.city, count (locations.city) as "travelledTimes" FROM trips INNER JOIN locations ON trips."destinationId"=locations.id group by locations.country,locations.city ORDER BY "travelledTimes" DESC;', { type: db.sequelize.QueryTypes.SELECT });
   }
+
+  /**
+     * get most traveled destinations
+     * @returns { Object } Locations and travelledTimes
+     */
+  static async getLocations() {
+    const data = await db.locations.findAll();
+    return data;
+  }
 }
 
 export default location;

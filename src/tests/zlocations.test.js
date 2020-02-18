@@ -60,4 +60,14 @@ describe('Locations Tests', () => {
         done();
       });
   });
+  it('should return supported locations', (done) => {
+    chai.request(app)
+      .get('/api/v1/locations')
+      .set('token', `Bearer ${token}`)
+      .end((err, res) => {
+        res.should.have.status(200);
+        chai.expect(res.body.message).eql('all supported locations');
+        done();
+      });
+  });
 });
