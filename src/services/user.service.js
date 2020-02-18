@@ -166,7 +166,7 @@ class UserServices {
   static async getUsers(limit, offset) {
     try {
       const searchUsers = await db.user.findAndCountAll({
-        attributes: ['firstName', 'lastName', 'email', 'role', 'createdAt', 'updatedAt'], order: [['createdAt', 'DESC']], limit, offset
+        attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'updatedAt'], order: [['createdAt', 'DESC']], limit, offset
       });
       if (!searchUsers) return null;
       return searchUsers;
