@@ -20,7 +20,7 @@ const verifyAllTokens = async (req, res, next, token) => {
     req.user = user;
     return next();
   } catch (error) {
-    return response.errorMessage(res, 'You provided the invalid token!', 401);
+    response.errorMessage(res, error.message, 401);
   }
 };
 export default verifyAllTokens;
