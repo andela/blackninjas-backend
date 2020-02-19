@@ -33,4 +33,5 @@ const router = express.Router();
  *                  type: intiger
  */
 router.get('/most-travelled', verifyToken.headerToken, locationsController.getMostTraveledLocations);
+router.get('/', verifyToken.headerToken, locationsController.getSupportedLocations);
 export default router;
