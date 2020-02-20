@@ -124,23 +124,19 @@ class TripController {
   static async getTripRequestsByUser(req, res) {
     const userId = req.user.id;
     const { page } = req.query;
-    const limit = 10;
+    const limit = req.query.limit || 10;
     const offset = Paginate(page, limit);
     const requests = await tripService.findTripRequestsById(userId, limit, offset);
-    if (requests.count > offset) {
-      return response.successMessage(
-        res,
-        'My Trip Requests',
-        200,
-        requests
-      );
-    }
-    return response.errorMessage(
+    const manager = await db.user.findOne({ where: requests.managerId });
+    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager);
+    return response.successMessage(
       res,
-      'No Trip Request Found',
-      404
+      'My Trip Requests',
+      200,
+      requestTrips
     );
   }
+
 
   /**
    * manager get trip requests made by their direct reports

@@ -109,18 +109,6 @@ describe('/trip/myrequests', () => {
         done();
       });
   });
-  it('should check if page is less than one', (done) => {
-    chai
-      .request(app)
-      .get('/api/v1/trips/my-trip-requests?page=2')
-      .set('token', `Bearer ${token2}`)
-      .end((err, res) => {
-        res.should.have.status(404);
-        res.body.should.be.an('object');
-        chai.expect(res.body.error).to.eq('No Trip Request Found');
-        done();
-      });
-  });
   it('should check if a user is not verified and then give him message to verify first', (done) => {
     chai
       .request(app)
