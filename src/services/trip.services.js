@@ -228,14 +228,14 @@ class TripService {
 
   /**
    *
-   * @param {Integer} managerId the id of the manager
+   * @param {Integer} userId the id of the user
    * @param {Object} limit which includes
    * @param {Object} offset number
    * @returns {Object} the booking of the exact passed user id
    */
-  static async findTripRequestsById(managerId, limit, offset) {
+  static async findTripRequestsById(userId, limit, offset) {
     try {
-      const bookUser = await Queries.paginationSearch(db.requesttrip, { managerId }, limit, offset);
+      const bookUser = await Queries.paginationSearch(db.requesttrip, { userId }, limit, offset);
       return bookUser;
     } catch (error) {
       return error;
