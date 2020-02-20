@@ -39,6 +39,19 @@ describe('user should receive a link to reset password', () => {
       isVerified: false,
       token: token2
     });
+    await db.user.create({
+      firstName: 'shema',
+      lastName: 'eric',
+      email: 'resetpassword23@gmail.com',
+      gender: 'male',
+      country: 'Rwanda',
+      birthdate: '12-04-1996',
+      password: EncryptPassword('shemaeric'),
+      phoneNumber: '0785571790',
+      authtype: 'google',
+      isVerified: false,
+      token: token2
+    });
   });
 
   it('user check if a user is available', (done) => {
@@ -62,7 +75,18 @@ describe('user should receive a link to reset password', () => {
         done();
       });
   });
+  it('should not send reset link when the account created using social platforms ', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/auth/forgetpassword')
+      .send({ email: 'resetpassword23@gmail.com' })
+      .end((err, res) => {
+        res.should.have.status(401);
+        done();
+      });
+  });
 });
+
 
 describe('user should be able to reset password', () => {
   it('it should check if password and confirm password match', (done) => {

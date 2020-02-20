@@ -169,13 +169,15 @@ class userController {
    */
   static async sendResetPasswordLink(req, res) {
     const result = await UserServices.findUserByEmail(req.body.email);
-    if (result !== null) {
+    if (result !== null && result.authtype === null) {
       const token = GenerateToken({ email: req.body.email, isVerified: result.isVerified, id: result.id });
       const emailView = mailer.resetPasswordView(token, result.firstName);
       mailer.sendEmail(req.body.email, 'Reset Password', emailView);
       return response.successMessage(res, 'Email sent please check you email to reset your password', 200, token);
     }
-    return response.errorMessage(res, 'user not found!', 404);
+    if (result.authtype === 'google' || result.authtype === 'facebook') {
+      return response.errorMessage(res, 'Your account was created using social platform you can not perform this action', 401);
+    }
   }
 
   /**

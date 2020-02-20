@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import response from '../helpers/response.helper';
 
 const dotenv = require('dotenv');
 
@@ -158,25 +159,33 @@ class mailer {
  * @returns {null} return nothing
  */
   static async sendEmail(to, subject, views) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SENDER_EMAIL,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.SENDER_EMAIL,
+          pass: process.env.EMAIL_PASS
+        }
+      });
 
-    /**
-   * This is an object which include email data (mail option)
-   */
-    const mailOptions = {
-      from: process.env.SENDER_EMAIL,
-      to,
-      subject,
-      html: views
-    };
+      /**
+     * This is an object which include email data (mail option)
+     */
+      const mailOptions = {
+        from: process.env.SENDER_EMAIL,
+        to,
+        subject,
+        html: views
+      };
 
-    await transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      return response.errorMessage(
+        error,
+        error.message,
+        500,
+      );
+    }
   }
 }
 

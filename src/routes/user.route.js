@@ -6,6 +6,7 @@ import isEmailUsed from '../middlewares/auth.middleware';
 import isValid from '../middlewares/validate.middleware';
 import verifyToken from '../middlewares/verify.token.middleware';
 import verifyUser from '../middlewares/verify.user.middleware';
+import ResetPasswordMiddleware from '../middlewares/reset-password.middleware';
 import '../config/passport.config';
 
 const router = express.Router();
@@ -238,7 +239,7 @@ router.patch('/resetpassword', Validate.resetPassword(), isValid, verifyToken.he
  *            format: email
  *
  */
-router.post('/forgetpassword', Validate.sendResetPasswordLink(), isValid, userController.sendResetPasswordLink);
+router.post('/forgetpassword', Validate.sendResetPasswordLink(), isValid, ResetPasswordMiddleware.checkIfUserExistanceByEmail, userController.sendResetPasswordLink);
 router.get('/activate/:autorizations', verifyToken, userController.updatedUser);
 /**
  * @swagger
