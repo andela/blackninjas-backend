@@ -88,6 +88,44 @@ class TripRequestService {
     const updatedRequest = Queries.updateTripRequestStatusById(db.requesttrip, id);
     return updatedRequest;
   }
+
+  /** Function to update the status to approved or reject
+   *
+   * @param {Object} requests requests
+   * @param {Object} manager manager
+   * @returns {object} data
+   */
+  static async getTripRequestsOfUser(requests, manager) {
+    let requestTrips = [];
+    await Promise.all(requests.rows.map(async (request) => {
+      const trips = await db.sequelize.query(`
+        SELECT trips.id, o.city as origin, d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt"
+        FROM trips
+        INNER JOIN locations o ON o.id=trips."originId"
+        INNER JOIN locations d ON d.id=trips."destinationId"
+        INNER JOIN accomodation a ON a.id=trips."accomodationId"
+        WHERE trips."tripId"='${request.tripId}';
+      `, { type: db.sequelize.QueryTypes.SELECT });
+      requestTrips = trips.map(trip => ({
+        id: request.id,
+        origin: trip.origin,
+        destination: trip.destination,
+        tripId: request.tripId,
+        tripTripId: trip.id,
+        tripType: trip.tripType,
+        status: request.status,
+        accomodation: trip.accomodation,
+        departureDate: trip.departureDate,
+        returnDate: trip.returnDate,
+        createdAt: trip.createdAt,
+        manager: {
+          firstName: manager.firstName,
+          lastName: manager.lastName
+        }
+      }));
+    }));
+    return requestTrips;
+  }
 }
 
 export default TripRequestService;
