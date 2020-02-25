@@ -591,5 +591,33 @@ class Queries {
       return error;
     }
   }
+
+  /** Query to find and count all request made by a certain manager directs
+   *
+   * @param {*} table to search into
+   * @param {Object} where which includes
+   * @param {Object} limit which includes
+   * @param {Object} offset number
+   * @returns { array } data found
+   */
+  static async commentsPaginationSearch(table, where, limit, offset) {
+    try {
+      const comments = await table.findAndCountAll({
+        where,
+        include: [{
+          model: db.user,
+          attributes: ['firstName', 'lastName', 'email', 'profileImage']
+        }],
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        limit,
+        offset
+      });
+      return comments;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;

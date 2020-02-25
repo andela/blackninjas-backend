@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
   comment.associate = (models) => {
     comment.belongsTo(
       models.user,
-      { foreignKey: 'commentorId' },
-      { onDelete: 'cascade' },
-      { onUpdate: 'cascade' }
+      {
+        foreignKey: 'commentorId', onUpdate: 'cascade', onDelete: 'cascade', targetKey: 'id'
+      }
     );
   };
   return comment;

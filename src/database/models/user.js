@@ -19,8 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     appNotification: { type: DataTypes.BOOLEAN },
     emailNotification: { type: DataTypes.BOOLEAN },
   }, {});
-  user.associate = () => {
-    // user.hasMany(models.requestTrip, { foreignKey: 'lineManager', sourceKey: 'id' });
+  user.associate = (models) => {
+    user.hasMany(models.comment, {
+      foreignKey: 'commentorId',
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    });
   };
   return user;
 };

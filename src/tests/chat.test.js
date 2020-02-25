@@ -1,5 +1,6 @@
 import chai, { use } from 'chai';
 import chaiHttp from 'chai-http';
+import io from 'socket.io-client';
 import app from '../app';
 import db from '../database/models';
 import GenerateToken from '../helpers/token.helper';
@@ -57,6 +58,17 @@ describe('/users/messages', () => {
       password: EncryptPassword('0788787273'),
       isVerified: false,
       token: unaveilableAccountToken
+    });
+
+    const socketURL = 'http://localhost:3000';
+
+    const options = {
+      transports: ['websocket'],
+      'force new connection': true
+    };
+    const client = io.connect(socketURL, options);
+    client.on('connect', () => {
+      client.emit('connect_user', 122);
     });
   });
   it('should check and return all users with their online status', (done) => {
