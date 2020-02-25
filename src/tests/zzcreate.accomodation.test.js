@@ -137,9 +137,8 @@ describe('Accommodation Tests', () => {
   });
   it('should return accommodation from supported locations', (done) => {
     chai
-      .request(app).get('/api/v1/accommodations')
+      .request(app).get('/api/v1/accommodations/located/120')
       .set('token', `Bearer ${token}`)
-      .send({ To: 120 })
       .end((err, res) => {
         res.should.have.status(201);
         chai.expect(res.body.message).eql('accommodation data');

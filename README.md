@@ -1,6 +1,6 @@
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed%20by-Hound-blueviolet)](https://houndci.com)
 [![Build Status](https://travis-ci.org/andela/blackninjas-backend.svg?branch=develop)](https://travis-ci.org/andela/blackninjas-backend/)
-[![Coverage Status](https://coveralls.io/repos/github/andela/blackninjas-backend/badge.svg?branch=ch-integrate-covellars-%23169817858)](https://coveralls.io/github/andela/blackninjas-backend?branch=ch-integrate-covellars-%23169817858)
+[![Coverage Status](https://coveralls.io/repos/github/andela/blackninjas-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/blackninjas-backend?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4eb92eaec195f21cdb38/maintainability)](https://codeclimate.com/github/andela/blackninjas-backend/maintainability)
 
 
