@@ -25,7 +25,7 @@ class LocationsController {
    */
   static async getSupportedLocations(req, res) {
     const locations = await LocationsService.getLocations();
-    const data = locations.map(async (location) => {
+    const data = locations.map((location) => {
       const { country, city, id } = location;
       return ({ country, city, id });
     });
