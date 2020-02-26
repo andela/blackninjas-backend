@@ -14,6 +14,7 @@ class ProfileHelper {
  */
   static chooseProfileData(email, userData) {
     const {
+      id,
       firstName,
       lastName, country,
       gender, birthdate,
@@ -22,6 +23,7 @@ class ProfileHelper {
       place, department, profileImage, appNotification, emailNotification
     } = userData;
     return {
+      id,
       email,
       firstName,
       lastName,
