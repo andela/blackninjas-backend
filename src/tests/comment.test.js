@@ -97,27 +97,10 @@ describe('comment tests', () => {
   it('should return an empty body in case a trip request does not have a comment', (done) => {
     chai
       .request(app)
-      .get(`/api/v1/trip-requests/${trip[1].tripId}/comments?page=1`)
+      .get(`/api/v1/trip-requests/${trip[1].tripId}/comments?page=6`)
       .set('token', `Bearer ${anauthorizedToken}`)
       .end((err, res) => {
         res.should.have.status(204);
-        done();
-      });
-  });
-
-  it('should display all trip request comments', (done) => {
-    chai
-      .request(app)
-      .get(`/api/v1/trip-requests/${trip[0].tripId}/comments?page=1&limit=2`)
-      .set('token', `Bearer ${token}`)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.have.be.a('object');
-        res.body.should.have.property('message').eql('success');
-        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[1].id);
-        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[1].firstName);
-        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[1].lastName);
-        res.body.data.commenterInfo.should.have.property('profileImage');
         done();
       });
   });
@@ -241,16 +224,14 @@ describe('comment tests', () => {
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.have.be.a('object');
-        res.body.should.have.property('message').eql('success');
-        res.body.data.commenterInfo.should.have.property('id').eql(UserDatabaseData[2].id);
-        res.body.data.commenterInfo.should.have.property('firstName').eql(UserDatabaseData[2].firstName);
-        res.body.data.commenterInfo.should.have.property('lastName').eql(UserDatabaseData[2].lastName);
-        res.body.data.commenterInfo.should.have.property('profileImage');
-        res.body.data.comment.rows.should.have.be.a('array');
-        res.body.data.comment.rows[0].should.have.property('id').eql(comment[4].id);
-        res.body.data.comment.rows[0].should.have.property('subjectType').eql(comment[4].subjectType);
-        res.body.data.comment.rows[0].should.have.property('commentorId').eql(comment[4].commentorId);
-        res.body.data.comment.rows[0].should.have.property('comment').eql(comment[4].comment);
+        res.body.data.rows.should.have.be.a('array');
+        res.body.data.rows[0].should.have.property('id').eql(comment[4].id);
+        res.body.data.rows[0].should.have.property('subjectType').eql(comment[4].subjectType);
+        res.body.data.rows[0].should.have.property('commentorId').eql(comment[4].commentorId);
+        res.body.data.rows[0].should.have.property('comment').eql(comment[4].comment);
+        res.body.data.rows[0].user.should.have.property('firstName').eql(UserDatabaseData[2].firstName);
+        res.body.data.rows[0].user.should.have.property('lastName').eql(UserDatabaseData[2].lastName);
+        res.body.data.rows[0].user.should.have.property('email').eql(UserDatabaseData[2].email);
         done();
       });
   });

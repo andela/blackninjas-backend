@@ -34,7 +34,7 @@ class CommentServices {
    * This method will help to search all comments
    * @param {object} req request
    * @param { Object } res response
-   * @param { String } subjectType subject Type
+   * @param { Object } subjectType response
    * @returns { Object } all information needed
    */
   static async getAllCommets(req, res, subjectType) {
@@ -42,24 +42,11 @@ class CommentServices {
     const { page, limit } = req.query;
     const limitNumber = (/[0-9]/g.test(limit)) ? limit : 10;
     const offset = Paginate(page, limitNumber);
-
-    const comment = await Queries.paginationSearch(db.comment, { subjectId, subjectType }, limitNumber, offset);
-    if (!Object.prototype.hasOwnProperty.call(comment, 'managerId')) {
-      const userInfo = await Queries.findOneRecord(db.user, { id: comment.rows[0].commentorId });
-      const commenterInfo = userInfo && {
-        id: userInfo.id,
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        profileImage: userInfo.profileImage
-      };
-      const data = {
-        commenterInfo,
-        comment
-      };
-
-      return response.successMessage(res, 'success', 200, data);
+    const results = await Queries.commentsPaginationSearch(db.comment, { subjectId, subjectType }, limitNumber, offset);
+    if (results.rows.length > 0) {
+      return response.successMessage(res, 'success', 200, results);
     }
-    return response.successMessage(res, 'No comment yet', 204);
+    return response.errorMessage(res, 'No comment yet', 204);
   }
 
   /**
