@@ -240,20 +240,21 @@ class Accommodation {
    * @returns {Object} return user response
    */
   static async getAccomodationsByDestination(req, res) {
-    const { To } = req.body;
-    const destinaton = parseInt(To, 10);
+    const { userDesination } = req.params;
+    const destinaton = parseInt(userDesination, 10);
     const accommodations = await accomodationServices.findAccomodationByCity(destinaton);
-    const accommodationDetails = [];
+    const data = [];
     await Promise.all(accommodations.map(async (accomodation) => {
       const { id, name } = accomodation;
       const accomodationId = id;
       const accommodationImages = await imageServices.findImages(accomodationId);
-      accommodationImages.map(async (image) => {
+      const accommodationDetails = accommodationImages.map((image) => {
         const { imageUrl } = image;
-        accommodationDetails.push({ id, name, imageUrl });
+        return { id, name, imageUrl };
       });
+      data.push(accommodationDetails[0]);
     }));
-    return response.successMessage(res, 'accommodation data', 201, accommodationDetails);
+    return response.successMessage(res, 'accommodation data', 201, data);
   }
 }
 
