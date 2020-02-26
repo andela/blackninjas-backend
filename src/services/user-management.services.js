@@ -49,7 +49,7 @@ class userManagement {
   static async getUsersWithManagers(limit, offset) {
     try {
       const usersManagers = db.sequelize.query(
-        `SELECT us.id, us."firstName",us."lastName", us.email, us.role, ul."firstName" as Manager FROM usermanagements um JOIN users us on um."userId" = us.id left JOIN users ul ON um."managerId" = ul.id ORDER BY us."firstName" limit ${limit} offset ${offset}`,
+        `SELECT us.id, us."firstName",us."lastName", us.email, us.role, CONCAT(ul."firstName",' ',ul."lastName") as manager FROM usermanagements um JOIN users us on um."userId" = us.id left JOIN users ul ON um."managerId" = ul.id ORDER BY us."firstName" limit ${limit} offset ${offset}`,
         { type: db.sequelize.QueryTypes.SELECT }
       );
       return usersManagers;
