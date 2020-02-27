@@ -406,5 +406,5 @@ router.patch('/:accommodationId', Validate.likeOrUnlikeValidation(), isValid, ve
  *          description: Check if user has already like or unlike an accommodation.
  */
 router.get('/:accommodationId/like-status', isValid, verifyToken.headerToken, Accommodation.checkIfUserLikedOrUnlikedAccommodation);
-router.get('/', verifyToken.headerToken, Accommodation.getAccomodationsByDestination);
+router.get('/located/:userDestination', verifyToken.headerToken, Accommodation.getAccomodationsByDestination);
 export default router;
