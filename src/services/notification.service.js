@@ -26,7 +26,8 @@ class NotificationService {
       // get receiver data from database
       const receiverInfo = await userService.findUser({ id: receiverId });
       // Save in database
-      await db.notification.create(data);
+      const result = await db.notification.create(data);
+      data.id = result.dataValues.id;
       if (receiverInfo.appNotification) {
         const client = clients.get(receiverInfo.id);
         if (client) {
