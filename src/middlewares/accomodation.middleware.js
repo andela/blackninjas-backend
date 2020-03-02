@@ -119,5 +119,20 @@ class AccomodationMiddleware {
     if (!accomodations[0]) { return response.errorMessage(res, 'This accommodation does not exist', 401); }
     next();
   }
+
+  /** This function if the user who is performing the action is an admin or travel admin in our database
+   *  @param {req} req it contains the request from the body
+   *  @param {res} res it contains the response to be returned
+   *  @param {function} next it jumps to the next middleware in the route
+   * @return {object} the data from the first middleware
+   */
+  static async checkIfRequesterIsAdmin(req, res, next) {
+    const user = await UserServices.findUserByEmail(req.user.email);
+    const role = user.role.toLowerCase();
+    if (role === 'admin' || role === 'travel Admin') {
+      return next();
+    }
+    return response.errorMessage(res, 'You can not perform this Action', 401, 'error');
+  }
 }
 export default AccomodationMiddleware;

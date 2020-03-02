@@ -169,4 +169,14 @@ describe('Accommodation tests', () => {
         done();
       });
   });
+  it('should get error when the user who is performing an action is not admin or travel admin ', (done) => {
+    chai.request(app).get('/api/v1/accommodations')
+      .set('token', `Bearer ${token2}`)
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.body.should.be.an('object');
+        chai.expect(res.body.error).to.eq('You can not perform this Action');
+        done();
+      });
+  });
 });

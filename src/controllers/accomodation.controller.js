@@ -4,7 +4,7 @@ import AccommodationHelper from '../helpers/accomodation.helper';
 import imageServices from '../services/image.services';
 import roomServices from '../services/room.services';
 import commentService from '../services/comment.service';
-
+import Paginate from '../helpers/paginate.helper';
 /**
 * Class for Travel administrator and supplier to deal with Accommodation
 */
@@ -59,6 +59,68 @@ class Accommodation {
       accommodationAmenities
     };
     return response.successMessage(res, 'accommodation data', 201, data);
+  }
+
+  /**
+   * This function helps to get all accomodations
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return user response
+   */
+  static async getAllAccomodation(req, res) {
+    try {
+      const { page } = req.query;
+      const limit = 10;
+      const offset = Paginate(page, limit);
+      const Accomodations = await accomodationServices.getAccomodations(limit, offset);
+      if (Accomodations.count > offset) {
+        return response.successMessage(
+          res,
+          'Accomodations',
+          200,
+          Accomodations
+        );
+      }
+      return response.errorMessage(
+        res,
+        'No Accomodation',
+        404
+      );
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+  /**
+   * This function helps to get all rooms
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return user response
+   */
+  static async getAllRooms(req, res) {
+    try {
+      const { page } = req.query;
+      const { accomodationId } = req.params;
+      const limit = 10;
+      const offset = Paginate(page, limit);
+
+      const rooms = await accomodationServices.getRooms(accomodationId, limit, offset);
+      if (rooms.count > offset) {
+        return response.successMessage(
+          res,
+          'rooms',
+          200,
+          rooms
+        );
+      }
+      return response.errorMessage(
+        res,
+        'No Rooms',
+        404
+      );
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
   }
 
   /**
