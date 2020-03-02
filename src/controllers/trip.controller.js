@@ -137,30 +137,26 @@ class TripController {
     );
   }
 
-
   /**
-   * manager get trip requests made by their direct reports
-   * @param {Object} req The request object
+   * user will recieve all requests he/she  made and data is retrieved from the database
+   * @param {Object} req The request object that contains (UserId and the page number)
    * @param {Object} res The response object
-   * @returns {Object} A user object with selected field
+   * @returns {Object} A user object with selected fields
    */
   static async getTripRequestsByManager(req, res) {
-    try {
-      const { page } = req.query;
-      const managerId = req.manager.id;
-      const limit = 10;
-      const offset = Paginate(page, limit);
-      const tripFound = await tripService.findTripRequestsById(managerId, limit, offset);
-      if (tripFound.managerId) return response.errorMessage(res, 'No trip requests on this page', 404, 'error');
-
-      return response.successMessage(res, 'Trips requested by your direct reports', 200, tripFound);
-    } catch (e) {
-      return response.errorMessage(
-        res,
-        e.message,
-        500,
-      );
-    }
+    const managerId = req.user.id;
+    const { page } = req.query;
+    const limit = req.query.limit || 10;
+    const offset = Paginate(page, limit);
+    const requests = await tripService.findTripRequestsByManagerID(managerId, limit, offset);
+    const manager = await db.user.findOne({ where: requests.rows[0].dataValues.userId });
+    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager);
+    return response.successMessage(
+      res,
+      'Trips requested by your direct reports',
+      200,
+      requestTrips
+    );
   }
 
   /**
