@@ -259,5 +259,49 @@ class accommodationService {
   static async getAverageRatings(accomodationId) {
     return Queries.getAverageRatings(db.accomodation, accomodationId);
   }
+
+  /**
+ * service to all accommodations in database by filtering 10 accommodations by page
+ * @param {Object} limit accommodation request
+ * @param {Object} offset accommodation for the page
+ * @returns {Object} return accommodation message
+ */
+  static async getAccomodations(limit, offset) {
+    try {
+      const results = await Queries.getAllAccommodations(db.accomodation, limit, offset);
+
+      if (!results) return null;
+      return results;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  /**
+ * service to all rooms in database by filtering 10 rooms by page
+ * @param {integer} accomodationId accommodation id
+ * @param {Object} limit room request
+ * @param {Object} offset room for the page
+ * @returns {Object} return room message
+ */
+  static async getRooms(accomodationId, limit, offset) {
+    try {
+      const results = await Queries.getAllRooms(db.rooms, { accomodationId }, limit, offset);
+      if (!results) return null;
+      return results;
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+
+  /**
+ * service to all location name by location id
+ * @param {integer} locationId Location id
+ * @returns {Object} return accommodation message
+ */
+  static async getLocationNameById(locationId) {
+    return Queries.getLocationNameById(db.locations, locationId);
+  }
 }
 export default accommodationService;

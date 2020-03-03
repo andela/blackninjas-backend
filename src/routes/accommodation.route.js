@@ -80,6 +80,8 @@ const router = express.Router();
  */
 router.post('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.verifyTravelAdminAndSupplier, Validate.accomodationValidation(), isValid, Accommodation.createAccomodation);
 router.get('/:accomodationId', verifyToken.headerToken, verifyUser, Accommodation.getAccomodation);
+router.get('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkIfRequesterIsAdmin, Accommodation.getAllAccomodation);
+router.get('/:accomodationId/rooms', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkIfRequesterIsAdmin, Accommodation.getAllRooms);
 /**
  * @swagger
  *

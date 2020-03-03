@@ -5,8 +5,12 @@ module.exports = (sequelize, DataTypes) => {
     longitude: DataTypes.FLOAT,
     latitude: DataTypes.FLOAT
   }, {});
-  locations.associate = () => {
-    // associations can be defined here
+  locations.associate = (models) => {
+    locations.hasMany(models.accomodation, {
+      foreignKey: 'locationId',
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    });
   };
   return locations;
 };

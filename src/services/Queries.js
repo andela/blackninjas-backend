@@ -619,5 +619,57 @@ class Queries {
       return error;
     }
   }
+
+  /** Query to find accomodations
+   * @param {string} table table to searched in
+ * @param {Object} limit accommodation request
+ * @param {Object} offset accommodation for the page
+ * @returns {array} returns all accommodations
+   */
+  static async getAllAccommodations(table, limit, offset) {
+    try {
+      const accommodation = await table.findAndCountAll({
+        include: [{
+          model: db.locations,
+          attributes: ['city']
+        }],
+        order: [
+          ['id', 'DESC']
+        ],
+        limit,
+        offset
+      });
+      return accommodation;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /** Query to find all rooms
+   * @param {string} table table to searched in
+  * @param {integer} where accommodation condition
+ * @param {Object} limit accommodation request
+ * @param {Object} offset accommodation for the page
+ * @returns {array} returns all accommodations
+   */
+  static async getAllRooms(table, where, limit, offset) {
+    try {
+      const rooms = await table.findAndCountAll({
+        where,
+        include: [{
+          model: db.accomodationtype,
+          attributes: ['name']
+        }],
+        order: [
+          ['id', 'DESC']
+        ],
+        limit,
+        offset
+      });
+      return rooms;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 export default Queries;
