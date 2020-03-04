@@ -294,6 +294,14 @@ class accommodationService {
     }
   }
 
+  /**
+     * get all accommodation types
+     * @returns { Object } accommodation types
+     */
+  static async getAccommodationType() {
+    const data = await db.accomodationtype.findAll();
+    return data;
+  }
 
   /**
  * service to all location name by location id

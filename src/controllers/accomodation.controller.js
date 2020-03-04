@@ -124,6 +124,22 @@ class Accommodation {
   }
 
   /**
+   * This function helps to get all accommodation types
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return  response
+   */
+  static async getAllAccommodationTypes(req, res) {
+    try {
+      const AccommodationTypes = await accomodationServices.getAccommodationType();
+      return response.successMessage(res, 'all accommodation types', 200, AccommodationTypes);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
+  }
+
+
+  /**
      * This method create a comment
      * @param {Object} req request data
      * @param {Object} res response data

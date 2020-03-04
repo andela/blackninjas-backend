@@ -124,7 +124,7 @@ class TripRequestService {
         }
       })));
     }));
-    return requestTrips;
+    return { count: requests.count, requestTrips };
   }
 }
 
