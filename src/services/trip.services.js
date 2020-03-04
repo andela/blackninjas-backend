@@ -243,6 +243,22 @@ class TripService {
   }
 
   /**
+   *
+   * @param {Integer} managerId the id of the user
+   * @param {Object} limit which includes
+   * @param {Object} offset number
+   * @returns {Object} the booking of the exact passed user id
+   */
+  static async findTripRequestsByManagerID(managerId, limit, offset) {
+    try {
+      const tripRequests = await Queries.paginationSearch(db.requesttrip, { managerId }, limit, offset);
+      return tripRequests;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
    * This method search trip reqest by trip id
    * @param { Integer } tripID the tripID
    * @returns { Object } trip request data

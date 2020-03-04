@@ -6,8 +6,6 @@ import app from '../app';
 import GenerateToken from '../helpers/token.helper';
 import db from '../database/models';
 import { tripsData, multiCityData, multiCity, notMultiCity } from './user/tripsData';
-
-
 import EncryptPassword from '../helpers/Encryptor';
 
 const { expect } = chai;
@@ -260,17 +258,6 @@ describe('trips tests', () => {
         res.should.have.status(200);
         res.body.should.be.an('object');
         chai.expect(res.body.message).to.eq('Trips requested by your direct reports');
-        done();
-      });
-  });
-  it('should get error when a page is requesting dont have data', (done) => {
-    chai.request(app).get('/api/v1/trip-requests?page=2')
-      .set('token', `Bearer ${token2}`)
-      .end((err, res) => {
-        res.should.have.status(404);
-        res.body.should.be.an('object');
-        chai.expect(res.body.error).to.eq('No trip requests on this page');
-
         done();
       });
   });
