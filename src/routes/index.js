@@ -11,6 +11,7 @@ import tripRequest from './trip-requests.route';
 import accomodationRoute from './accommodation.route';
 import locationRoute from './locations.route';
 import userManagements from './user-management.route';
+import accommodationType from './accommodation-type.route';
 
 const Router = express.Router();
 Router.use('/auth', userRoute);
@@ -22,6 +23,7 @@ Router.use('/user-managements', userManagements);
 Router.use('/notifications', notificationRoute);
 Router.use('/trip-requests', searchRoute, comment, tripRequest);
 Router.use('/accommodations', accomodationRoute);
+Router.use('/accommodationType', accommodationType);
 Router.use('/locations', locationRoute);
 Router.use('/trip-requests', comment, tripRequest, searchRoute);
 
