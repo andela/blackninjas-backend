@@ -323,14 +323,18 @@ class Accommodation {
     const accommodations = await accomodationServices.findAccomodationByCity(destinaton);
     const accommodationDetails = [];
     await Promise.all(accommodations.map(async (accomodation) => {
-      const { id, name } = accomodation;
+      const {
+        id, name, availableRooms, averageRate
+      } = accomodation;
       const accommodationImages = await imageServices.findImages(id);
       const indexImageUrl = accommodationImages.map((image) => {
         const { imageUrl } = image;
         return imageUrl;
       });
       const firstImage = indexImageUrl[0];
-      accommodationDetails.push({ id, name, firstImage });
+      accommodationDetails.push({
+        id, name, availableRooms, averageRate, firstImage
+      });
     }));
     return response.successMessage(res, 'accommodation data', 201, accommodationDetails);
   }
