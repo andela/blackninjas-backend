@@ -21,7 +21,7 @@ class AccomodationMiddleware {
     const { To, accomodationCategory, accomodationId } = req.body;
     if (accomodationCategory) return next();
     const accomodations = await accommodationService.findAccomodationByCity(To);
-    if (accomodationId !== accomodations[0].id) { return response.errorMessage(res, 'There are no available accommodations in that destination', 404); }
+    if (!accomodations) { return response.errorMessage(res, 'There are no available accommodations in that destination', 404); }
     next();
   }
 
