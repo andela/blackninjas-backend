@@ -37,7 +37,7 @@ class room {
    * @returns { Object } list of rooms
    */
   static async getAvalableRoom(accommodationId, roomTypeId) {
-    return db.rooms.findOne({ where: { accomodationId: accommodationId, typeId: roomTypeId } });
+    return db.rooms.findOne({ where: { accomodationId: accommodationId, typeId: roomTypeId, status: 'available' } });
   }
 }
 

@@ -324,11 +324,11 @@ router.post('/:accommodationId/ratings', verifyToken.headerToken, verifyUser, Ac
  *            type: integer
  */
 
-router.patch('/:accommodationId/ratings', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkValidAccomodationRates, AccomodationMiddleware.checkIfUserBookedThatAccomodation, Accommodation.updateAccomodationRate);
+router.patch('/:subjectID/ratings', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkValidAccomodationRates, AccomodationMiddleware.checkIfUserBookedThatAccomodation, Accommodation.updateAccomodationRate);
 /**
  * @swagger
  *
- * /accommodations/{accommodationId}/ratings:
+ * /accommodations/{subjectID}/ratings:
  *    get:
  *      summary: user should get rate of an accommodation
  *      tags: [Accommodations]
