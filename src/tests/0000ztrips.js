@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import app from '../app';
 import GenerateToken from '../helpers/token.helper';
 import db from '../database/models';
-import { tripsData, multiCityData, multiCity, notMultiCity } from './user/tripsData';
+import {
+  tripsData, multiCityData, multiCity, notMultiCity
+} from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
 
 const { expect } = chai;

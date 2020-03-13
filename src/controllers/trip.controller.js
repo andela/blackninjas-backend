@@ -330,8 +330,11 @@ class TripController {
   static async getTripStatistics(req, res) {
     try {
       const { startDate } = req.query;
+      const someDate = new Date(startDate);
+      someDate.setDate(someDate.getDate() + 1);
+      const dateFormated = someDate.toISOString().substr(0, 10);
       const { id, firstName } = req.user;
-      const details = await tripService.findTripsCreatedByuser(id, startDate);
+      const details = await tripService.findTripsCreatedByuser(id, dateFormated);
       const totalNumber = details.reduce((sum, trip) => sum + parseInt(trip.count, 10), 0);
       return response.successMessage(res, `Trip statistics for ${firstName}`, 200, { totalTrips: totalNumber, details });
     } catch (error) {
