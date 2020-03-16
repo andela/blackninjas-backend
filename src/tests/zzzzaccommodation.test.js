@@ -74,7 +74,9 @@ describe('Accommodation tests', () => {
       locationId: 100,
       category: 'hotel',
       owner: 'jordan',
-      image: 'image'
+      image: 'image',
+      numberOfRooms: 6,
+      availableRooms: 1
     });
     const accommodation1 = await db.accomodation.create({
       id: 200,
@@ -83,11 +85,13 @@ describe('Accommodation tests', () => {
       locationId: 200,
       category: 'hotel',
       owner: 'jordan',
-      image: 'image'
+      image: 'image',
+      numberOfRooms: 6,
+      availableRooms: 1
     });
     await db.accomodationtype.create({
       id: 100,
-      name: ''
+      name: 'One bed'
     });
     await db.accomodationRates.create({
       userid: usera.id,
@@ -102,14 +106,14 @@ describe('Accommodation tests', () => {
       id: 100,
       accomodationId: 200,
       typeId: 100,
-      locationId: 200
+      locationId: 200,
+      status: 'available'
     });
     await db.booking.create({
       id: 100,
       userid: user.id,
       accommodationid: 200,
       roomid: 100
-
     });
     accommodation = accommodation1;
     users = user;

@@ -51,9 +51,9 @@ class AccomodationMiddleware {
    */
   static async checkValidAccomodationRates(req, res, next) {
     const { rate } = req.body;
-    const { accommodationId } = req.params;
+    const accommodationId = req.params.accommodationId || req.params.subjectID;
     if (rate >= 6) { return response.errorMessage(res, 'Rating value can not be greater than five', 401); }
-    if (!/[0-9]/g.test(rate) || !/[0-9]/g.test(accommodationId)) { return response.errorMessage(res, 'Rating or accommodation id value must be integer', 401); }
+    if (!/[0-9]/g.test(+rate) || !/[0-9]/g.test(+accommodationId)) { return response.errorMessage(res, 'Rating or accommodation id value must be integer', 401); }
     next();
   }
 
@@ -65,8 +65,8 @@ class AccomodationMiddleware {
    */
   static async checkIfUserBookedThatAccomodation(req, res, next) {
     const userid = req.user.id;
-    const accommodationid = req.params.accommodationId;
-    const accommodationExist = await accommodationService.findIfAccomodationBooked(userid, accommodationid);
+    const accommodationid = req.params.subjectID || req.params.accommodationId;
+    const accommodationExist = await accommodationService.findIfAccomodationBooked(userid, +accommodationid);
     if (!accommodationExist) { return response.errorMessage(res, 'You have not booked that accomodation', 401); }
     next();
   }
@@ -86,6 +86,7 @@ class AccomodationMiddleware {
     if (accomodation.availableRooms === 0 || room === null) {
       return response.successMessage(res, 'There\'s no rooms available for accommodation facility provided.', 404);
     }
+    room.update({ status: 'booked' });
     req.body.roomId = room.id;
     next();
   }
