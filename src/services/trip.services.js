@@ -3,11 +3,11 @@ import Queries from './Queries';
 
 /** trip service */
 class TripService {
-/**
-    * creating user query
-    * @param {string} tripsRequest users table in database.
-    * @returns {array} data the data to be returned.
-    */
+  /**
+      * creating user query
+      * @param {string} tripsRequest users table in database.
+      * @returns {array} data the data to be returned.
+      */
   static async CreateTripRequest(tripsRequest) {
     return Queries.create(db.requesttrip, tripsRequest);
   }
@@ -151,7 +151,7 @@ class TripService {
   static async findTripsCreatedByuser(userId, searchDate) {
     try {
       const foundTrips = await db.sequelize.query(
-        `SELECT trips."tripType", count(DISTINCT trips."tripId") from trips where trips."userId" = ${userId} and TO_CHAR (trips."createdAt", 'YYYY-MM-DD') <='${searchDate}' GROUP BY trips."tripType"`,
+        `SELECT trips."tripType", count(DISTINCT trips."tripId") from trips where trips."userId" = ${userId} and trips."createdAt"<='${searchDate}' GROUP BY trips."tripType"`,
         { type: db.sequelize.QueryTypes.SELECT }
       );
       return foundTrips;
