@@ -29,4 +29,26 @@ const router = express.Router();
  */
 router.get('/', verifyToken.headerToken, verifyUser, AccomodationMiddleware.checkIfRequesterIsAdmin, Accommodation.getAllAccommodationTypes);
 
+/**
+ * @swagger
+ *
+ * /accomodationType/id:
+ *    get:
+ *      summary: Get accommodation rooms type
+ *      tags: [Accommodations]
+ *      parameters:
+ *       - name: token
+ *         in: header
+ *         description: Check token authentication
+ *         required: true
+ *         type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *      responses:
+ *        "200":
+ *          description: accomodation schema
+ */
+router.get('/:accommodationId', verifyToken.headerToken, verifyUser, Accommodation.getAccomodationRoomsType);
+
 export default router;

@@ -77,11 +77,13 @@ describe('Book accommodation Tests', () => {
       name: 'Clasic room'
     });
     await db.rooms.create({
+      id: 23,
       accomodationId: 142,
       typeId: 1,
       price: 200,
       currency: 'dollar',
-      roomImageUrl: 'roomImage1'
+      roomImageUrl: 'roomImage1',
+      status: 'available'
     });
   });
   it('should book an accommodation facility', (done) => {

@@ -5,6 +5,7 @@ import imageServices from '../services/image.services';
 import roomServices from '../services/room.services';
 import commentService from '../services/comment.service';
 import Paginate from '../helpers/paginate.helper';
+
 /**
 * Class for Travel administrator and supplier to deal with Accommodation
 */
@@ -151,13 +152,13 @@ class Accommodation {
   }
 
   /**
-       *
-       * This method will help to view all
-       * comments
-       * @param {Object} req user request data
-       * @param {Object} res user response data
-       * @returns { Object} return a user message
-       */
+  *
+  * This method will help to view all
+  * comments
+  * @param {Object} req user request data
+  * @param {Object} res user response data
+  * @returns { Object} return a user message
+  */
   static async getAccommodationComments(req, res) {
     const subjectType = 'Accommodation';
     await commentService.getAllCommets(req, res, subjectType);
@@ -253,7 +254,7 @@ class Accommodation {
     try {
       const { rate } = req.body;
       const userId = req.user.id;
-      const { accommodationId } = req.params;
+      const accommodationId = req.params.subjectID;
       await accomodationServices.updateAccomodationRate(accommodationId, userId, rate);
       const rateData = { rate };
       const ratings = await AccommodationHelper.getRateValues(accommodationId);
@@ -297,7 +298,7 @@ class Accommodation {
    */
   static async getAverageRatings(req, res) {
     try {
-      const { accommodationId } = req.params;
+      const accommodationId = req.params.subjectID || req.params.accommodationId;
       const ratingsAverage = await accomodationServices.getAverageRatings(accommodationId);
       let average;
       if (ratingsAverage[0].averageRate === null || ratingsAverage[0].averageRate === 0) {
@@ -337,6 +338,21 @@ class Accommodation {
       });
     }));
     return response.successMessage(res, 'accommodation data', 201, accommodationDetails);
+  }
+
+  /**
+   * This function helps to get accomodation's room types
+   * @param {Object} req request
+   * @param {*} res response
+   * @returns {Object} return user response
+   */
+  static async getAccomodationRoomsType(req, res) {
+    try {
+      const accommodations = await accomodationServices.getAccommodationRoomType(req.params.accommodationId);
+      return response.successMessage(res, 'all accommodation types', 200, accommodations);
+    } catch (error) {
+      return response.errorMessage(res, error.message, 500);
+    }
   }
 }
 

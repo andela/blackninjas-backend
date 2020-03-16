@@ -311,5 +311,18 @@ class accommodationService {
   static async getLocationNameById(locationId) {
     return Queries.getLocationNameById(db.locations, locationId);
   }
+
+  /**
+     * get all accommodation's room types
+     * @param { integer } accomodationId Location id
+     * @returns { Object } accommodation types
+     */
+  static async getAccommodationRoomType(accomodationId) {
+    const data = await db.sequelize.query(`SELECT DISTINCT(t.name),rooms."accomodationId",t.id as typeId
+    FROM rooms
+    INNER JOIN accomodationtypes t ON t.id=rooms."typeId"
+    WHERE rooms."accomodationId"=${accomodationId}`, { type: db.sequelize.QueryTypes.SELECT });
+    return data;
+  }
 }
 export default accommodationService;
