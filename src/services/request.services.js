@@ -98,6 +98,14 @@ class TripRequestService {
   static async getTripRequestsOfUser(requests, manager) {
     const requestTrips = [];
     await Promise.all(requests.rows.map(async (request) => {
+      const booking = await db.sequelize.query(`SELECT a.name as accomodation, b.checkoutdate, b.departuredate, trips."tripType", b.roomid, t.name
+      FROM trips
+      INNER JOIN accomodation a ON a.id=trips."accomodationId"
+      INNER JOIN bookings b ON b.accommodationid=trips."accomodationId"
+      INNER JOIN rooms r ON r.id=b.roomid
+      INNER JOIN accomodationtypes t ON t.id=r."typeId"
+      WHERE trips."tripId"='${request.tripId}'
+      LIMIT 1;`, { type: db.sequelize.QueryTypes.SELECT });
       const trips = await db.sequelize.query(`
         SELECT trips.id, o.city as origin, d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt"
         FROM trips
@@ -121,7 +129,8 @@ class TripRequestService {
         manager: {
           firstName: manager.firstName,
           lastName: manager.lastName
-        }
+        },
+        booking
       })));
     }));
     return { count: requests.count, requestTrips };
