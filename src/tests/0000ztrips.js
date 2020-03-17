@@ -9,6 +9,9 @@ import {
   tripsData, multiCityData, multiCity, notMultiCity
 } from './user/tripsData';
 import EncryptPassword from '../helpers/Encryptor';
+import tripHelper from '../helpers/trip.helper';
+import { tripRequests, managerInfo } from './mock/trip.mock.data';
+
 
 const { expect } = chai;
 
@@ -311,7 +314,7 @@ describe('trips tests', () => {
       });
   });
   it('should return found records from the search query', (done) => {
-    chai.request(app).get('/api/v1/trip-requests/search?keyword=she&page=1&limit=1')
+    chai.request(app).get('/api/v1/trip-requests/search?keyword=she&searchType=userId&page=1&limit=1')
       .set('token', `Bearer ${token2}`)
       .end((err, res) => {
         res.should.have.status(200);
@@ -320,7 +323,7 @@ describe('trips tests', () => {
   });
   it('should return error 404 when no found records from the search query', (done) => {
     const keyword = 'lposd';
-    chai.request(app).get(`/api/v1/trip-requests/search?keyword=${keyword}&page=1&limit=1`)
+    chai.request(app).get(`/api/v1/trip-requests/search?keyword=${keyword}&searchType=userId&page=1&limit=1`)
       .set('token', `Bearer ${token2}`)
       .end((err, res) => {
         res.should.have.status(404);
@@ -329,6 +332,12 @@ describe('trips tests', () => {
         done();
       });
   });
+
+  it('should organize and add additional information in trip requests', async () => {
+    const addAdditionalSearchInfo = await tripHelper.addAdditionalSearchInfo(tripRequests, managerInfo);
+    addAdditionalSearchInfo.should.be.an('array');
+  });
+
   it('should not update trip when trip request status is accepted', (done) => {
     chai.request(app).patch(`/api/v1/trips/${ApprovedtripId}`)
       .set('token', `Bearer ${token2}`)
