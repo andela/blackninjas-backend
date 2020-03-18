@@ -22,7 +22,7 @@ class TripService {
     */
   static async CreateTrip(req, body, tripId, tripType) {
     const data = {
-      reasons: body.reasons,
+      reason: body.reason,
       originId: body.From,
       destinationId: body.To,
       accomodationId: body.accomodationId,
