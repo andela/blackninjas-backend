@@ -181,7 +181,7 @@ class Accommodation {
    * @returns {Promise} res
    */
   static async bookAccommodation(req, res) {
-    const query = await accomodationServices.bookAccommodation(req.user.id, req.body.accommodationId, req.body.roomId, req.body.departureDate, req.body.checkoutDate);
+    const query = await accomodationServices.bookAccommodation(req.user.id, req.body.tripId, req.body.accommodationId, req.body.roomId, req.body.departureDate, req.body.checkoutDate);
     return response.successMessage(res, 'Booking was successfully processed', 201, query);
   }
 
