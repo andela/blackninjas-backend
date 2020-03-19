@@ -16,6 +16,8 @@ describe('Book accommodation Tests', () => {
     await db.user.destroy({ where: {}, force: true });
     await db.accomodationtype.destroy({ where: {}, force: true });
     await db.locations.destroy({ where: {}, force: true });
+    await db.trips.destroy({ where: {}, force: true });
+    await db.requesttrip.destroy({ where: {}, force: true });
     await db.user.create({
       id: 198,
       firstName: 'Veda',
@@ -52,6 +54,11 @@ describe('Book accommodation Tests', () => {
       city: 'Nairobi'
     });
 
+    await db.locations.create({
+      id: 90,
+      city: 'Kigali'
+    });
+
     await db.accomodation.create({
       id: 142,
       name: 'Marriot',
@@ -85,11 +92,27 @@ describe('Book accommodation Tests', () => {
       roomImageUrl: 'roomImage1',
       status: 'available'
     });
+    await db.requesttrip.create({
+      id: 22,
+      userId: 198,
+      managerId: 198,
+      tripId: 'ae989f24-5878-4736-87dd-a12d797e12f9',
+      status: 'approved',
+    });
+    await db.trips.create({
+      id: 24,
+      tripId: 'ae989f24-5878-4736-87dd-a12d797e12f9',
+      tripType: 'one way',
+      originId: 87,
+      destinationId: 90,
+      userId: 198
+    });
   });
   it('should book an accommodation facility', (done) => {
     chai.request(app).post('/api/v1/accommodations/booking')
       .set('token', `Bearer ${token}`)
       .send({
+        tripId: 24,
         accommodationId: 142,
         roomTypeId: 1,
         departureDate: '2020-04-04',
@@ -107,6 +130,7 @@ describe('Book accommodation Tests', () => {
     chai.request(app).post('/api/v1/accommodations/booking')
       .set('token', `Bearer ${token}`)
       .send({
+        tripId: 24,
         accommodationId: 143,
         roomTypeId: 8,
         departureDate: '2020-04-04',

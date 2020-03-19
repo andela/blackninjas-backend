@@ -98,19 +98,21 @@ class accommodationService {
   /**
   * book an accommodation facilities
   * @param { Number } userId user id
+  * @param { Number } tripid trip id
   * @param { Number } accommodationId accommodation id
   * @param { String } roomid room id
   * @param { Date } departureDate departure date
   * @param { Date } checkoutDate checkout date
   * @returns { Object } an accommodation
   */
-  static async bookAccommodation(userId, accommodationId, roomid, departureDate, checkoutDate) {
+  static async bookAccommodation(userId, tripid, accommodationId, roomid, departureDate, checkoutDate) {
     const query = await db.booking.create({
       userid: userId,
       accommodationid: accommodationId,
       roomid,
       departuredate: departureDate,
-      checkoutdate: checkoutDate
+      checkoutdate: checkoutDate,
+      tripid
     });
     await db.accomodation.decrement('availableRooms', { by: 1, where: { id: accommodationId } });
     return query;
@@ -147,7 +149,24 @@ class accommodationService {
   static async likeOrUnlike(isLike, userId, accommodationId) {
     const result = await this.findIfUserAlreadLiked(userId, accommodationId);
     if (result) {
-      if (result.islike === isLike) return this.findAccomodation(accommodationId);
+      if (result.islike == null) {
+        await result.update({ islike: isLike });
+        if (isLike) {
+          await db.accomodation.increment('likes', { by: 1, where: { id: accommodationId } });
+          return this.findAccomodation(accommodationId);
+        }
+        await db.accomodation.increment('unlikes', { by: 1, where: { id: accommodationId } });
+        return this.findAccomodation(accommodationId);
+      }
+      if (result.islike === isLike) {
+        await result.update({ islike: null });
+        if (isLike) {
+          await db.accomodation.decrement('likes', { by: 1, where: { id: accommodationId } });
+          return this.findAccomodation(accommodationId);
+        }
+        await db.accomodation.decrement('unlikes', { by: 1, where: { id: accommodationId } });
+        return this.findAccomodation(accommodationId);
+      }
       await result.update({ islike: isLike });
       if (isLike) {
         await db.accomodation.increment('likes', { by: 1, where: { id: accommodationId } });

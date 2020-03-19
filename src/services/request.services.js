@@ -98,40 +98,44 @@ class TripRequestService {
   static async getTripRequestsOfUser(requests, manager) {
     const requestTrips = [];
     await Promise.all(requests.rows.map(async (request) => {
-      const booking = await db.sequelize.query(`SELECT a.name as accomodation, b.checkoutdate, b.departuredate, trips."tripType", b.roomid, t.name
-      FROM trips
-      INNER JOIN accomodation a ON a.id=trips."accomodationId"
-      INNER JOIN bookings b ON b.accommodationid=trips."accomodationId"
-      INNER JOIN rooms r ON r.id=b.roomid
-      INNER JOIN accomodationtypes t ON t.id=r."typeId"
-      WHERE trips."tripId"='${request.tripId}'
-      LIMIT 1;`, { type: db.sequelize.QueryTypes.SELECT });
       const trips = await db.sequelize.query(`
-        SELECT trips.id, o.city as origin, d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt"
+        SELECT trips.id, o.city as origin, a.id as "accommodationId", d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt"
         FROM trips
         INNER JOIN locations o ON o.id=trips."originId"
         INNER JOIN locations d ON d.id=trips."destinationId"
         INNER JOIN accomodation a ON a.id=trips."accomodationId"
         WHERE trips."tripId"='${request.tripId}';
       `, { type: db.sequelize.QueryTypes.SELECT });
-      requestTrips.push(trips.map(trip => ({
-        id: request.id,
-        origin: trip.origin,
-        destination: trip.destination,
-        tripId: request.tripId,
-        tripTripId: trip.id,
-        tripType: trip.tripType,
-        status: request.status,
-        accomodation: trip.accomodation,
-        departureDate: trip.departureDate,
-        returnDate: trip.returnDate,
-        createdAt: trip.createdAt,
-        manager: {
-          firstName: manager.firstName,
-          lastName: manager.lastName
-        },
-        booking
-      })));
+
+      const tripsMap = await Promise.all(trips.map(async (trip) => {
+        const booking = await db.sequelize.query(`
+        SELECT a.name as accomodation, bookings.checkoutdate, bookings.departuredate, bookings.roomid, t.name
+        FROM bookings
+        INNER JOIN trips ON trips.id=bookings."tripid"
+        INNER JOIN accomodation a ON a.id=trips."accomodationId"
+        INNER JOIN rooms r ON r.id=bookings.roomid
+        INNER JOIN accomodationtypes t ON t.id=r."typeId"
+        WHERE trips.id='${trip.id}';`, { type: db.sequelize.QueryTypes.SELECT });
+        return {
+          id: trip.id,
+          origin: trip.origin,
+          destination: trip.destination,
+          tripId: request.tripId,
+          tripTripId: trip.id,
+          tripType: trip.tripType,
+          status: request.status,
+          accomodation: trip.accomodation,
+          departureDate: trip.departureDate,
+          returnDate: trip.returnDate,
+          createdAt: trip.createdAt,
+          manager: {
+            firstName: manager.firstName,
+            lastName: manager.lastName
+          },
+          booking
+        };
+      }));
+      requestTrips.push(tripsMap);
     }));
     return { count: requests.count, requestTrips };
   }

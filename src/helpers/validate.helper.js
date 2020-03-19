@@ -125,6 +125,7 @@ class Validate {
    */
   static bookingValidation() {
     return [
+      check('tripId', 'tripId needs to be a number').isInt(),
       check('accommodationId', 'accommodationId needs to be a number').isInt(),
       check('roomTypeId', 'roomTypeId needs to be a number').isInt(),
       check('departureDate', 'departureDate needs to be a date format').toDate(),
