@@ -296,7 +296,7 @@ const locationDatabaseData = [
 const accomodationDatabaseData = [
   {
     id: 100,
-    name: 'marriott',
+    name: 'radison',
     description: '',
     locationId: 100,
     category: 'hotel',
@@ -390,4 +390,133 @@ export {
   multiCity,
   userManagementDatabaseData,
   accomodationTypeDatabaseData
+};
+
+export const tripRequests = [
+  {
+    id: 1,
+    lastName: 'eric',
+    origin: 'kigali2',
+    destination: 'kigali',
+    departureDate: '2030-04-12T00:00:00.000Z',
+    tripId: 'bec9357e-7352-48f7-b746-d6ed0ed7f634',
+    returnDate: null,
+    createdAt: '2020-01-22T15:29:17.630Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '2030-03-12T00:00:00.000Z',
+    tripId: 'bec9357e-7352-48f7-b746-d6ed0ed7f634',
+    returnDate: null,
+    createdAt: '2020-01-22T15:29:17.630Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali2',
+    destination: 'kigali',
+    departureDate: '2030-02-12T00:00:00.000Z',
+    tripId: 'e9992289-0afc-43cf-a386-0c60b3e7932d',
+    returnDate: null,
+    createdAt: '2020-01-22T15:26:49.940Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '2030-01-12T00:00:00.000Z',
+    tripId: 'e9992289-0afc-43cf-a386-0c60b3e7932d',
+    returnDate: null,
+    createdAt: '2020-01-22T15:26:49.939Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '1700-01-12T00:00:00.000Z',
+    tripId: 'd944eabe-3166-4cc7-820e-f51b3e20f766',
+    returnDate: null,
+    createdAt: '2020-01-17T07:38:01.133Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '1900-01-12T00:00:00.000Z',
+    tripId: 'a3e3bf08-d795-429e-a298-a5b9388a8f42',
+    returnDate: null,
+    createdAt: '2020-01-17T07:31:35.033Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '2000-01-12T00:00:00.000Z',
+    tripId: 'b80c075d-29b3-460b-91f0-83af2b27e700',
+    returnDate: null,
+    createdAt: '2020-01-17T07:30:40.251Z',
+    name: 'radison',
+    status: 'pending'
+  },
+  {
+    id: 1,
+    firstName: 'mukunzi',
+    lastName: 'eric',
+    origin: 'kigali',
+    destination: 'kigali2',
+    departureDate: '2070-01-12T00:00:00.000Z',
+    tripId: '8726d784-586c-4ad3-a9ab-2173d975f15d',
+    returnDate: '0434-03-03T21:49:40.000Z',
+    createdAt: '2020-01-16T16:53:25.348Z',
+    name: 'radison',
+    status: 'approved'
+  }
+];
+
+export const managerInfo = {
+  id: 1,
+  firstName: 'shema',
+  lastName: 'eric',
+  country: 'rwanda',
+  gender: 'male',
+  birthdate: null,
+  isVerified: true,
+  email: 'shemaerc@gmail.com',
+  password: '$2b$10$/1hdxOSDDBghFM1G/C0ejOB/lQfAAfzCu9YlEVGc59eve2sDAoTju',
+  preferredlanguage: 'kigali',
+  preferredcurrency: 'kinyarwanda',
+  place: 'jjjjj',
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImVtYWlsIjoic2hlbWFlcmNAZ21haWwuY29tIiwiaXNWZXJpZmllZCI6dHJ1ZSwiaWQiOjEsInJvbGUiOiJtYW5hZ2VyIn0sImlhdCI6MTU4NDU1MTg5MCwiZXhwIjoxNTg0NjM4MjkwfQ.7gCPsBBapyKe44FVD8noE1MaRKP1MG2nfRrRba8axGk',
+  department: 'BIT',
+  profileImage: null,
+  role: 'manager',
+  authtype: null,
+  appNotification: true,
+  emailNotification: true,
+  createdAt: '2020-01-16T11:47:29.837Z',
+  updatedAt: '2020-03-18T17:18:10.780Z'
 };

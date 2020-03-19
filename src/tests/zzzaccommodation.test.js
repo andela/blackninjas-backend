@@ -116,7 +116,7 @@ describe('Book accommodation Tests', () => {
         accommodationId: 142,
         roomTypeId: 1,
         departureDate: '2020-04-04',
-        checkoutDate: '2020-04-12'
+        checkoutDate: '2020-04-12',
       })
       .end((err, res) => {
         res.should.have.status(201);
@@ -134,7 +134,7 @@ describe('Book accommodation Tests', () => {
         accommodationId: 143,
         roomTypeId: 8,
         departureDate: '2020-04-04',
-        checkoutDate: '2020-04-12'
+        checkoutDate: '2020-04-12',
       })
       .end((err, res) => {
         res.should.have.status(404);

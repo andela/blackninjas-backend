@@ -8,9 +8,11 @@ import userManagement from '../services/user-management.services';
 import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
 import commentService from '../services/comment.service';
+import tripHelper from '../helpers/trip.helper';
 import db from '../database/models';
 
 config();
+
 /**
 * Class for users to create trip
 */
@@ -213,6 +215,7 @@ class TripController {
     return response.errorMessage(res, 'Trip not found', 404);
   }
 
+
   /** Function to search in the trip requests table according to what the user is typing
    * @param {object} req the request sent to the server
    * @param {object} res the response returned
@@ -220,11 +223,14 @@ class TripController {
    */
   static async search(req, res) {
     const { id } = req.user;
-    const { keyword, limit, page } = req.query;
+    const { keyword, limit, page, searchType } = req.query;
     try {
       const offset = Paginate(page, limit);
-      const foundTripRequestRecord = await tripRequestService.search(id, keyword, limit, offset);
-      const returnResponse = (foundTripRequestRecord[0]) ? response.successMessage(res, `Record found for keyword ${keyword}`, 200, foundTripRequestRecord)
+      const foundTripRequestRecord = await tripRequestService.search(searchType, id, keyword, limit, offset);
+      const userManager = await db.usermanagement.findOne({ where: { userId: id } });
+      const managerInfo = await userService.findUser({ id: userManager.managerId });
+      const searchResult = await tripHelper.addAdditionalSearchInfo(foundTripRequestRecord, managerInfo);
+      const returnResponse = (searchResult.length > 0) ? response.successMessage(res, `Record found for keyword ${keyword}`, 200, searchResult)
         : response.errorMessage(res, `No Records were found for keyword ${keyword}`, 404);
 
       return returnResponse;

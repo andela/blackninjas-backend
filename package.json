@@ -14,7 +14,8 @@
       "src/helpers/send.email.helper",
       "src/middlewares/auth.middleware.js ",
       "src/services/user.service.js ",
-      "src/services/trips.service.js ",
+      "src/services/user.service.js ",
+      "src/services/notification.service.js ",
       "src/middlewares/admin.verify.middleware.js",
       "src/middlewares/auth.middleware.js ",
       "src/helpers/accomodation.helper.js"

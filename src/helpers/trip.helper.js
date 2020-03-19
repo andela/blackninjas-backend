@@ -2,11 +2,46 @@
 import moment from 'moment';
 import tripService from '../services/trip.services';
 import locationServices from '../services/location.services';
+import Queries from '../services/Queries';
 
 /**
  * all trip helpers
  */
 class tripHelper {
+
+  /**
+   * this method help to add and stucture trips
+   * @param { Object} foundTripRequestRecord 
+   * @param {Object} managerInfo 
+   * @returns { Object} structured array of trips
+   */
+ static async addAdditionalSearchInfo(foundTripRequestRecord, managerInfo){
+
+    const organizedRecords = [];
+    if (foundTripRequestRecord.length > 0) {
+    await Promise.all(  foundTripRequestRecord.map( async (tripRequest) => {
+        tripRequest.booking = await Queries.getBookingInfo(tripRequest.id);
+        tripRequest.manager = { firstName: managerInfo.firstName, lastName: managerInfo.lastName };
+        tripRequest.accomodation = tripRequest.name;
+        delete tripRequest.name;
+        if (organizedRecords.length === 0) {
+          organizedRecords.push([tripRequest]);
+        } else {
+          organizedRecords.map((item, index) => {
+            if (item[0].tripId === tripRequest.tripId) {
+              item[0].tripType = 'multi-city';
+              item.push(tripRequest);
+            } else if ((organizedRecords.length - 1) === index) {
+              tripRequest.tripType = (tripRequest.returnDate) ? 'round trip' : 'one way';
+              organizedRecords.push([tripRequest]);
+            }
+            return 0; });
+        }
+        return 0;  }));
+    }
+    return organizedRecords;
+  };
+
   /**
    * This method helps to validate if a location
    * exist in database

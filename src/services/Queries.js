@@ -671,5 +671,22 @@ class Queries {
       return error;
     }
   }
+
+  /**
+ * this method gives booking information
+ * @param {Integer} tripId
+ * @returns {Array} result
+ */
+  static async getBookingInfo(tripId) {
+    const booking = await db.sequelize.query(`
+      SELECT a.name as accomodation, bookings.checkoutdate, bookings.departuredate, bookings.roomid, t.name
+      FROM bookings
+      INNER JOIN trips ON trips.id=bookings."tripid"
+      INNER JOIN accomodation a ON a.id=trips."accomodationId"
+      INNER JOIN rooms r ON r.id=bookings.roomid
+      INNER JOIN accomodationtypes t ON t.id=r."typeId"
+      WHERE trips.id='${tripId}';`, { type: db.sequelize.QueryTypes.SELECT });
+    return booking;
+  }
 }
 export default Queries;
