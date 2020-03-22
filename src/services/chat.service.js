@@ -1,5 +1,5 @@
-import db from '../database/models';
-import Queries from './Queries';
+import db from "../database/models";
+import Queries from "./Queries";
 
 /**
  * This class contains all chat functionality
@@ -15,6 +15,7 @@ class ChatService {
     try {
       return Queries.create(db.chats, chatData);
     } catch (error) {
+      console.log("chatData", error.message);
       return error;
     }
   }
@@ -27,7 +28,11 @@ class ChatService {
    */
   static async getPrivateMessage(sender, receiver) {
     try {
-      const privateMessages = Queries.getPrivateMessage(db.chats, sender, receiver);
+      const privateMessages = Queries.getPrivateMessage(
+        db.chats,
+        sender,
+        receiver
+      );
       return privateMessages;
     } catch (error) {
       return error;

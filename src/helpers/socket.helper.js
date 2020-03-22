@@ -1,20 +1,20 @@
-import skt from 'socket.io';
-import chatServices from '../services/chat.service';
+import skt from "socket.io";
+import chatServices from "../services/chat.service";
 
 const clients = new Map();
-const socketio = (server) => {
+const socketio = server => {
   const io = skt(server);
-  io.on('connection', (socket) => {
-    socket.on('connect_user', (userKey) => {
+  io.on("connection", socket => {
+    socket.on("connect_user", userKey => {
       clients.set(userKey, socket);
     });
-    socket.on('send_message', (data) => {
+    socket.on("send_message", data => {
       chatServices.saveMessage(data);
       if (!data.receiverId) {
-        socket.broadcast.emit('receive_message', data);
+        socket.broadcast.emit("receive_message", data);
       }
       const client = clients.get(data.receiverId);
-      if (client) client.emit('receive_message', data);
+      if (client) client.emit("receive_message", data);
     });
   });
   return io;
