@@ -5,6 +5,16 @@ import Queries from './Queries';
  *
  */
 class TripRequestService {
+  /**
+   * this method retrieve user information by id
+   * @param {Object} condition condition
+   * @returns { object} responce
+   */
+  static async getUserById(condition) {
+    const manager = await db.user.findOne({ where: condition });
+    return manager;
+  }
+
   /** function that gets a pending trip request from the parameter
    * @param {integer} requestId id of the request from the params
    * @returns {object} the found trip request
@@ -36,7 +46,7 @@ class TripRequestService {
   static async search(user, id, queryString, limit, offset) {
     try {
       const foundRecords = db.sequelize.query(
-        `SELECT users."firstName", users."lastName", lo.city as origin, lc.city as destination,trips."id", trips."departureDate",trips."tripId" , trips."returnDate",trips."createdAt", ac.name, req.status
+        `SELECT users."firstName", users."lastName", lo.city as origin, lc.city as destination,trips."id", trips."departureDate",trips."tripId",trips."reason" , trips."returnDate",trips."createdAt", ac.name,ac.id as accomodationId, req.status
         FROM users inner join trips on users.id = trips."userId" inner join locations lo on lo.id = trips."originId" inner join locations lc on lc.id = trips."destinationId" 
         inner join accomodation ac on ac.id = trips."accomodationId" inner join requesttrips req on req."tripId" = trips."tripId"
         WHERE (users."firstName" ilike '%${queryString}%' or users."lastName" ilike '%${queryString}%' or lo.city ilike '%${queryString}%' or lc.city ilike '%${queryString}%' or ac.name ilike '%${queryString}%' or req.status ilike '%${queryString}%'
@@ -94,13 +104,14 @@ class TripRequestService {
    *
    * @param {Object} requests requests
    * @param {Object} manager manager
+   * @param {Object} user user
    * @returns {object} data
    */
-  static async getTripRequestsOfUser(requests, manager) {
+  static async getTripRequestsOfUser(requests, manager, user) {
     const requestTrips = [];
     await Promise.all(requests.rows.map(async (request) => {
       const trips = await db.sequelize.query(`
-        SELECT trips.id, o.city as origin, a.id as "accommodationId", d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt"
+        SELECT trips.id, o.city as origin, a.id as "accommodationId", d.city as destination, a.name as accomodation, trips."departureDate", trips."returnDate", trips."tripType", trips."createdAt", trips."reason"
         FROM trips
         INNER JOIN locations o ON o.id=trips."originId"
         INNER JOIN locations d ON d.id=trips."destinationId"
@@ -119,10 +130,13 @@ class TripRequestService {
         WHERE trips.id='${trip.id}';`, { type: db.sequelize.QueryTypes.SELECT });
         return {
           id: trip.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           origin: trip.origin,
           destination: trip.destination,
           tripId: request.tripId,
           accommodationId: trip.accommodationId,
+          reason: trip.reason,
           tripTripId: trip.id,
           tripType: trip.tripType,
           status: request.status,

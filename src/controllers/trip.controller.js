@@ -129,7 +129,7 @@ class TripController {
     const limit = req.query.limit || 10;
     const offset = Paginate(page, limit);
     const requests = await tripService.findTripRequestsById(userId, limit, offset);
-    const manager = await db.user.findOne({ where: requests.managerId });
+    const manager = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.managerId });
     const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager);
     return response.successMessage(
       res,
@@ -151,8 +151,9 @@ class TripController {
     const limit = req.query.limit || 10;
     const offset = Paginate(page, limit);
     const requests = await tripService.findTripRequestsByManagerID(managerId, limit, offset);
-    const manager = await db.user.findOne({ where: requests.rows[0].dataValues.userId });
-    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager);
+    const manager = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.managerId });
+    const user = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.userId });
+    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager, user);
     return response.successMessage(
       res,
       'Trips requested by your direct reports',
