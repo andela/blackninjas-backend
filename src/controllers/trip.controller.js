@@ -130,7 +130,8 @@ class TripController {
     const offset = Paginate(page, limit);
     const requests = await tripService.findTripRequestsById(userId, limit, offset);
     const manager = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.managerId });
-    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager);
+    const user = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.userId });
+    const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager, user);
     return response.successMessage(
       res,
       'My Trip Requests',
