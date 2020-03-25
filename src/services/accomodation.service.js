@@ -115,6 +115,7 @@ class accommodationService {
       tripid
     });
     await db.accomodation.decrement('availableRooms', { by: 1, where: { id: accommodationId } });
+    await db.trips.update({ accomodationId: accommodationId }, { where: { id: tripid } });
     return query;
   }
 
