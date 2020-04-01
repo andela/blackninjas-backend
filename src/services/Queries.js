@@ -5,11 +5,11 @@ import db from '../database/models';
  */
 class Queries {
   /**
- * creating user query
- * @param {string} table users table in database.
- * @param {string} data the data to be inputed in database.
- * @returns {array} data the data to be returned.
- */
+   * creating user query
+   * @param {string} table users table in database.
+   * @param {string} data the data to be inputed in database.
+   * @returns {array} data the data to be returned.
+   */
   static async create(table, data) {
     try {
       const datas = await table.create(data);
@@ -47,9 +47,7 @@ class Queries {
   static async findTrip(table, userId) {
     const data = await table.findAll({
       where: {
-        [Op.and]: [
-          { userId: { [Op.eq]: userId } }
-        ]
+        [Op.and]: [{ userId: { [Op.eq]: userId } }]
       }
     });
     return data;
@@ -64,21 +62,19 @@ class Queries {
   static async findUserManagement(table, userId) {
     const data = await table.findAll({
       where: {
-        [Op.and]: [
-          { userId: { [Op.eq]: userId } }
-        ]
+        [Op.and]: [{ userId: { [Op.eq]: userId } }]
       }
     });
     return data;
   }
 
   /**
-    * searching a trip
-    * @param {string} table users table in database.
-    * @param {string} from the supported places in database.
-    * @param {string} to the supported places in database.
-    * @returns {array} data the data to be returned.
-    */
+   * searching a trip
+   * @param {string} table users table in database.
+   * @param {string} from the supported places in database.
+   * @param {string} to the supported places in database.
+   * @returns {array} data the data to be returned.
+   */
   static async findPlace(table, from, to) {
     try {
       const origin = await table.findOne({
@@ -95,14 +91,36 @@ class Queries {
   }
 
   /**
-    * searching a trip
-    * @param {string} table table users table in database.
-    * @param {integer} userId requestUserId user id in database.
-    * @returns {array} data the data to be returned.
-    */
+   * searching a trip
+   * @param {string} table table users table in database.
+   * @param {integer} userId requestUserId user id in database.
+   * @returns {array} data the data to be returned.
+   */
   static async findAllRecord(table, userId) {
     const data = await table.findAll({ where: userId });
     return data;
+  }
+
+  /**
+   * retrieving all messages
+   * @param {string} table table users table in database.
+   * @param {*} receiverId requestUserId user id in database.
+   * @param {*} limit limit of records to retrieve
+   * @param {*} offset number of rows to retrieve
+   * @returns {array} data the data to be returned.
+   */
+  static async findAllMessages(table, receiverId, limit, offset) {
+    try {
+      const retrievedMessages = await table.findAndCountAll({
+        where: { receiverId },
+        order: [['createdAt', 'ASC']],
+        limit,
+        offset
+      });
+      return retrievedMessages;
+    } catch (error) {
+      return error;
+    }
   }
 
   /**
@@ -134,7 +152,8 @@ class Queries {
       const requestedRoom = await table.findAll({
         where: {
           [Op.and]: [
-            { id: { [Op.eq]: accomodationId } }, { status: 'available' }
+            { id: { [Op.eq]: accomodationId } },
+            { status: 'available' }
           ]
         }
       });
@@ -159,11 +178,11 @@ class Queries {
   }
 
   /**
- * find location
- * @param { String } table location database table
- * @param { Object } value attribute and value
- * @returns { boolean } data or false
- */
+   * find location
+   * @param { String } table location database table
+   * @param { Object } value attribute and value
+   * @returns { boolean } data or false
+   */
   static async findOneRecord(table, value) {
     const data = await table.findOne({ where: value });
     if (data) {
@@ -183,12 +202,9 @@ class Queries {
   static async paginationSearch(table, managerId, limit, offset) {
     try {
       const requestedTrip = await table.findAndCountAll({
-        where:
-          managerId,
+        where: managerId,
         group: table.status,
-        order: [
-          ['createdAt', 'DESC']
-        ],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       });
@@ -223,10 +239,9 @@ class Queries {
     }
   }
 
-
   /**
    *
-    * @param {string} table users table in database.
+   * @param {string} table users table in database.
    * @param {Integer} userId the id of the user
    * @param {Integer} limit the integer that indicate the entry per page
    * @param {Integer} offset the intiger that Skip entry to go on next page
@@ -235,7 +250,10 @@ class Queries {
   static async findRecordById(table, userId, limit, offset) {
     try {
       const bookUser = await table.findAndCountAll({
-        where: { userId }, order: [['createdAt', 'DESC']], limit, offset
+        where: { userId },
+        order: [['createdAt', 'DESC']],
+        limit,
+        offset
       });
       return bookUser;
     } catch (error) {
@@ -252,9 +270,7 @@ class Queries {
     try {
       const requestFound = await table.findOne({
         where: {
-          [Op.and]: [
-            { id: { [Op.eq]: requestId } },
-          ]
+          [Op.and]: [{ id: { [Op.eq]: requestId } }]
         }
       });
       return requestFound;
@@ -273,7 +289,16 @@ class Queries {
     try {
       const tripFound = await table.findAll({
         distinct: 'tripId',
-        where: { [Op.and]: [{ userId: { [Op.eq]: userId } }, db.sequelize.where(db.sequelize.fn('date', db.sequelize.col('createdAt')), '<=', `${searchDate}`)] }
+        where: {
+          [Op.and]: [
+            { userId: { [Op.eq]: userId } },
+            db.sequelize.where(
+              db.sequelize.fn('date', db.sequelize.col('createdAt')),
+              '<=',
+              `${searchDate}`
+            )
+          ]
+        }
       });
       return tripFound;
     } catch (error) {
@@ -291,10 +316,7 @@ class Queries {
     try {
       const managerData = table.findOne({
         where: {
-          [Op.and]: [
-            { id: { [Op.eq]: managerId } },
-            { role: 'manager' }
-          ]
+          [Op.and]: [{ id: { [Op.eq]: managerId } }, { role: 'manager' }]
         }
       });
       return managerData;
@@ -312,10 +334,10 @@ class Queries {
    */
   static async updateTripRequestStatus(table, status, requestId) {
     try {
-      const updatedRequest = await table.update(
-        status,
-        { where: { id: requestId }, returning: true }
-      );
+      const updatedRequest = await table.update(status, {
+        where: { id: requestId },
+        returning: true
+      });
       return updatedRequest;
     } catch (error) {
       return error;
@@ -323,11 +345,11 @@ class Queries {
   }
 
   /**
-    * This servise delete a trip request comment
-    * @param {String} table table
-    * @param {Object} value subject id and accoment id
-    * @returns { Object } user response as object
-    */
+   * This servise delete a trip request comment
+   * @param {String} table table
+   * @param {Object} value subject id and accoment id
+   * @returns { Object } user response as object
+   */
   static async deleteComment(table, value) {
     const result = await table.destroy({ where: value });
     if (result) {
@@ -338,12 +360,12 @@ class Queries {
   }
 
   /**
- * find or create query
- * @param {string} table users table in database.
- * @param {string} data the data to be inputed in database.
- * @param {string} condition to prevent the same data in database.
- * @returns {array} data the data to be returned.
- */
+   * find or create query
+   * @param {string} table users table in database.
+   * @param {string} data the data to be inputed in database.
+   * @param {string} condition to prevent the same data in database.
+   * @returns {array} data the data to be returned.
+   */
   static async findOrCreate(table, data, condition) {
     try {
       const datas = await table.findOrCreate({
@@ -365,7 +387,7 @@ class Queries {
   static async getTripByTripId(table, tripId) {
     const data = await table.findAll({
       where: {
-        tripId,
+        tripId
       }
     });
     return data;
@@ -381,10 +403,9 @@ class Queries {
    */
   static async updateTrip(table, tripId, data) {
     try {
-      const updatedRequest = await table.update(
-        data,
-        { where: { id: tripId } }
-      );
+      const updatedRequest = await table.update(data, {
+        where: { id: tripId }
+      });
       return updatedRequest;
     } catch (error) {
       return error;
@@ -455,22 +476,26 @@ class Queries {
    * @param {String} table the name of the table to updated
    * @param {integer} senderId the id of the user who sent the message
    * @param {integer} receiverId the id of the connected user
+   * @param {integer} limit the id of the connected user
+   * @param {integer} offset the id of the connected user
    * @returns {object} messages retrieved
    */
-  static async getPrivateMessage(table, senderId, receiverId) {
+  static async getPrivateMessage(table, senderId, receiverId, limit, offset) {
     try {
-      const privateMessages = await table.findAll({
+      const privateMessages = await table.findAndCountAll({
         where: {
           [Op.or]: [
             {
-              [Op.and]: [{ senderId },
-                { receiverId }]
-            }, {
-              [Op.and]: [{ senderId: receiverId },
-                { receiverId: senderId }]
+              [Op.and]: [{ senderId }, { receiverId }]
+            },
+            {
+              [Op.and]: [{ senderId: receiverId }, { receiverId: senderId }]
             }
-          ]
-        }
+          ],
+        },
+        order: [['createdAt', 'ASC']],
+        limit,
+        offset
       });
       return privateMessages;
     } catch (error) {
@@ -479,11 +504,11 @@ class Queries {
   }
 
   /**
- * checking if the accommodation exist
- * @param {object} table table to be searching from
- * @param {string} accomodationId rate data.
- * @returns {array} data the data to be returned.
- */
+   * checking if the accommodation exist
+   * @param {object} table table to be searching from
+   * @param {string} accomodationId rate data.
+   * @returns {array} data the data to be returned.
+   */
   static async checkAccommodationById(table, accomodationId) {
     const data = await table.findAll({
       where: {
@@ -494,11 +519,11 @@ class Queries {
   }
 
   /**
- * checking if the accommodation exist
- * @param {object} table table to be searching from
- * @param {string} accommodationId rate data.
- * @returns {array} data the data to be returned.
- */
+   * checking if the accommodation exist
+   * @param {object} table table to be searching from
+   * @param {string} accommodationId rate data.
+   * @returns {array} data the data to be returned.
+   */
   static async getRatedAccommodations(table, accommodationId) {
     const data = await table.findAll({
       where: {
@@ -509,12 +534,12 @@ class Queries {
   }
 
   /**
- * updating average rate in accommodation
- * @param {object} table table to be searching from
- * @param {integer} accomodationId accommodation id
- * @param {integer} averageRate the rate average
- * @returns {array} data the data to be returned.
- */
+   * updating average rate in accommodation
+   * @param {object} table table to be searching from
+   * @param {integer} accomodationId accommodation id
+   * @param {integer} averageRate the rate average
+   * @returns {array} data the data to be returned.
+   */
   static async updateAverageRate(table, accomodationId, averageRate) {
     try {
       const updatedRate = await table.update(
@@ -528,13 +553,13 @@ class Queries {
   }
 
   /**
- * updating rating
- * @param {object} table table to be searching from
- * @param {integer} accomodationId accommodation id
- * @param {Object} userId user id
- * @param {integer} rate rating value
- * @returns {array} data the data to be returned.
- */
+   * updating rating
+   * @param {object} table table to be searching from
+   * @param {integer} accomodationId accommodation id
+   * @param {Object} userId user id
+   * @param {integer} rate rating value
+   * @returns {array} data the data to be returned.
+   */
   static async updateAccomodationRate(table, accomodationId, userId, rate) {
     try {
       const updatedRate = await table.update(
@@ -578,14 +603,16 @@ class Queries {
   }
 
   /**
- * Get average accommodation using accommodation id
- * @param {object} table table to be searching from
- * @param {integer} accomodationId accommodation id
- * @returns {array} data the data to be returned.
- */
+   * Get average accommodation using accommodation id
+   * @param {object} table table to be searching from
+   * @param {integer} accomodationId accommodation id
+   * @returns {array} data the data to be returned.
+   */
   static async getAverageRatings(table, accomodationId) {
     try {
-      const averageRate = await table.findAll({ where: { id: accomodationId } });
+      const averageRate = await table.findAll({
+        where: { id: accomodationId }
+      });
       return averageRate;
     } catch (error) {
       return error;
@@ -604,13 +631,13 @@ class Queries {
     try {
       const comments = await table.findAndCountAll({
         where,
-        include: [{
-          model: db.user,
-          attributes: ['firstName', 'lastName', 'email', 'profileImage']
-        }],
-        order: [
-          ['createdAt', 'DESC']
+        include: [
+          {
+            model: db.user,
+            attributes: ['firstName', 'lastName', 'email', 'profileImage']
+          }
         ],
+        order: [['createdAt', 'DESC']],
         limit,
         offset
       });
@@ -622,20 +649,20 @@ class Queries {
 
   /** Query to find accomodations
    * @param {string} table table to searched in
- * @param {Object} limit accommodation request
- * @param {Object} offset accommodation for the page
- * @returns {array} returns all accommodations
+   * @param {Object} limit accommodation request
+   * @param {Object} offset accommodation for the page
+   * @returns {array} returns all accommodations
    */
   static async getAllAccommodations(table, limit, offset) {
     try {
       const accommodation = await table.findAndCountAll({
-        include: [{
-          model: db.locations,
-          attributes: ['city']
-        }],
-        order: [
-          ['id', 'DESC']
+        include: [
+          {
+            model: db.locations,
+            attributes: ['city']
+          }
         ],
+        order: [['id', 'DESC']],
         limit,
         offset
       });
@@ -647,22 +674,22 @@ class Queries {
 
   /** Query to find all rooms
    * @param {string} table table to searched in
-  * @param {integer} where accommodation condition
- * @param {Object} limit accommodation request
- * @param {Object} offset accommodation for the page
- * @returns {array} returns all accommodations
+   * @param {integer} where accommodation condition
+   * @param {Object} limit accommodation request
+   * @param {Object} offset accommodation for the page
+   * @returns {array} returns all accommodations
    */
   static async getAllRooms(table, where, limit, offset) {
     try {
       const rooms = await table.findAndCountAll({
         where,
-        include: [{
-          model: db.accomodationtype,
-          attributes: ['name']
-        }],
-        order: [
-          ['id', 'DESC']
+        include: [
+          {
+            model: db.accomodationtype,
+            attributes: ['name']
+          }
         ],
+        order: [['id', 'DESC']],
         limit,
         offset
       });
@@ -673,19 +700,22 @@ class Queries {
   }
 
   /**
- * this method gives booking information
- * @param {Integer} tripId
- * @returns {Array} result
- */
+   * this method gives booking information
+   * @param {Integer} tripId
+   * @returns {Array} result
+   */
   static async getBookingInfo(tripId) {
-    const booking = await db.sequelize.query(`
+    const booking = await db.sequelize.query(
+      `
       SELECT a.name as accomodation, bookings.checkoutdate, bookings.departuredate, bookings.roomid, t.name
       FROM bookings
       INNER JOIN trips ON trips.id=bookings."tripid"
       INNER JOIN accomodation a ON a.id=trips."accomodationId"
       INNER JOIN rooms r ON r.id=bookings.roomid
       INNER JOIN accomodationtypes t ON t.id=r."typeId"
-      WHERE trips.id='${tripId}';`, { type: db.sequelize.QueryTypes.SELECT });
+      WHERE trips.id='${tripId}';`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
     return booking;
   }
 }

@@ -1,20 +1,20 @@
-import { config } from 'dotenv';
-import { clients } from '../helpers/socket.helper';
-import UserService from '../services/user.service';
-import chatService from '../services/chat.service';
-import response from '../helpers/response.helper';
-
+import { config } from "dotenv";
+import { clients } from "../helpers/socket.helper";
+import UserService from "../services/user.service";
+import chatService from "../services/chat.service";
+import response from "../helpers/response.helper";
+import Paginate from "../helpers/paginate.helper";
 
 config();
 /** Function to list all users
-    * @returns {*} data returned
-*/
+ * @returns {*} data returned
+ */
 class ChatController {
   /** Function to list all users
-    * @param {object} req the request sent
-    * @param {object} res the response returned
-    * @returns {*} data returned
-    */
+   * @param {object} req the request sent
+   * @param {object} res the response returned
+   * @returns {*} data returned
+   */
   static async getAllUsers(req, res) {
     try {
       const newArray = [];
@@ -40,26 +40,41 @@ class ChatController {
           });
         }
       });
-      return response.successMessage(res, 'users available', 200, newArray.sort((a, b) => a.isOnline.toString().localeCompare(b.isOnline.toString())).reverse());
+      return response.successMessage(
+        res,
+        "users available",
+        200,
+        newArray
+          .sort((a, b) =>
+            a.isOnline.toString().localeCompare(b.isOnline.toString())
+          )
+          .reverse()
+      );
     } catch (error) {
       return error.message;
     }
   }
 
   /** Get Private and public message between two users
-    * @param {object} req the request sent
-    * @param {object} res the response returned
-    * @returns {*} data returned
-    */
+   * @param {object} req the request sent
+   * @param {object} res the response returned
+   * @returns {*} data returned
+   */
   static async getMessages(req, res) {
     try {
       const { userId } = req.params;
       const { id } = req.user;
+      const { limit, page } = req.query;
+      const offset = Paginate(page, limit);
       if (!userId) {
-        const publicMessages = await chatService.getPublicMessage();
+        const publicMessages = await chatService.getPublicMessage(
+          null,
+          limit,
+          offset
+        );
         return response.successMessage(res, 'Messages', 200, publicMessages);
       }
-      const privateMessages = await chatService.getPrivateMessage(userId, id);
+      const privateMessages = await chatService.getPrivateMessage(userId, id, limit, offset);
       return response.successMessage(res, 'Messages', 200, privateMessages);
     } catch (error) {
       return response.errorMessage(res, error.message, 500);

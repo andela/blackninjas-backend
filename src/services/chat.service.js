@@ -1,5 +1,5 @@
-import db from '../database/models';
-import Queries from './Queries';
+import db from "../database/models";
+import Queries from "./Queries";
 
 /**
  * This class contains all chat functionality
@@ -23,11 +23,19 @@ class ChatService {
    * get Private Message
    * @param { Integer } sender .
    * @param { Integer } receiver .
+   * @param { Integer } limit .
+   * @param { Integer } offset .
    * @returns { Promise } Returns a list of messages
    */
-  static async getPrivateMessage(sender, receiver) {
+  static async getPrivateMessage(sender, receiver, limit, offset) {
     try {
-      const privateMessages = Queries.getPrivateMessage(db.chats, sender, receiver);
+      const privateMessages = Queries.getPrivateMessage(
+        db.chats,
+        sender,
+        receiver,
+        limit,
+        offset
+      );
       return privateMessages;
     } catch (error) {
       return error;
@@ -36,12 +44,19 @@ class ChatService {
 
   /**
    * get Public Message
+   * @param {*} receiverId receiverId
+   * @param {*} limit limit number to retrieve
+   * @param {*} offset the range to retrieve
    * @returns { Promise } Returns a list of Public messages
    */
-  static async getPublicMessage() {
+  static async getPublicMessage(receiverId, limit, offset) {
     try {
-      const condition = { receiverId: null };
-      const publicMessages = Queries.findAllRecord(db.chats, condition);
+      const publicMessages = await Queries.findAllMessages(
+        db.chats,
+        receiverId,
+        limit,
+        offset
+      );
       return publicMessages;
     } catch (error) {
       return error;
