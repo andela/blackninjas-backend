@@ -4,7 +4,8 @@ export default (sequelize, DataTypes) => {
     requestId: { type: DataTypes.INTEGER, allowNull: true },
     title: DataTypes.STRING,
     message: DataTypes.STRING,
-    read: DataTypes.BOOLEAN
+    read: DataTypes.BOOLEAN,
+    subjectId: DataTypes.STRING,
   }, {});
   notification.associate = (models) => {
     notification.belongsTo(models.user, {

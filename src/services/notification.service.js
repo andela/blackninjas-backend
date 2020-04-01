@@ -16,12 +16,13 @@ class NotificationService {
    * @param { String } message Custom message.
    * @param { Number } requestId Request Id.
    * @param { String } redirectLink Link to be sent to email. example: `https://{host}/{requestId}/{token}`.
+   * @param { String } subjectId subjectId.
    * @returns { Promise } Returns a notification query result object.
    */
-  static async sendNotification(event, receiverId, title, message, requestId, redirectLink) {
+  static async sendNotification(event, receiverId, title, message, requestId, redirectLink, subjectId) {
     try {
       const data = {
-        receiver: receiverId, requestId, title, message
+        receiver: receiverId, requestId, title, message, subjectId
       };
       // get receiver data from database
       const receiverInfo = await userService.findUser({ id: receiverId });

@@ -9,6 +9,8 @@ import Paginate from '../helpers/paginate.helper';
 import NotificationService from '../services/notification.service';
 import commentService from '../services/comment.service';
 import tripHelper from '../helpers/trip.helper';
+import AccomodationServises from '../services/accomodation.service';
+import managerToken from '../helpers/createManagerToken';
 import db from '../database/models';
 
 config();
@@ -44,21 +46,17 @@ class TripController {
       const tripid = faker.random.uuid();
       const status = 'pending';
       const { type } = req.body;
-
       const createdTrip = await tripService.CreateTrip(req, req.body, tripid, type);
-
       const { tripId } = createdTrip;
-
       const userId = req.user.id;
-
-
       const userManager = await userService.findUserManager(userId);
       const { managerId } = userManager[0];
       const requestData = {
         tripId, userId, managerId, status
       };
       const tripRequest = await tripService.CreateTripRequest(requestData);
-      await NotificationService.sendNotification('trip_request_event', managerId, `New ${type} trip request.`, `${req.user.firstName} has requested a new ${type}`, tripRequest.id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
+      const token = await managerToken(managerId);
+      await NotificationService.sendNotification('trip_request_event', managerId, `New ${type} trip request.`, `${req.user.firstName} has requested a new ${type}`, tripRequest.id, `${process.env.BASE_URL_REACT}/trips/${tripId}/${token}`, tripId);
       return response.successMessage(res, 'Trip created successfully', 201, createdTrip);
     } catch (e) {
       return response.errorMessage(
@@ -78,13 +76,14 @@ class TripController {
    */
   static async multiCityTripRequest(req, res) {
     const GeneralTripId = faker.random.uuid(); const trips = []; let result;
+    let manager = '';
     try {
       await Promise.all(req.body.map(async (trip) => {
         const newTrip = await tripService.CreateMultiCityTrip(req, trip, GeneralTripId, 'multi-city');
         trips.push(newTrip);
       }));
       if (trips.length > 0) {
-        const manager = await userManagement.findManagerByUserId(req.user.id);
+        manager = await userManagement.findManagerByUserId(req.user.id);
         const data = {
           userId: req.user.id, managerId: manager, tripId: GeneralTripId, status: 'pending'
         };
@@ -94,6 +93,8 @@ class TripController {
         return response.errorMessage(res, 'trip request has failed please try again', 500);
       }
       const createdtrip = await tripService.getTripByTripId(GeneralTripId);
+      const token = await managerToken(manager);
+      await NotificationService.sendNotification('trip_request_event', manager, 'New multi-city trip request.', `${req.user.firstName} has requested a new multi-city trip`, createdtrip[0].dataValues.id, `${process.env.BASE_URL_REACT}/trips/${GeneralTripId}/${token}`, GeneralTripId);
       return response.successMessage(res, 'Trip successfully created ', 201, createdtrip);
     } catch (error) {
       return response.errorMessage(res, error.message, 500);
@@ -109,11 +110,10 @@ class TripController {
   static async updateTripRequestStatus(req, res) {
     const { tripRequestId } = req.params;
     const { status } = req.body;
-    const changedStatus = {
-      status
-    };
+    const changedStatus = { status };
     const [, updateTripRequestStatus] = await tripRequestService.updateTripRequestStatus(changedStatus, tripRequestId);
-    await NotificationService.sendNotification('approve-or-reject-trip_request_event', updateTripRequestStatus[0].userId, `New ${status} request trip`, `Your manager has ${status} your trip request`, updateTripRequestStatus[0].id, `${process.env.BASE_URL}/api/v1/trip-requests/${updateTripRequestStatus[0].tripId}/${req.user.token}`);
+    const token = managerToken(updateTripRequestStatus[0].managerId);
+    await NotificationService.sendNotification('approve-or-reject-trip_request_event', updateTripRequestStatus[0].userId, `New ${status} request trip`, `Your manager has ${status} your trip request`, updateTripRequestStatus[0].id, `${process.env.BASE_URL_REACT}/trips/${tripRequestId}/${token}`, tripRequestId);
     return response.successMessage(res, `Trip request has been ${status} successfully`, 200, ...updateTripRequestStatus);
   }
 
@@ -132,12 +132,7 @@ class TripController {
     const manager = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.managerId });
     const user = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.userId });
     const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager, user);
-    return response.successMessage(
-      res,
-      'My Trip Requests',
-      200,
-      requestTrips
-    );
+    return response.successMessage(res, 'My Trip Requests', 200, requestTrips);
   }
 
   /**
@@ -155,12 +150,7 @@ class TripController {
     const manager = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.managerId });
     const user = await tripRequestService.getUserById({ id: requests.rows[0].dataValues.userId });
     const requestTrips = await tripRequestService.getTripRequestsOfUser(requests, manager, user);
-    return response.successMessage(
-      res,
-      'Trips requested by your direct reports',
-      200,
-      requestTrips
-    );
+    return response.successMessage(res, 'Trips requested by your direct reports', 200, requestTrips);
   }
 
   /**
@@ -176,7 +166,7 @@ class TripController {
     const tripRequest = await tripService.findRequestByID(db.requesttrip, { tripId: Id });
     const tripRequestData = tripRequest[0].dataValues;
     const receiver = (req.user.dataValues.id === tripRequestData.managerId) ? tripRequestData.userId : tripRequestData.managerId;
-    await NotificationService.sendNotification('trip_request_comment_event', receiver, 'New Comment', `${req.user.firstName} has posted a new comment`, data.dataValues.id, `${process.env.BASE_URL}/api/v1/trip-requests/${Id}/comments?page=1`);
+    await NotificationService.sendNotification('trip_request_comment_event', receiver, 'New Comment', `${req.user.firstName} has posted a new comment`, data.dataValues.id, `${process.env.BASE_URL_REACT}/trips/${Id}/comments?page=1`, Id);
     return response.successMessage(res, 'comment created successfuly', 201, data);
   }
 
@@ -210,10 +200,23 @@ class TripController {
    * @returns {Object} user response
    */
   static async getTripRequest(req, res) {
+    const trips = [];
     const { subjectID } = req.params;
     const userID = req.user.id;
     const data = await tripService.getTripRequest(subjectID, userID);
-    if (data) return response.successMessage(res, 'success', 200, data);
+    const managerInfo = await userService.findUser({ id: data.tripRequest.managerId });
+    const userInfo = await userService.findUser({ id: data.tripRequest.userId });
+    const accommodationName = await AccomodationServises.findAccomodation(data.trips[0].accomodationId);
+    data.trips.map((trip) => {
+      trip.dataValues.name = accommodationName.dataValues.name;
+      trip.dataValues.status = data.tripRequest.status;
+      trip.dataValues.firstName = userInfo.dataValues.firstName;
+      trip.dataValues.lastName = userInfo.dataValues.lastName;
+      trips.push(trip.dataValues);
+      return 0;
+    });
+    const searchResult = await tripHelper.addAdditionalSearchInfo(trips, managerInfo.dataValues);
+    if (data) return response.successMessage(res, 'success', 200, { tripRequest: data.tripRequest, trips: searchResult[0] });
     return response.errorMessage(res, 'Trip not found', 404);
   }
 
@@ -225,7 +228,9 @@ class TripController {
    */
   static async search(req, res) {
     const { id } = req.user;
-    const { keyword, limit, page, searchType } = req.query;
+    const {
+      keyword, limit, page, searchType
+    } = req.query;
     try {
       const offset = Paginate(page, limit);
       const foundTripRequestRecord = await tripRequestService.search(searchType, id, keyword, limit, offset);
@@ -275,7 +280,8 @@ class TripController {
       await tripService.updateTrip(Trip[0].id, req.body);
       await tripRequestService.updateTripRequestStatusById(id);
       const updatedtrip = await tripService.getTripByTripId(tripId);
-      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
+      const token = await managerToken(managerId);
+      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL_REACT}/trips/${tripId}/${token}`, tripId);
       return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
     } catch (e) {
       return response.errorMessage(
@@ -320,7 +326,8 @@ class TripController {
           await tripRequestService.updateTripRequestStatusById(id);
         }
       }));
-      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL}/api/v1/trip-requests/${tripId}/${req.user.token}`);
+      const token = await managerToken(managerId);
+      await NotificationService.sendNotification('edit-trip-request', managerId, `New edited ${type} trip request.`, `${req.user.firstName} has edited ${type} trip request`, id, `${process.env.BASE_URL_REACT}/trips/${tripId}/${token}`, tripId);
       const updatedtrip = await tripService.getTripByTripId(tripId);
       return response.successMessage(res, 'Trip request was updated successfully', 200, updatedtrip);
     } catch (error) {
