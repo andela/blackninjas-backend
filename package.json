@@ -18,7 +18,8 @@
       "src/services/notification.service.js ",
       "src/middlewares/admin.verify.middleware.js",
       "src/middlewares/auth.middleware.js ",
-      "src/helpers/accomodation.helper.js"
+      "src/helpers/accomodation.helper.js",
+      "src/helpers/createManagerToken.js"
     ]
   },
   "scripts": {
